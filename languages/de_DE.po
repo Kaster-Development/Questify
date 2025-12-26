@@ -1,0 +1,522 @@
+# German translation for WP FAQ Chat
+# Copyright (C) 2025 Steffen Kaster - Kaster Development
+# This file is distributed under the same license as the WP FAQ Chat plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Questify 1.0.3\n"
+"Report-Msgid-Bugs-To: info@kaster-development.de\n"
+"POT-Creation-Date: 2025-01-22 12:00+0000\n"
+"PO-Revision-Date: 2025-01-22 12:00+0000\n"
+"Last-Translator: Steffen Kaster <info@kaster-development.de>\n"
+"Language-Team: Kaster Development <info@kaster-development.de>\n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Manual\n"
+
+#: wp-faq-chat.php:25
+msgid "Questify requires WordPress 6.5 or higher. Please update WordPress."
+msgstr "Questify erfordert WordPress 6.5 oder höher. Bitte aktualisieren Sie WordPress."
+
+#: wp-faq-chat.php:33
+msgid "Questify requires PHP 8.2 or higher. Your current version is %s. Please update PHP."
+msgstr "Questify erfordert PHP 8.2 oder höher. Ihre aktuelle Version ist %s. Bitte aktualisieren Sie PHP."
+
+#: includes/class-chatbot-admin.php:50
+msgid "FAQ Chatbot"
+msgstr "FAQ Chatbot"
+
+#: includes/class-chatbot-admin.php:62
+msgid "Dashboard"
+msgstr "Dashboard"
+
+#: includes/class-chatbot-admin.php:72
+msgid "Fragen & Antworten"
+msgstr "Fragen & Antworten"
+
+#: includes/class-chatbot-admin.php:82
+msgid "Anfragen"
+msgstr "Anfragen"
+
+#: includes/class-chatbot-admin.php:92
+msgid "Auswertung"
+msgstr "Auswertung"
+
+#: includes/class-chatbot-admin.php:102
+msgid "Einstellungen"
+msgstr "Einstellungen"
+
+#: includes/class-chatbot-admin.php:113
+msgid "Über den Entwickler"
+msgstr "Über den Entwickler"
+
+#: includes/class-chatbot-email.php:84
+msgid "Neue Anfrage von %s"
+msgstr "Neue Anfrage von %s"
+
+#: admin/views/about.php:42
+msgid "Intelligenter FAQ-Chatbot mit Backend-Verwaltung"
+msgstr "Intelligenter FAQ-Chatbot mit Backend-Verwaltung"
+
+#: admin/views/about.php:53
+msgid "Entwickler / Firma:"
+msgstr "Entwickler / Firma:"
+
+#: admin/views/about.php:63
+msgid "Adresse:"
+msgstr "Adresse:"
+
+#: admin/views/about.php:73
+msgid "Telefon:"
+msgstr "Telefon:"
+
+#: admin/views/about.php:84
+msgid "Website:"
+msgstr "Website:"
+
+#: admin/views/about.php:94
+msgid "E-Mail:"
+msgstr "E-Mail:"
+
+#: admin/views/about.php:104
+msgid "Hinweis:"
+msgstr "Hinweis:"
+
+#: admin/views/about.php:105
+msgid "Die angegebene E-Mail-Adresse wird als Reply-To-Adresse in den Benachrichtigungs-E-Mails verwendet."
+msgstr "Die angegebene E-Mail-Adresse wird als Reply-To-Adresse in den Benachrichtigungs-E-Mails verwendet."
+
+#: admin/views/about.php:113
+msgid "Plugin-Features"
+msgstr "Plugin-Features"
+
+#: admin/views/about.php:119
+msgid "FAQ-Verwaltung"
+msgstr "FAQ-Verwaltung"
+
+#: admin/views/about.php:122
+msgid "Einfaches Erstellen, Bearbeiten und Verwalten von FAQ-Einträgen mit Keywords."
+msgstr "Einfaches Erstellen, Bearbeiten und Verwalten von FAQ-Einträgen mit Keywords."
+
+#: admin/views/about.php:128
+msgid "Intelligentes Matching"
+msgstr "Intelligentes Matching"
+
+#: admin/views/about.php:131
+msgid "Fortgeschrittener Algorithmus mit Fuzzy-Matching und Levenshtein-Distanz."
+msgstr "Fortgeschrittener Algorithmus mit Fuzzy-Matching und Levenshtein-Distanz."
+
+#: admin/views/about.php:137
+msgid "E-Mail-Benachrichtigungen"
+msgstr "E-Mail-Benachrichtigungen"
+
+#: admin/views/about.php:140
+msgid "Automatische Benachrichtigungen bei neuen Anfragen mit anpassbarem Design."
+msgstr "Automatische Benachrichtigungen bei neuen Anfragen mit anpassbarem Design."
+
+#: admin/views/about.php:146
+msgid "Analytics & Statistiken"
+msgstr "Analytics & Statistiken"
+
+#: admin/views/about.php:149
+msgid "Detaillierte Auswertungen mit grafischen Darstellungen und Zeitverläufen."
+msgstr "Detaillierte Auswertungen mit grafischen Darstellungen und Zeitverläufen."
+
+#: admin/views/about.php:155
+msgid "Anpassbares Design"
+msgstr "Anpassbares Design"
+
+#: admin/views/about.php:158
+msgid "Vollständig anpassbare Farben, Schriften und Größen für den Chat-Widget."
+msgstr "Vollständig anpassbare Farben, Schriften und Größen für den Chat-Widget."
+
+#: admin/views/about.php:164
+msgid "DSGVO-konform"
+msgstr "DSGVO-konform"
+
+#: admin/views/about.php:167
+msgid "IP-Anonymisierung, DSGVO-Checkbox und automatische Datenlöschung."
+msgstr "IP-Anonymisierung, DSGVO-Checkbox und automatische Datenlöschung."
+
+#: admin/views/about.php:176
+msgid "Support & Feedback"
+msgstr "Support & Feedback"
+
+#: admin/views/about.php:179
+msgid "Bei Fragen, Problemen oder Feedback zum Plugin können Sie uns jederzeit kontaktieren:"
+msgstr "Bei Fragen, Problemen oder Feedback zum Plugin können Sie uns jederzeit kontaktieren:"
+
+#: admin/views/about.php:184
+msgid "E-Mail senden"
+msgstr "E-Mail senden"
+
+#: admin/views/about.php:188
+msgid "Website besuchen"
+msgstr "Website besuchen"
+
+#: admin/views/about.php:188
+msgid "GitHub Issues"
+msgstr "GitHub Issues"
+
+#: admin/views/about.php:194
+msgid "Code & Mitwirken:"
+msgstr "Code & Mitwirken:"
+
+#: admin/views/about.php:196
+msgid "GitHub Repository"
+msgstr "GitHub Repository"
+
+#: admin/views/about.php:193
+msgid "Gefällt Ihnen das Plugin? Wir freuen uns über Ihr Feedback und Ihre Bewertung!"
+msgstr "Gefällt Ihnen das Plugin? Wir freuen uns über Ihr Feedback und Ihre Bewertung!"
+
+#: admin/views/about.php:200
+msgid "Questify Version %s"
+msgstr "Questify Version %s"
+
+#: admin/views/about.php:201
+msgid "Entwickelt von %s"
+msgstr "Entwickelt von %s"
+
+#: admin/views/settings.php:195
+msgid "Chatbot aktivieren"
+msgstr "Chatbot aktivieren"
+
+#: admin/views/settings.php:195
+msgid "Chatbot auf der Website anzeigen"
+msgstr "Chatbot auf der Website anzeigen"
+
+#: admin/views/settings.php:198
+msgid "Begrüßungstext"
+msgstr "Begrüßungstext"
+
+#: admin/views/settings.php:202
+msgid "Platzhalter Eingabefeld"
+msgstr "Platzhalter Eingabefeld"
+
+#: admin/views/settings.php:206
+msgid "Nachricht bei fehlender Antwort"
+msgstr "Nachricht bei fehlender Antwort"
+
+#: admin/views/settings.php:210
+msgid "Dankes-Nachricht"
+msgstr "Dankes-Nachricht"
+
+#: admin/views/settings.php:214
+msgid "Chat-Verlauf Verhalten"
+msgstr "Chat-Verlauf Verhalten"
+
+#: admin/views/settings.php:218
+msgid "Papierkorb-Button anzeigen (Benutzer löscht manuell)"
+msgstr "Papierkorb-Button anzeigen (Benutzer löscht manuell)"
+
+#: admin/views/settings.php:222
+msgid "Automatisch bei jedem Seitenaufruf löschen"
+msgstr "Automatisch bei jedem Seitenaufruf löschen"
+
+#: admin/views/settings.php:225
+msgid "Papierkorb: Chat-Verlauf bleibt gespeichert, Benutzer kann ihn mit Button löschen.<br>Automatisch: Chat-Verlauf wird bei jedem Neuladen der Seite gelöscht."
+msgstr "Papierkorb: Chat-Verlauf bleibt gespeichert, Benutzer kann ihn mit Button löschen.<br>Automatisch: Chat-Verlauf wird bei jedem Neuladen der Seite gelöscht."
+
+#: admin/views/settings.php:234
+msgid "Chat-Position"
+msgstr "Chat-Position"
+
+#: admin/views/settings.php:236
+msgid "Rechts unten"
+msgstr "Rechts unten"
+
+#: admin/views/settings.php:237
+msgid "Links unten"
+msgstr "Links unten"
+
+#: admin/views/settings.php:241
+msgid "Primärfarbe"
+msgstr "Primärfarbe"
+
+#: admin/views/settings.php:264
+msgid "Farbe für Buttons und Akzente"
+msgstr "Farbe für Buttons und Akzente"
+
+#: admin/views/settings.php:268
+msgid "Header-Farbe"
+msgstr "Header-Farbe"
+
+#: admin/views/settings.php:271
+msgid "Hintergrundfarbe des Chat-Headers"
+msgstr "Hintergrundfarbe des Chat-Headers"
+
+#: admin/views/settings.php:279
+msgid "Header-Textfarbe"
+msgstr "Header-Textfarbe"
+
+#: admin/views/settings.php:282
+msgid "Textfarbe des Chat-Titels im Header"
+msgstr "Textfarbe des Chat-Titels im Header"
+
+#: admin/views/settings.php:286
+msgid "Chat-Titel"
+msgstr "Chat-Titel"
+
+#: admin/views/settings.php:289
+msgid "Titel im Chat-Header"
+msgstr "Titel im Chat-Header"
+
+#: admin/views/settings.php:293
+msgid "Button-Text"
+msgstr "Button-Text"
+
+#: admin/views/settings.php:297
+msgid "Chat-Größe"
+msgstr "Chat-Größe"
+
+#: admin/views/settings.php:300
+msgid "Klein (300x400px)"
+msgstr "Klein (300x400px)"
+
+#: admin/views/settings.php:301
+msgid "Mittel (350x500px)"
+msgstr "Mittel (350x500px)"
+
+#: admin/views/settings.php:302
+msgid "Groß (400x600px)"
+msgstr "Groß (400x600px)"
+
+#: admin/views/settings.php:259
+msgid "Textfarbe (Bot-Nachrichten)"
+msgstr "Textfarbe (Bot-Nachrichten)"
+
+#: admin/views/settings.php:262
+msgid "Farbe des Textes in Bot-Nachrichten"
+msgstr "Farbe des Textes in Bot-Nachrichten"
+
+#: admin/views/settings.php:266
+msgid "Textfarbe (User-Nachrichten)"
+msgstr "Textfarbe (User-Nachrichten)"
+
+#: admin/views/settings.php:269
+msgid "Farbe des Textes in User-Nachrichten"
+msgstr "Farbe des Textes in User-Nachrichten"
+
+#: admin/views/settings.php:273
+msgid "Schriftart"
+msgstr "Schriftart"
+
+#: admin/views/settings.php:276
+msgid "System Standard"
+msgstr "System Standard"
+
+#: admin/views/settings.php:285
+msgid "Schriftart für den gesamten Chat"
+msgstr "Schriftart für den gesamten Chat"
+
+#: admin/views/settings.php:289
+msgid "Schriftgröße"
+msgstr "Schriftgröße"
+
+#: admin/views/settings.php:297
+msgid "Größe der Schrift im Chat"
+msgstr "Größe der Schrift im Chat"
+
+#: admin/views/settings.php:305
+msgid "Benachrichtigungs-E-Mail(s)"
+msgstr "Benachrichtigungs-E-Mail(s)"
+
+#: admin/views/settings.php:308
+msgid "Mehrere E-Mail-Adressen durch Komma getrennt"
+msgstr "Mehrere E-Mail-Adressen durch Komma getrennt"
+
+#: admin/views/settings.php:312
+msgid "E-Mail-Betreff-Präfix"
+msgstr "E-Mail-Betreff-Präfix"
+
+#: admin/views/settings.php:316
+msgid "E-Mail-Format"
+msgstr "E-Mail-Format"
+
+#: admin/views/settings.php:320
+msgid "HTML (mit Design)"
+msgstr "HTML (mit Design)"
+
+#: admin/views/settings.php:324
+msgid "Plain Text (nur Text)"
+msgstr "Plain Text (nur Text)"
+
+#: admin/views/settings.php:329
+msgid "E-Mail-Informationen"
+msgstr "E-Mail-Informationen"
+
+#: admin/views/settings.php:333
+msgid "IP-Adresse anzeigen"
+msgstr "IP-Adresse anzeigen"
+
+#: admin/views/settings.php:337
+msgid "Gefundene FAQ-Antwort anzeigen"
+msgstr "Gefundene FAQ-Antwort anzeigen"
+
+#: admin/views/settings.php:341
+msgid "Browser-Info (User Agent) anzeigen"
+msgstr "Browser-Info (User Agent) anzeigen"
+
+#: admin/views/settings.php:343
+msgid "Wählen Sie, welche Informationen in der Benachrichtigungs-E-Mail enthalten sein sollen."
+msgstr "Wählen Sie, welche Informationen in der Benachrichtigungs-E-Mail enthalten sein sollen."
+
+#: admin/views/settings.php:347
+msgid "E-Mail-Design"
+msgstr "E-Mail-Design"
+
+#: admin/views/settings.php:351
+msgid "Header-Farbe:"
+msgstr "Header-Farbe:"
+
+#: admin/views/settings.php:357
+msgid "Footer-Farbe:"
+msgstr "Footer-Farbe:"
+
+#: admin/views/settings.php:361
+msgid "Farben für Header und Footer in HTML-E-Mails"
+msgstr "Farben für Header und Footer in HTML-E-Mails"
+
+#: admin/views/settings.php:365
+msgid "Test-E-Mail senden"
+msgstr "Test-E-Mail senden"
+
+#: admin/views/settings.php:375
+msgid "Rate-Limiting"
+msgstr "Rate-Limiting"
+
+#: admin/views/settings.php:375
+msgid "Rate-Limiting aktivieren"
+msgstr "Rate-Limiting aktivieren"
+
+#: admin/views/settings.php:376
+msgid "Anfragen pro"
+msgstr "Anfragen pro"
+
+#: admin/views/settings.php:376
+msgid "Minuten"
+msgstr "Minuten"
+
+#: admin/views/settings.php:380
+msgid "DSGVO"
+msgstr "DSGVO"
+
+#: admin/views/settings.php:382
+msgid "DSGVO-Checkbox anzeigen"
+msgstr "DSGVO-Checkbox anzeigen"
+
+#: admin/views/settings.php:384
+msgid "IP-Anonymisierung nach"
+msgstr "IP-Anonymisierung nach"
+
+#: admin/views/settings.php:384
+msgid "Tagen"
+msgstr "Tagen"
+
+#: admin/views/settings.php:388
+msgid "Einbindung"
+msgstr "Einbindung"
+
+#: admin/views/settings.php:389
+msgid "Automatisch auf allen Seiten einbinden"
+msgstr "Automatisch auf allen Seiten einbinden"
+
+#: admin/views/settings.php:392
+msgid "Debug-Modus"
+msgstr "Debug-Modus"
+
+#: admin/views/settings.php:393
+msgid "Debug-Informationen im Error-Log speichern"
+msgstr "Debug-Informationen im Error-Log speichern"
+
+#: admin/views/settings.php:400
+msgid "Mindest-Score"
+msgstr "Mindest-Score"
+
+#: admin/views/settings.php:404
+msgid "Minimale Übereinstimmung für eine Antwort (0-100)"
+msgstr "Minimale Übereinstimmung für eine Antwort (0-100)"
+
+#: admin/views/settings.php:408
+msgid "Fuzzy-Matching"
+msgstr "Fuzzy-Matching"
+
+#: admin/views/settings.php:409
+msgid "Fuzzy-Matching aktivieren"
+msgstr "Fuzzy-Matching aktivieren"
+
+#: admin/views/settings.php:412
+msgid "Levenshtein-Distanz"
+msgstr "Levenshtein-Distanz"
+
+#: admin/views/settings.php:416
+msgid "Stoppwörter"
+msgstr "Stoppwörter"
+
+#: admin/views/settings.php:418
+msgid "Durch Komma getrennt"
+msgstr "Durch Komma getrennt"
+
+#: admin/views/settings.php:424
+msgid "Änderungen speichern"
+msgstr "Änderungen speichern"
+
+#: admin/views/settings.php:425
+msgid "Standardwerte wiederherstellen"
+msgstr "Standardwerte wiederherstellen"
+
+#: admin/views/settings.php:440
+msgid "Sende..."
+msgstr "Sende..."
+
+#: admin/views/settings.php:452
+msgid "Möchten Sie wirklich alle Einstellungen auf die Standardwerte zurücksetzen? Dies kann nicht rückgängig gemacht werden!"
+msgstr "Möchten Sie wirklich alle Einstellungen auf die Standardwerte zurücksetzen? Dies kann nicht rückgängig gemacht werden!"
+
+#: admin/views/settings.php:458
+msgid "Wiederherstellen..."
+msgstr "Wiederherstellen..."
+
+#: admin/views/settings.php:469
+#: admin/views/settings.php:473
+msgid "Fehler beim Wiederherstellen der Standardwerte."
+msgstr "Fehler beim Wiederherstellen der Standardwerte."
+
+#: admin/views/settings.php:171
+msgid "Einstellungen gespeichert."
+msgstr "Einstellungen gespeichert."
+
+#: admin/views/settings.php:180
+msgid "Allgemein"
+msgstr "Allgemein"
+
+#: admin/views/settings.php:181
+msgid "Design"
+msgstr "Design"
+
+#: admin/views/settings.php:182
+msgid "E-Mail"
+msgstr "E-Mail"
+
+#: admin/views/settings.php:183
+msgid "Erweitert"
+msgstr "Erweitert"
+
+#: admin/views/settings.php:184
+msgid "Matching"
+msgstr "Matching"
+
+#: includes/class-chatbot-ajax.php:146
+msgid "Ich habe mehrere passende Antworten gefunden. Welche dieser Fragen meinen Sie?"
+msgstr "Ich habe mehrere passende Antworten gefunden. Welche dieser Fragen meinen Sie?"
+
+#: includes/class-chatbot-ajax.php:287
+msgid "Ungültige FAQ-ID."
+msgstr "Ungültige FAQ-ID."
+
+#: includes/class-chatbot-ajax.php:294
+msgid "FAQ nicht gefunden."
+msgstr "FAQ nicht gefunden."

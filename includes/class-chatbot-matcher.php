@@ -148,19 +148,7 @@ class Chatbot_Matcher {
             }
         }
 
-        // Debug-Logging (wenn Debug-Modus aktiviert)
-        if (get_option('chatbot_debug_mode')) {
-            error_log('[Questify Matcher] Question: ' . $question);
-            error_log('[Questify Matcher] Best Score: ' . $best['score'] . ' - ' . substr($best['faq']->question, 0, 50));
-            error_log('[Questify Matcher] Alternatives: ' . count($alternatives));
-            error_log('[Questify Matcher] Needs Disambiguation: ' . ($needs_disambiguation ? 'YES' : 'NO'));
-
-            if (count($alternatives) > 0) {
-                foreach ($alternatives as $idx => $alt) {
-                    error_log('[Questify Matcher] Alt ' . ($idx + 1) . ': Score ' . $alt['score'] . ' - ' . substr($alt['faq']->question, 0, 50));
-                }
-            }
-        }
+        // Intentionally no debug logging (avoid error_log() in production plugins).
 
         return [
             'faq' => $best['faq'],

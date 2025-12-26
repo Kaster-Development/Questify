@@ -154,10 +154,10 @@ class Chatbot_Admin {
         // Chart.js für Analytics
         if ($hook === 'faq-chatbot_page_chatbot-analytics') {
             wp_enqueue_script(
-                'chartjs',
-                'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js',
+                'questify-simple-charts',
+                QUESTIFY_PLUGIN_URL . 'admin/js/simple-charts.js',
                 [],
-                '4.4.1',
+                QUESTIFY_VERSION,
                 true
             );
         }
@@ -213,7 +213,72 @@ class Chatbot_Admin {
         ];
 
         foreach ($settings as $setting) {
-            register_setting('chatbot_settings', $setting);
+            register_setting(
+                'chatbot_settings',
+                $setting,
+                [
+                    'sanitize_callback' => function ($value) use ($setting) {
+                        return $this->sanitize_setting_value($setting, $value);
+                    },
+                ]
+            );
+        }
+    }
+
+    /**
+     * Sanitization callback for plugin settings.
+     *
+     * @param string $setting Setting key.
+     * @param mixed  $value   Raw value.
+     * @return mixed
+     */
+    private function sanitize_setting_value(string $setting, mixed $value): mixed {
+        switch ($setting) {
+            case 'chatbot_enabled':
+            case 'chatbot_rate_limiting_enabled':
+            case 'chatbot_gdpr_checkbox':
+            case 'chatbot_auto_embed':
+            case 'chatbot_debug_mode':
+            case 'chatbot_fuzzy_matching':
+                return absint($value) ? 1 : 0;
+
+            case 'chatbot_rate_limit_requests':
+            case 'chatbot_rate_limit_window':
+            case 'chatbot_ip_anonymize_days':
+            case 'chatbot_min_score':
+            case 'chatbot_levenshtein_threshold':
+                return absint($value);
+
+            case 'chatbot_position':
+                $pos = sanitize_key((string) $value);
+                return in_array($pos, ['left', 'right'], true) ? $pos : 'right';
+
+            case 'chatbot_size':
+                $size = sanitize_key((string) $value);
+                return in_array($size, ['small', 'medium', 'large'], true) ? $size : 'medium';
+
+            case 'chatbot_primary_color':
+                return sanitize_hex_color((string) $value) ?: '';
+
+            case 'chatbot_notification_emails':
+                $emails_raw = is_string($value) ? $value : '';
+                $emails = array_filter(array_map('trim', explode(',', $emails_raw)));
+                $emails = array_values(array_filter(array_map('sanitize_email', $emails)));
+                return implode(', ', $emails);
+
+            case 'chatbot_stopwords':
+            case 'chatbot_gdpr_text':
+                return sanitize_textarea_field((string) $value);
+
+            case 'chatbot_welcome_message':
+            case 'chatbot_placeholder_text':
+            case 'chatbot_no_answer_message':
+            case 'chatbot_thank_you_message':
+            case 'chatbot_button_text':
+            case 'chatbot_email_prefix':
+            case 'chatbot_exclude_pages':
+            default:
+                return sanitize_text_field((string) $value);
         }
     }
 
@@ -236,7 +301,9 @@ class Chatbot_Admin {
      * @since 1.0.0
      */
     public function render_faqs(): void {
-        $action = $_GET['action'] ?? 'list';
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only routing parameter.
+        $action = isset($_GET['action']) ? sanitize_key(wp_unslash($_GET['action'])) : 'list';
+        $action = in_array($action, ['list', 'edit', 'add'], true) ? $action : 'list';
 
         if ($action === 'edit' || $action === 'add') {
             require_once QUESTIFY_PLUGIN_DIR . 'admin/views/faq-edit.php';
@@ -252,7 +319,9 @@ class Chatbot_Admin {
      * @since 1.0.0
      */
     public function render_inquiries(): void {
-        $action = $_GET['action'] ?? 'list';
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only routing parameter.
+        $action = isset($_GET['action']) ? sanitize_key(wp_unslash($_GET['action'])) : 'list';
+        $action = in_array($action, ['list', 'view'], true) ? $action : 'list';
 
         if ($action === 'view') {
             require_once QUESTIFY_PLUGIN_DIR . 'admin/views/inquiry-detail.php';
@@ -301,20 +370,21 @@ class Chatbot_Admin {
      */
     public function handle_save_faq(): void {
         // Nonce prüfen
-        if (!isset($_POST['chatbot_faq_nonce']) || !wp_verify_nonce($_POST['chatbot_faq_nonce'], 'chatbot_save_faq')) {
-            wp_die(__('Sicherheitsprüfung fehlgeschlagen.', 'questify'));
+        $nonce = isset($_POST['chatbot_faq_nonce']) ? sanitize_text_field(wp_unslash($_POST['chatbot_faq_nonce'])) : '';
+        if ($nonce === '' || !wp_verify_nonce($nonce, 'chatbot_save_faq')) {
+            wp_die(esc_html__('Sicherheitsprüfung fehlgeschlagen.', 'questify'));
         }
 
         // Berechtigung prüfen
         if (!current_user_can('manage_options')) {
-            wp_die(__('Keine Berechtigung.', 'questify'));
+            wp_die(esc_html__('Keine Berechtigung.', 'questify'));
         }
 
         // Daten holen
-        $faq_id = isset($_POST['faq_id']) ? (int) $_POST['faq_id'] : 0;
-        $question = sanitize_textarea_field($_POST['question'] ?? '');
-        $answer = wp_kses_post($_POST['answer'] ?? '');
-        $keywords = sanitize_textarea_field($_POST['keywords'] ?? '');
+        $faq_id = isset($_POST['faq_id']) ? absint(wp_unslash($_POST['faq_id'])) : 0;
+        $question = sanitize_textarea_field(isset($_POST['question']) ? wp_unslash($_POST['question']) : '');
+        $answer = wp_kses_post(isset($_POST['answer']) ? wp_unslash($_POST['answer']) : '');
+        $keywords = sanitize_textarea_field(isset($_POST['keywords']) ? wp_unslash($_POST['keywords']) : '');
         $active = isset($_POST['active']) ? 1 : 0;
         $auto_generate_keywords = isset($_POST['auto_generate_keywords']) ? true : false;
 
@@ -464,14 +534,29 @@ class Chatbot_Admin {
         }
 
         // Bulk-Action-Notices
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only admin notice.
         if (isset($_GET['bulk_action']) && isset($_GET['bulk_count'])) {
-            $action = sanitize_text_field($_GET['bulk_action']);
-            $count = (int) $_GET['bulk_count'];
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only admin notice.
+            $action = sanitize_text_field(wp_unslash($_GET['bulk_action']));
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only admin notice.
+            $count = absint(wp_unslash($_GET['bulk_count']));
 
             $messages = [
-                'activate' => sprintf(_n('%d FAQ aktiviert.', '%d FAQs aktiviert.', $count, 'questify'), $count),
-                'deactivate' => sprintf(_n('%d FAQ deaktiviert.', '%d FAQs deaktiviert.', $count, 'questify'), $count),
-                'delete' => sprintf(_n('%d FAQ gelöscht.', '%d FAQs gelöscht.', $count, 'questify'), $count),
+                'activate' => sprintf(
+                    /* translators: %d: number of FAQs */
+                    _n('%d FAQ aktiviert.', '%d FAQs aktiviert.', $count, 'questify'),
+                    $count
+                ),
+                'deactivate' => sprintf(
+                    /* translators: %d: number of FAQs */
+                    _n('%d FAQ deaktiviert.', '%d FAQs deaktiviert.', $count, 'questify'),
+                    $count
+                ),
+                'delete' => sprintf(
+                    /* translators: %d: number of FAQs */
+                    _n('%d FAQ gelöscht.', '%d FAQs gelöscht.', $count, 'questify'),
+                    $count
+                ),
             ];
 
             if (isset($messages[$action])) {

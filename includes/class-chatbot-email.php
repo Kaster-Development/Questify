@@ -82,8 +82,9 @@ class Chatbot_Email {
 
         // Betreff
         $subject = $email_prefix . ' ' . sprintf(
+            /* translators: %s: inquiry user name */
             __('Neue Anfrage von %s', 'questify'),
-            $inquiry->user_name
+            sanitize_text_field($inquiry->user_name)
         );
 
         // Headers (immer HTML, da Plain-Text als HTML mit <pre> gesendet wird)
@@ -314,14 +315,14 @@ class Chatbot_Email {
 
                     <div class="info-row">
                         <span class="label">Datum:</span>
-                        <span><?php echo date_i18n('d.m.Y H:i', strtotime($inquiry->timestamp)); ?> Uhr</span>
+                        <span><?php echo esc_html(date_i18n('d.m.Y H:i', strtotime($inquiry->timestamp))); ?> Uhr</span>
                     </div>
 
                     <div class="info-row">
                         <span class="label">Status:</span>
                         <?php if ($inquiry->matched_faq_id): ?>
                             <span class="status-badge status-success">
-                                <?php if ($show_icons): ?>[✓]<?php endif; ?> Antwort gefunden (FAQ #<?php echo $inquiry->matched_faq_id; ?>)
+                                <?php if ($show_icons): ?>[✓]<?php endif; ?> Antwort gefunden (FAQ #<?php echo esc_html((string) $inquiry->matched_faq_id); ?>)
                             </span>
                         <?php else: ?>
                             <span class="status-badge status-warning">
@@ -456,7 +457,7 @@ class Chatbot_Email {
      */
     private function wrap_text(string $text, int $width = 70): string {
         // Entferne HTML-Tags
-        $text = strip_tags($text);
+        $text = wp_strip_all_tags($text);
 
         // Ersetze <br> und ähnliche durch Zeilenumbrüche
         $text = str_replace(['<br>', '<br/>', '<br />'], "\n", $text);
@@ -522,13 +523,7 @@ class Chatbot_Email {
      * @since 1.0.0
      */
     private function log_error(string $message, array $context = []): void {
-        if (get_option('chatbot_debug_mode')) {
-            error_log(sprintf(
-                '[Questify - Email] ERROR: %s - Context: %s',
-                $message,
-                json_encode($context)
-            ));
-        }
+        // Intentionally no-op: avoid error_log() in production plugins.
     }
 
     /**
@@ -540,12 +535,6 @@ class Chatbot_Email {
      * @since 1.0.0
      */
     private function log_debug(string $message, array $context = []): void {
-        if (get_option('chatbot_debug_mode')) {
-            error_log(sprintf(
-                '[Questify - Email] DEBUG: %s - Context: %s',
-                $message,
-                json_encode($context)
-            ));
-        }
+        // Intentionally no-op: avoid error_log() in production plugins.
     }
 }

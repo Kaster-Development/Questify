@@ -91,8 +91,8 @@ class Chatbot_Ajax {
         }
 
         // Parameter holen
-        $question = sanitize_textarea_field($_POST['question'] ?? '');
-        $session_id = sanitize_text_field($_POST['session_id'] ?? '');
+        $question = sanitize_textarea_field(isset($_POST['question']) ? wp_unslash($_POST['question']) : '');
+        $session_id = sanitize_text_field(isset($_POST['session_id']) ? wp_unslash($_POST['session_id']) : '');
 
         if (empty($question)) {
             wp_send_json_error(['message' => __('Bitte geben Sie eine Frage ein.', 'questify')]);
@@ -145,14 +145,6 @@ class Chatbot_Ajax {
                     }
                 }
 
-                // Debug-Logging
-                if (get_option('chatbot_debug_mode')) {
-                    error_log('[Questify AJAX] Disambiguation triggered with ' . count($options) . ' options');
-                    foreach ($options as $idx => $opt) {
-                        error_log('[Questify AJAX] Option ' . ($idx + 1) . ': ID=' . $opt['id'] . ', Question=' . substr($opt['question'], 0, 50));
-                    }
-                }
-
                 // Nur wenn wir mindestens 2 Optionen haben
                 if (count($options) >= 2) {
                     // Disambiguierungs-Nachricht speichern
@@ -169,11 +161,6 @@ class Chatbot_Ajax {
                         'disambiguation_message' => $disambiguation_message,
                         'options' => $options,
                     ]);
-                }
-
-                // Fallback: Wenn weniger als 2 Optionen, zeige beste Antwort
-                if (get_option('chatbot_debug_mode')) {
-                    error_log('[Questify AJAX] Not enough options for disambiguation, showing best match');
                 }
 
                 // WICHTIG: Wenn Disambiguierung fehlschlägt, normale Antwort senden
@@ -252,11 +239,11 @@ class Chatbot_Ajax {
         }
 
         // Parameter holen
-        $name = sanitize_text_field($_POST['name'] ?? '');
-        $email = sanitize_email($_POST['email'] ?? '');
-        $question = sanitize_textarea_field($_POST['question'] ?? '');
-        $session_id = sanitize_text_field($_POST['session_id'] ?? '');
-        $faq_id = isset($_POST['faq_id']) ? (int) $_POST['faq_id'] : null;
+        $name = sanitize_text_field(isset($_POST['name']) ? wp_unslash($_POST['name']) : '');
+        $email = sanitize_email(isset($_POST['email']) ? wp_unslash($_POST['email']) : '');
+        $question = sanitize_textarea_field(isset($_POST['question']) ? wp_unslash($_POST['question']) : '');
+        $session_id = sanitize_text_field(isset($_POST['session_id']) ? wp_unslash($_POST['session_id']) : '');
+        $faq_id = isset($_POST['faq_id']) ? absint(wp_unslash($_POST['faq_id'])) : null;
 
         // Validierung
         if (empty($name)) {
@@ -290,7 +277,7 @@ class Chatbot_Ajax {
         try {
             $email_sent = $this->email->send_inquiry_notification($inquiry_id);
         } catch (Exception $e) {
-            error_log('[Questify] E-Mail-Fehler: ' . $e->getMessage());
+            $email_sent = false;
         }
 
         // Dankes-Nachricht
@@ -325,18 +312,10 @@ class Chatbot_Ajax {
         }
 
         // Parameter holen
-        $faq_id = (int) ($_POST['faq_id'] ?? 0);
-        $session_id = sanitize_text_field($_POST['session_id'] ?? '');
-
-        // Debug-Logging
-        if (get_option('chatbot_debug_mode')) {
-            error_log('[Questify] get_faq_by_id called with ID: ' . $faq_id);
-        }
+        $faq_id = isset($_POST['faq_id']) ? absint(wp_unslash($_POST['faq_id'])) : 0;
+        $session_id = sanitize_text_field(isset($_POST['session_id']) ? wp_unslash($_POST['session_id']) : '');
 
         if (!$faq_id) {
-            if (get_option('chatbot_debug_mode')) {
-                error_log('[Questify] ERROR: Invalid FAQ ID');
-            }
             wp_send_json_error(['message' => __('Ungültige FAQ-ID.', 'questify')]);
             return;
         }
@@ -344,18 +323,7 @@ class Chatbot_Ajax {
         // FAQ abrufen
         $faq = $this->db->get_faq_by_id($faq_id);
 
-        if (get_option('chatbot_debug_mode')) {
-            error_log('[Questify] FAQ retrieved: ' . ($faq ? 'YES' : 'NO'));
-            if ($faq) {
-                error_log('[Questify] FAQ active: ' . ($faq->active ? 'YES' : 'NO'));
-                error_log('[Questify] FAQ question: ' . substr($faq->question, 0, 50));
-            }
-        }
-
         if (!$faq || !$faq->active) {
-            if (get_option('chatbot_debug_mode')) {
-                error_log('[Questify] ERROR: FAQ not found or inactive');
-            }
             wp_send_json_error(['message' => __('FAQ nicht gefunden oder inaktiv.', 'questify')]);
             return;
         }
@@ -369,10 +337,6 @@ class Chatbot_Ajax {
             'message_type' => 'bot',
             'message_text' => $faq->answer,
         ]);
-
-        if (get_option('chatbot_debug_mode')) {
-            error_log('[Questify] SUCCESS: Returning FAQ answer');
-        }
 
         wp_send_json_success([
             'answer' => $faq->answer,
@@ -394,18 +358,20 @@ class Chatbot_Ajax {
         }
 
         // Parameter holen
-        $faq_id = (int) ($_POST['faq_id'] ?? 0);
-        $helpful = sanitize_text_field($_POST['helpful'] ?? ''); // 'yes' oder 'no'
-        $session_id = sanitize_text_field($_POST['session_id'] ?? '');
+        $faq_id = isset($_POST['faq_id']) ? absint(wp_unslash($_POST['faq_id'])) : 0;
+        $helpful = sanitize_text_field(isset($_POST['helpful']) ? wp_unslash($_POST['helpful']) : ''); // 'yes' oder 'no'
+        $session_id = sanitize_text_field(isset($_POST['session_id']) ? wp_unslash($_POST['session_id']) : '');
 
-        if (!$faq_id || !in_array($helpful, ['yes', 'no'])) {
+        if (!$faq_id || !in_array($helpful, ['yes', 'no'], true)) {
             wp_send_json_error(['message' => __('Ungültige Parameter.', 'questify')]);
         }
 
         // Inquiry erstellen/aktualisieren für Bewertung
+        $host = wp_parse_url(home_url(), PHP_URL_HOST);
+        $host = is_string($host) && $host !== '' ? $host : 'example.com';
         $inquiry_id = $this->db->insert_inquiry([
             'user_name' => 'Anonymous',
-            'user_email' => 'noreply@' . parse_url(home_url(), PHP_URL_HOST),
+            'user_email' => 'noreply@' . $host,
             'user_question' => '',
             'session_id' => $session_id,
             'matched_faq_id' => $faq_id,
@@ -435,7 +401,7 @@ class Chatbot_Ajax {
             wp_send_json_error(['message' => __('Keine Berechtigung.', 'questify')]);
         }
 
-        $faq_id = (int) ($_POST['faq_id'] ?? 0);
+        $faq_id = isset($_POST['faq_id']) ? absint(wp_unslash($_POST['faq_id'])) : 0;
 
         if (!$faq_id) {
             wp_send_json_error(['message' => __('Ungültige FAQ-ID.', 'questify')]);
@@ -461,8 +427,8 @@ class Chatbot_Ajax {
             wp_send_json_error(['message' => __('Keine Berechtigung.', 'questify')]);
         }
 
-        $faq_id = (int) ($_POST['faq_id'] ?? 0);
-        $active = (int) ($_POST['active'] ?? 0);
+        $faq_id = isset($_POST['faq_id']) ? absint(wp_unslash($_POST['faq_id'])) : 0;
+        $active = isset($_POST['active']) ? absint(wp_unslash($_POST['active'])) : 0;
 
         if (!$faq_id) {
             wp_send_json_error(['message' => __('Ungültige FAQ-ID.', 'questify')]);
@@ -488,7 +454,7 @@ class Chatbot_Ajax {
             wp_send_json_error(['message' => __('Keine Berechtigung.', 'questify')]);
         }
 
-        $inquiry_id = (int) ($_POST['inquiry_id'] ?? 0);
+        $inquiry_id = isset($_POST['inquiry_id']) ? absint(wp_unslash($_POST['inquiry_id'])) : 0;
 
         if (!$inquiry_id) {
             wp_send_json_error(['message' => __('Ungültige Anfrage-ID.', 'questify')]);
@@ -514,8 +480,8 @@ class Chatbot_Ajax {
             wp_send_json_error(['message' => __('Keine Berechtigung.', 'questify')]);
         }
 
-        $inquiry_id = (int) ($_POST['inquiry_id'] ?? 0);
-        $status = sanitize_text_field($_POST['status'] ?? '');
+        $inquiry_id = isset($_POST['inquiry_id']) ? absint(wp_unslash($_POST['inquiry_id'])) : 0;
+        $status = sanitize_text_field(isset($_POST['status']) ? wp_unslash($_POST['status']) : '');
 
         if (!$inquiry_id || !in_array($status, ['new', 'in_progress', 'answered'])) {
             wp_send_json_error(['message' => __('Ungültige Parameter.', 'questify')]);
@@ -538,13 +504,13 @@ class Chatbot_Ajax {
         check_ajax_referer('chatbot_admin_ajax', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Keine Berechtigung.', 'questify')]);
+            wp_send_json_error(['message' => esc_html__('Keine Berechtigung.', 'questify')]);
         }
 
         if ($this->email->send_test_email()) {
-            wp_send_json_success(['message' => __('Test-E-Mail erfolgreich versendet!', 'questify')]);
+            wp_send_json_success(['message' => esc_html__('Test-E-Mail erfolgreich versendet!', 'questify')]);
         } else {
-            wp_send_json_error(['message' => __('E-Mail konnte nicht versendet werden. Prüfen Sie die Einstellungen.', 'questify')]);
+            wp_send_json_error(['message' => esc_html__('E-Mail konnte nicht versendet werden. Prüfen Sie die Einstellungen.', 'questify')]);
         }
     }
 
@@ -558,18 +524,18 @@ class Chatbot_Ajax {
         check_ajax_referer('chatbot_admin_ajax', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_die(__('Keine Berechtigung.', 'questify'));
+            wp_die(esc_html__('Keine Berechtigung.', 'questify'));
         }
 
         $inquiries = $this->db->get_all_inquiries();
 
         // CSV-Header
         header('Content-Type: text/csv; charset=utf-8');
-        header('Content-Disposition: attachment; filename="chatbot-inquiries-' . date('Y-m-d') . '.csv"');
+        header('Content-Disposition: attachment; filename="chatbot-inquiries-' . gmdate('Y-m-d') . '.csv"');
         header('Pragma: no-cache');
         header('Expires: 0');
 
-        $output = fopen('php://output', 'w');
+        $output = fopen('php://output', 'w'); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- Output stream.
 
         // BOM für Excel UTF-8
         fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
@@ -600,7 +566,7 @@ class Chatbot_Ajax {
             ], ';');
         }
 
-        fclose($output);
+        fclose($output); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Output stream.
         exit;
     }
 
@@ -614,14 +580,14 @@ class Chatbot_Ajax {
         check_ajax_referer('chatbot_admin_ajax', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Keine Berechtigung.', 'questify')]);
+            wp_send_json_error(['message' => esc_html__('Keine Berechtigung.', 'questify')]);
         }
 
-        $question = sanitize_textarea_field($_POST['question'] ?? '');
-        $answer = wp_kses_post($_POST['answer'] ?? '');
+        $question = sanitize_textarea_field(isset($_POST['question']) ? wp_unslash($_POST['question']) : '');
+        $answer = wp_kses_post(isset($_POST['answer']) ? wp_unslash($_POST['answer']) : '');
 
         if (empty($question)) {
-            wp_send_json_error(['message' => __('Bitte geben Sie eine Frage ein.', 'questify')]);
+            wp_send_json_error(['message' => esc_html__('Bitte geben Sie eine Frage ein.', 'questify')]);
         }
 
         $generator = Chatbot_Keyword_Generator::get_instance();
@@ -629,7 +595,7 @@ class Chatbot_Ajax {
 
         wp_send_json_success([
             'keywords' => $keywords,
-            'message' => __('Keywords erfolgreich generiert!', 'questify')
+            'message' => esc_html__('Keywords erfolgreich generiert!', 'questify')
         ]);
     }
 
@@ -643,10 +609,10 @@ class Chatbot_Ajax {
         check_ajax_referer('chatbot_admin_ajax', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_die(__('Keine Berechtigung.', 'questify'));
+            wp_die(esc_html__('Keine Berechtigung.', 'questify'));
         }
 
-        $format = sanitize_text_field($_GET['format'] ?? 'json');
+        $format = sanitize_text_field(isset($_GET['format']) ? wp_unslash($_GET['format']) : 'json');
         $include_inactive = isset($_GET['include_inactive']) ? true : false;
 
         // FAQs holen
@@ -660,11 +626,11 @@ class Chatbot_Ajax {
         if ($format === 'csv') {
             // CSV-Export
             header('Content-Type: text/csv; charset=utf-8');
-            header('Content-Disposition: attachment; filename="chatbot-faqs-' . date('Y-m-d') . '.csv"');
+            header('Content-Disposition: attachment; filename="chatbot-faqs-' . gmdate('Y-m-d') . '.csv"');
             header('Pragma: no-cache');
             header('Expires: 0');
 
-            $output = fopen('php://output', 'w');
+            $output = fopen('php://output', 'w'); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- Output stream.
 
             // BOM für Excel UTF-8
             fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
@@ -693,11 +659,11 @@ class Chatbot_Ajax {
                 ], ';');
             }
 
-            fclose($output);
+            fclose($output); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Output stream.
         } else {
             // JSON-Export
             header('Content-Type: application/json; charset=utf-8');
-            header('Content-Disposition: attachment; filename="chatbot-faqs-' . date('Y-m-d') . '.json"');
+            header('Content-Disposition: attachment; filename="chatbot-faqs-' . gmdate('Y-m-d') . '.json"');
             header('Pragma: no-cache');
             header('Expires: 0');
 
@@ -711,7 +677,7 @@ class Chatbot_Ajax {
                 ];
             }
 
-            echo json_encode([
+            echo wp_json_encode([
                 'version' => QUESTIFY_VERSION,
                 'exported_at' => current_time('mysql'),
                 'count' => count($export_data),
@@ -729,9 +695,6 @@ class Chatbot_Ajax {
      * @since 1.0.0
      */
     public function handle_import_faqs(): void {
-        // Fehlerbehandlung auf höchster Ebene
-        error_reporting(E_ALL);
-
         // Nonce-Prüfung (false = nicht direkt sterben, sondern false zurückgeben)
         if (!check_ajax_referer('chatbot_admin_ajax', 'nonce', false)) {
             wp_send_json_error(['message' => __('Sicherheitsprüfung fehlgeschlagen. Bitte Seite neu laden.', 'questify')]);
@@ -743,16 +706,9 @@ class Chatbot_Ajax {
             return;
         }
 
-        $import_method = sanitize_text_field($_POST['import_method'] ?? 'file');
+        $import_method = sanitize_text_field(isset($_POST['import_method']) ? wp_unslash($_POST['import_method']) : 'file');
         $imported = 0;
         $errors = [];
-
-        // Debug-Log
-        if (get_option('chatbot_debug_mode')) {
-            error_log('=== Questify Import Start ===');
-            error_log('Import Method: ' . $import_method);
-            error_log('POST Keys: ' . implode(', ', array_keys($_POST)));
-        }
 
         try {
             if ($import_method === 'paste') {
@@ -762,7 +718,11 @@ class Chatbot_Ajax {
                 }
 
                 // JSON dekodieren
-                $raw_data = stripslashes($_POST['import_data']);
+                // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Raw JSON input is validated by json_decode and per-field sanitization below.
+                $raw_data = isset($_POST['import_data']) ? wp_unslash($_POST['import_data']) : '';
+                if (!is_string($raw_data)) {
+                    $raw_data = '';
+                }
                 $import_data = json_decode($raw_data, true);
 
                 if (json_last_error() !== JSON_ERROR_NONE) {
@@ -788,7 +748,11 @@ class Chatbot_Ajax {
                     try {
                         // Sicherstellen dass $item ein Array ist
                         if (!is_array($item)) {
-                            $errors[] = sprintf(__('Zeile %d: Ungültiges Datenformat.', 'questify'), $index + 1);
+                            $errors[] = sprintf(
+                                /* translators: %d: line number */
+                                __('Zeile %d: Ungültiges Datenformat.', 'questify'),
+                                $index + 1
+                            );
                             continue;
                         }
 
@@ -797,7 +761,11 @@ class Chatbot_Ajax {
                         $keywords = isset($item['keywords']) ? trim($item['keywords']) : '';
 
                         if (empty($question) || empty($answer)) {
-                            $errors[] = sprintf(__('Zeile %d übersprungen: Frage oder Antwort fehlt.', 'questify'), $index + 1);
+                            $errors[] = sprintf(
+                                /* translators: %d: line number */
+                                __('Zeile %d übersprungen: Frage oder Antwort fehlt.', 'questify'),
+                                $index + 1
+                            );
                             continue;
                         }
 
@@ -832,30 +800,61 @@ class Chatbot_Ajax {
                         if ($result) {
                             $imported++;
                         } else {
-                            $errors[] = sprintf(__('FAQ konnte nicht importiert werden: %s', 'questify'), substr($question, 0, 50));
+                            $errors[] = sprintf(
+                                /* translators: %s: FAQ question (truncated) */
+                                __('FAQ konnte nicht importiert werden: %s', 'questify'),
+                                substr($question, 0, 50)
+                            );
                         }
 
                     } catch (Exception $e) {
-                        $errors[] = sprintf(__('Zeile %d: %s', 'questify'), $index + 1, $e->getMessage());
+                        $errors[] = sprintf(
+                            /* translators: 1: line number, 2: error message */
+                            __('Zeile %1$d: %2$s', 'questify'),
+                            $index + 1,
+                            $e->getMessage()
+                        );
                     }
                 }
 
             } else {
                 // Datei-Upload Import
-                if (!isset($_FILES['import_file']) || $_FILES['import_file']['error'] !== UPLOAD_ERR_OK) {
+                $file_error = isset($_FILES['import_file']['error']) ? (int) $_FILES['import_file']['error'] : null;
+                if (!isset($_FILES['import_file']) || !is_array($_FILES['import_file']) || $file_error !== UPLOAD_ERR_OK) {
                     wp_send_json_error(['message' => __('Keine Datei hochgeladen oder Upload-Fehler.', 'questify')]);
                 }
 
-                $file = $_FILES['import_file'];
-                $file_ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                $file_name = isset($_FILES['import_file']['name']) ? sanitize_file_name(wp_unslash($_FILES['import_file']['name'])) : '';
+                // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Validated via is_uploaded_file() and used only as a filesystem path.
+                $file_tmp = isset($_FILES['import_file']['tmp_name']) ? $_FILES['import_file']['tmp_name'] : '';
+                $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
 
-                if (!in_array($file_ext, ['json', 'csv', 'txt'])) {
+                if (!in_array($file_ext, ['json', 'csv', 'txt'], true)) {
                     wp_send_json_error(['message' => __('Nur JSON-, CSV- oder TXT-Dateien sind erlaubt.', 'questify')]);
+                }
+
+                if (!is_string($file_tmp) || $file_tmp === '') {
+                    wp_send_json_error(['message' => __('Upload-Datei nicht gefunden.', 'questify')]);
+                }
+
+                if (!is_uploaded_file($file_tmp)) {
+                    wp_send_json_error(['message' => __('Ungültige Upload-Datei.', 'questify')]);
+                }
+
+                require_once ABSPATH . 'wp-admin/includes/file.php';
+                WP_Filesystem();
+
+                global $wp_filesystem;
+                if (!$wp_filesystem) {
+                    throw new Exception(__('Dateisystem konnte nicht initialisiert werden.', 'questify'));
                 }
 
                 if ($file_ext === 'json') {
                     // JSON-Import
-                    $json_content = file_get_contents($file['tmp_name']);
+                    $json_content = $wp_filesystem->get_contents($file_tmp);
+                    if ($json_content === false) {
+                        throw new Exception(__('Datei konnte nicht gelesen werden.', 'questify'));
+                    }
                     $data = json_decode($json_content, true);
 
                     if (!$data || !isset($data['faqs'])) {
@@ -887,22 +886,24 @@ class Chatbot_Ajax {
                         if ($result) {
                             $imported++;
                         } else {
-                            $errors[] = sprintf(__('FAQ konnte nicht importiert werden: %s', 'questify'), $faq_data['question']);
+                            $errors[] = sprintf(
+                                /* translators: %s: FAQ question */
+                                __('FAQ konnte nicht importiert werden: %s', 'questify'),
+                                $faq_data['question']
+                            );
                         }
                     }
 
                 } else {
                     // CSV/TXT-Import mit flexiblem Parsing
-                    $handle = fopen($file['tmp_name'], 'r');
-
-                    if ($handle === false) {
-                        throw new Exception(__('Datei konnte nicht geöffnet werden.', 'questify'));
+                    $file_contents = $wp_filesystem->get_contents($file_tmp);
+                    if ($file_contents === false) {
+                        throw new Exception(__('Datei konnte nicht gelesen werden.', 'questify'));
                     }
 
                     // BOM entfernen falls vorhanden
-                    $bom = fread($handle, 3);
-                    if ($bom !== chr(0xEF).chr(0xBB).chr(0xBF)) {
-                        rewind($handle);
+                    if (strncmp($file_contents, chr(0xEF) . chr(0xBB) . chr(0xBF), 3) === 0) {
+                        $file_contents = substr($file_contents, 3);
                     }
 
                     // Keyword-Generator laden (nur wenn noch nicht geladen)
@@ -911,9 +912,16 @@ class Chatbot_Ajax {
                     }
                     $keyword_generator = Chatbot_Keyword_Generator::get_instance();
 
-                    // Erste Zeile lesen, um Trennzeichen zu erkennen
-                    $first_line = fgets($handle);
-                    rewind($handle);
+                    $lines = preg_split("/\r\n|\n|\r/", $file_contents);
+                    $lines = is_array($lines) ? $lines : [];
+
+                    $first_line = '';
+                    foreach ($lines as $line) {
+                        if (trim((string) $line) !== '') {
+                            $first_line = (string) $line;
+                            break;
+                        }
+                    }
 
                     // Trennzeichen automatisch erkennen
                     $delimiter = ';';
@@ -925,16 +933,31 @@ class Chatbot_Ajax {
                         $delimiter = '|';
                     }
 
-                    // Header-Zeile überspringen (wenn erste Zeile "Frage" oder "Question" enthält)
-                    $header = fgetcsv($handle, 0, $delimiter);
-                    if (!empty($header[0]) && in_array(strtolower($header[0]), ['frage', 'question', 'id'])) {
-                        // Header wurde übersprungen
-                    } else {
-                        // Erste Zeile war kein Header, zurücksetzen
-                        rewind($handle);
+                    // Header erkennen
+                    $line_index = 0;
+                    $header_row = [];
+                    while ($line_index < count($lines)) {
+                        $line = (string) $lines[$line_index];
+                        if (trim($line) === '') {
+                            $line_index++;
+                            continue;
+                        }
+                        $header_row = str_getcsv($line, $delimiter);
+                        break;
                     }
 
-                    while (($row = fgetcsv($handle, 0, $delimiter)) !== false) {
+                    $has_header = !empty($header_row[0]) && in_array(strtolower((string) $header_row[0]), ['frage', 'question', 'id'], true);
+                    if ($has_header) {
+                        $line_index++;
+                    }
+
+                    for (; $line_index < count($lines); $line_index++) {
+                        $line = (string) $lines[$line_index];
+                        if (trim($line) === '') {
+                            continue;
+                        }
+
+                        $row = str_getcsv($line, $delimiter);
                         if (count($row) < 2) {
                             continue;
                         }
@@ -997,11 +1020,14 @@ class Chatbot_Ajax {
                         if ($result) {
                             $imported++;
                         } else {
-                            $errors[] = sprintf(__('FAQ konnte nicht importiert werden: %s', 'questify'), substr($question, 0, 50));
+                            $errors[] = sprintf(
+                                /* translators: %s: FAQ question (truncated) */
+                                __('FAQ konnte nicht importiert werden: %s', 'questify'),
+                                substr($question, 0, 50)
+                            );
                         }
                     }
 
-                    fclose($handle);
                 }
             }
 
@@ -1010,12 +1036,17 @@ class Chatbot_Ajax {
 
             // Erfolg
             $message = sprintf(
+                /* translators: %d: number of imported FAQs */
                 _n('%d FAQ erfolgreich importiert.', '%d FAQs erfolgreich importiert.', $imported, 'questify'),
                 $imported
             );
 
             if (!empty($errors)) {
-                $message .= ' ' . sprintf(__('%d Fehler aufgetreten.', 'questify'), count($errors));
+                $message .= ' ' . sprintf(
+                    /* translators: %d: number of errors */
+                    __('%d Fehler aufgetreten.', 'questify'),
+                    count($errors)
+                );
             }
 
             wp_send_json_success([
@@ -1025,23 +1056,12 @@ class Chatbot_Ajax {
             ]);
 
         } catch (Exception $e) {
-            // Detailliertes Logging
-            if (get_option('chatbot_debug_mode')) {
-                error_log('Questify Import Error: ' . $e->getMessage());
-                error_log('Stack Trace: ' . $e->getTraceAsString());
-            }
-
             wp_send_json_error([
                 'message' => $e->getMessage(),
                 'debug' => get_option('chatbot_debug_mode') ? $e->getTraceAsString() : null
             ]);
         } catch (Error $e) {
             // PHP Fehler abfangen
-            if (get_option('chatbot_debug_mode')) {
-                error_log('Questify Import Fatal Error: ' . $e->getMessage());
-                error_log('Stack Trace: ' . $e->getTraceAsString());
-            }
-
             wp_send_json_error([
                 'message' => __('Ein schwerwiegender Fehler ist aufgetreten beim Import.', 'questify'),
                 'debug' => get_option('chatbot_debug_mode') ? $e->getMessage() : null
@@ -1110,6 +1130,7 @@ class Chatbot_Ajax {
 
         wp_send_json_success([
             'message' => sprintf(
+                /* translators: %d: number of options */
                 __('%d leere Option(en) wurden mit Standardwerten gefüllt!', 'questify'),
                 $fixed
             ),

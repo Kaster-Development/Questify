@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+
+
+## [1.0.6] - 2025-12-26
+
+### Fixed
+- **WPCS/PluginCheck**: Diverse Code-Quality- und Security-Fixes (Sanitization/Escaping, PrefixAllGlobals) in Admin-Views und Backend-Logik.
+- **Admin & AJAX**: Robustere Eingabevalidierung (u.a. `absint()`, `wp_unslash()`, strengere `in_array()`-Checks) sowie sichereres Handling von Import-Uploads.
+- **Database Layer**: SQL-Handling konsolidiert (prepared nur bei Platzhaltern) und Scanner-Fehlalarme mit eng begrenzten, begründeten `phpcs:ignore`-Anmerkungen dokumentiert.
+- **Email**: Betreff/Output-Härtung (u.a. Sanitization des Absendernamens, `wp_strip_all_tags()`), Debug-Logging entfernt.
+
+### Changed
+- **Analytics**: Ersetzt externes Chart.js CDN durch gebündelte, minimalistische Charts (reduziert externe Abhängigkeiten).
+- **Docs**: WordPress-Kompatibilität in der README aktualisiert ("Tested up to").
+
+---
+
 ## [1.0.5] - 2025-01-26
 
 ### Fixed

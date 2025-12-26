@@ -53,6 +53,7 @@ class Chatbot_Deactivator {
         global $wpdb;
 
         // Alle Chatbot-Transients löschen
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Cleanup query on deactivation.
         $wpdb->query(
             "DELETE FROM {$wpdb->options}
              WHERE option_name LIKE '_transient_chatbot_%'

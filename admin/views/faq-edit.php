@@ -11,25 +11,24 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$db = Chatbot_Database::get_instance();
-
 // FAQ holen wenn Edit-Modus
-$faq_id = isset($_GET['faq']) ? (int) $_GET['faq'] : 0;
-$faq = $faq_id > 0 ? $db->get_faq($faq_id) : null;
+$questify_db = Chatbot_Database::get_instance();
+$questify_faq_id = isset($_GET['faq']) ? absint(wp_unslash($_GET['faq'])) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only item selection.
+$questify_faq = $questify_faq_id > 0 ? $questify_db->get_faq($questify_faq_id) : null;
 
-$is_edit = $faq !== null;
-$page_title = $is_edit ? __('FAQ bearbeiten', 'questify') : __('Neue FAQ erstellen', 'questify');
+$questify_is_edit = $questify_faq !== null;
+$questify_page_title = $questify_is_edit ? __('FAQ bearbeiten', 'questify') : __('Neue FAQ erstellen', 'questify');
 ?>
 
 <div class="wrap">
-    <h1><?php echo esc_html($page_title); ?></h1>
+    <h1><?php echo esc_html($questify_page_title); ?></h1>
 
-    <form method="post" action="<?php echo admin_url('admin-post.php'); ?>">
+    <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
         <input type="hidden" name="action" value="chatbot_save_faq">
         <?php wp_nonce_field('chatbot_save_faq', 'chatbot_faq_nonce'); ?>
 
-        <?php if ($is_edit): ?>
-        <input type="hidden" name="faq_id" value="<?php echo $faq->id; ?>">
+        <?php if ($questify_is_edit): ?>
+        <input type="hidden" name="faq_id" value="<?php echo esc_attr($questify_faq->id); ?>">
         <?php endif; ?>
 
         <div id="poststuff">
@@ -38,23 +37,23 @@ $page_title = $is_edit ? __('FAQ bearbeiten', 'questify') : __('Neue FAQ erstell
                 <div id="post-body-content">
                     <!-- Frage -->
                     <div class="chatbot-form-group">
-                        <label for="question"><?php _e('Frage', 'questify'); ?> <span class="required">*</span></label>
+                           <label for="question"><?php esc_html_e('Frage', 'questify'); ?> <span class="required">*</span></label>
                         <input type="text"
                                id="question"
                                name="question"
                                class="large-text"
-                               value="<?php echo $is_edit ? esc_attr($faq->question) : ''; ?>"
-                               placeholder="<?php _e('z.B. Was sind Ihre Öffnungszeiten?', 'questify'); ?>"
+                               value="<?php echo $questify_is_edit ? esc_attr($questify_faq->question) : ''; ?>"
+                               placeholder="<?php echo esc_attr__('z.B. Was sind Ihre Öffnungszeiten?', 'questify'); ?>"
                                required>
-                        <p class="description"><?php _e('Die Frage, die Ihre Kunden stellen könnten (mindestens 10 Zeichen).', 'questify'); ?></p>
+                           <p class="description"><?php esc_html_e('Die Frage, die Ihre Kunden stellen könnten (mindestens 10 Zeichen).', 'questify'); ?></p>
                     </div>
 
                     <!-- Antwort -->
                     <div class="chatbot-form-group">
-                        <label for="answer"><?php _e('Antwort', 'questify'); ?> <span class="required">*</span></label>
+                        <label for="answer"><?php esc_html_e('Antwort', 'questify'); ?> <span class="required">*</span></label>
                         <?php
-                        $content = $is_edit ? $faq->answer : '';
-                        wp_editor($content, 'answer', [
+                        $questify_content = $questify_is_edit ? $questify_faq->answer : '';
+                        wp_editor($questify_content, 'answer', [
                             'textarea_name' => 'answer',
                             'textarea_rows' => 10,
                             'media_buttons' => false,
@@ -62,28 +61,28 @@ $page_title = $is_edit ? __('FAQ bearbeiten', 'questify') : __('Neue FAQ erstell
                             'quicktags' => true,
                         ]);
                         ?>
-                        <p class="description"><?php _e('Die Antwort, die der Chatbot geben soll (mindestens 20 Zeichen).', 'questify'); ?></p>
+                        <p class="description"><?php esc_html_e('Die Antwort, die der Chatbot geben soll (mindestens 20 Zeichen).', 'questify'); ?></p>
                     </div>
 
                     <!-- Keywords -->
                     <div class="chatbot-form-group">
                         <label for="keywords">
-                            <?php _e('Keywords (Schlüsselwörter)', 'questify'); ?>
+                            <?php esc_html_e('Keywords (Schlüsselwörter)', 'questify'); ?>
                             <button type="button" id="generate-keywords-btn" class="button button-secondary" style="margin-left: 10px;">
                                 <span class="dashicons dashicons-update-alt" style="margin-top: 3px;"></span>
-                                <?php _e('Keywords automatisch generieren', 'questify'); ?>
+                                <?php esc_html_e('Keywords automatisch generieren', 'questify'); ?>
                             </button>
                         </label>
                         <textarea id="keywords"
                                   name="keywords"
                                   rows="3"
                                   class="large-text"
-                                  placeholder="<?php _e('z.B. öffnungszeiten, business hours, wann offen', 'questify'); ?>"><?php echo $is_edit ? esc_textarea($faq->keywords) : ''; ?></textarea>
+                                  placeholder="<?php echo esc_attr__('z.B. öffnungszeiten, business hours, wann offen', 'questify'); ?>"><?php echo $questify_is_edit ? esc_textarea($questify_faq->keywords) : ''; ?></textarea>
                         <p class="description">
-                            <?php _e('Alternative Suchbegriffe, durch Komma getrennt. Diese helfen beim Matching der Fragen.', 'questify'); ?>
+                            <?php esc_html_e('Alternative Suchbegriffe, durch Komma getrennt. Diese helfen beim Matching der Fragen.', 'questify'); ?>
                             <br>
-                            <strong><?php _e('💡 Tipp:', 'questify'); ?></strong>
-                            <?php _e('Lassen Sie das Feld leer - Keywords werden automatisch beim Speichern generiert! Oder klicken Sie auf "Keywords automatisch generieren" für eine Vorschau.', 'questify'); ?>
+                            <strong><?php esc_html_e('💡 Tipp:', 'questify'); ?></strong>
+                            <?php esc_html_e('Lassen Sie das Feld leer - Keywords werden automatisch beim Speichern generiert! Oder klicken Sie auf "Keywords automatisch generieren" für eine Vorschau.', 'questify'); ?>
                         </p>
                     </div>
                 </div>
@@ -93,7 +92,7 @@ $page_title = $is_edit ? __('FAQ bearbeiten', 'questify') : __('Neue FAQ erstell
                     <!-- Veröffentlichen-Box -->
                     <div class="postbox">
                         <div class="postbox-header">
-                            <h2><?php _e('Veröffentlichen', 'questify'); ?></h2>
+                            <h2><?php esc_html_e('Veröffentlichen', 'questify'); ?></h2>
                         </div>
                         <div class="inside">
                             <div class="submitbox">
@@ -103,45 +102,45 @@ $page_title = $is_edit ? __('FAQ bearbeiten', 'questify') : __('Neue FAQ erstell
                                         <input type="checkbox"
                                                name="active"
                                                value="1"
-                                               <?php checked($is_edit ? $faq->active : 1, 1); ?>>
-                                        <?php _e('Aktiv (im Chatbot verwenden)', 'questify'); ?>
+                                               <?php checked($questify_is_edit ? $questify_faq->active : 1, 1); ?>>
+                                        <?php esc_html_e('Aktiv (im Chatbot verwenden)', 'questify'); ?>
                                     </label>
                                 </div>
 
-                                <?php if ($is_edit): ?>
+                                <?php if ($questify_is_edit): ?>
                                 <!-- Statistiken -->
                                 <div class="misc-pub-section">
-                                    <strong><?php _e('Aufrufe:', 'questify'); ?></strong>
-                                    <?php echo number_format_i18n($faq->view_count); ?>
+                                    <strong><?php esc_html_e('Aufrufe:', 'questify'); ?></strong>
+                                    <?php echo esc_html(number_format_i18n($questify_faq->view_count)); ?>
                                 </div>
                                 <div class="misc-pub-section">
-                                    <strong><?php _e('Erstellt:', 'questify'); ?></strong>
-                                    <?php echo date_i18n('d.m.Y H:i', strtotime($faq->created_at)); ?>
+                                    <strong><?php esc_html_e('Erstellt:', 'questify'); ?></strong>
+                                    <?php echo esc_html(date_i18n('d.m.Y H:i', strtotime($questify_faq->created_at))); ?>
                                 </div>
                                 <div class="misc-pub-section">
-                                    <strong><?php _e('Aktualisiert:', 'questify'); ?></strong>
-                                    <?php echo date_i18n('d.m.Y H:i', strtotime($faq->updated_at)); ?>
+                                    <strong><?php esc_html_e('Aktualisiert:', 'questify'); ?></strong>
+                                    <?php echo esc_html(date_i18n('d.m.Y H:i', strtotime($questify_faq->updated_at))); ?>
                                 </div>
                                 <?php endif; ?>
 
                                 <!-- Buttons -->
                                 <div id="major-publishing-actions">
                                     <div id="delete-action">
-                                        <?php if ($is_edit): ?>
-                                        <a href="<?php echo wp_nonce_url(admin_url('admin.php?page=chatbot-faqs&action=delete&faq=' . $faq->id), 'delete-faq-' . $faq->id); ?>"
+                                        <?php if ($questify_is_edit): ?>
+                                        <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin.php?page=chatbot-faqs&action=delete&faq=' . $questify_faq->id), 'delete-faq-' . $questify_faq->id)); ?>"
                                            class="submitdelete deletion"
-                                           onclick="return confirm('<?php _e('Sind Sie sicher, dass Sie diese FAQ löschen möchten?', 'questify'); ?>');">
-                                            <?php _e('Löschen', 'questify'); ?>
+                                           onclick="return confirm('<?php echo esc_js(__('Sind Sie sicher, dass Sie diese FAQ löschen möchten?', 'questify')); ?>');">
+                                            <?php esc_html_e('Löschen', 'questify'); ?>
                                         </a>
                                         <?php endif; ?>
                                     </div>
                                     <div id="publishing-action">
                                         <button type="submit" class="button button-primary button-large">
                                             <span class="dashicons dashicons-saved"></span>
-                                            <?php echo $is_edit ? __('Aktualisieren', 'questify') : __('Veröffentlichen', 'questify'); ?>
+                                            <?php echo esc_html($questify_is_edit ? __('Aktualisieren', 'questify') : __('Veröffentlichen', 'questify')); ?>
                                         </button>
                                         <button type="submit" name="save_and_new" class="button button-secondary">
-                                            <?php _e('Speichern & Neu', 'questify'); ?>
+                                            <?php esc_html_e('Speichern & Neu', 'questify'); ?>
                                         </button>
                                     </div>
                                     <div class="clear"></div>
@@ -153,14 +152,14 @@ $page_title = $is_edit ? __('FAQ bearbeiten', 'questify') : __('Neue FAQ erstell
                     <!-- Hilfe-Box -->
                     <div class="postbox">
                         <div class="postbox-header">
-                            <h2><?php _e('💡 Tipps', 'questify'); ?></h2>
+                            <h2><?php esc_html_e('💡 Tipps', 'questify'); ?></h2>
                         </div>
                         <div class="inside">
                             <ul>
-                                <li><?php _e('Formulieren Sie Fragen so, wie Ihre Kunden sie stellen würden.', 'questify'); ?></li>
-                                <li><?php _e('Verwenden Sie klare, verständliche Antworten.', 'questify'); ?></li>
-                                <li><?php _e('Keywords verbessern die Trefferquote erheblich.', 'questify'); ?></li>
-                                <li><?php _e('HTML ist in der Antwort erlaubt (Links, Listen, etc.).', 'questify'); ?></li>
+                                <li><?php esc_html_e('Formulieren Sie Fragen so, wie Ihre Kunden sie stellen würden.', 'questify'); ?></li>
+                                <li><?php esc_html_e('Verwenden Sie klare, verständliche Antworten.', 'questify'); ?></li>
+                                <li><?php esc_html_e('Keywords verbessern die Trefferquote erheblich.', 'questify'); ?></li>
+                                <li><?php esc_html_e('HTML ist in der Antwort erlaubt (Links, Listen, etc.).', 'questify'); ?></li>
                             </ul>
                         </div>
                     </div>
@@ -170,8 +169,8 @@ $page_title = $is_edit ? __('FAQ bearbeiten', 'questify') : __('Neue FAQ erstell
     </form>
 
     <p class="chatbot-back-link">
-        <a href="<?php echo admin_url('admin.php?page=chatbot-faqs'); ?>">
-            &larr; <?php _e('Zurück zur Übersicht', 'questify'); ?>
+        <a href="<?php echo esc_url(admin_url('admin.php?page=chatbot-faqs')); ?>">
+            &larr; <?php esc_html_e('Zurück zur Übersicht', 'questify'); ?>
         </a>
     </p>
 </div>
@@ -218,12 +217,12 @@ jQuery(document).ready(function($) {
         }
 
         if (!question) {
-            alert('<?php _e('Bitte geben Sie zuerst eine Frage ein.', 'questify'); ?>');
+            alert('<?php echo esc_js(__('Bitte geben Sie zuerst eine Frage ein.', 'questify')); ?>');
             return;
         }
 
         // Button deaktivieren
-        button.prop('disabled', true).html('<span class="dashicons dashicons-update-alt" style="margin-top: 3px; animation: spin 1s linear infinite;"></span> <?php _e('Generiere...', 'questify'); ?>');
+        button.prop('disabled', true).html('<span class="dashicons dashicons-update-alt" style="margin-top: 3px; animation: spin 1s linear infinite;"></span> <?php echo esc_js(__('Generiere...', 'questify')); ?>');
 
         // AJAX-Request
         $.post(ajaxurl, {

@@ -3,7 +3,7 @@
  * Plugin Name:       Questify
  * Plugin URI:        https://github.com/Kaster-Development/Questify
  * Description:       Intelligent FAQ chatbot with backend management and email integration
- * Version:           1.0.5
+ * Version:           1.0.6
  * Requires at least: 6.5
  * Requires PHP:      8.2
  * Author:            Steffen Kaster
@@ -24,7 +24,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('QUESTIFY_VERSION', '1.0.5');
+define('QUESTIFY_VERSION', '1.0.6');
 define('QUESTIFY_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('QUESTIFY_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('QUESTIFY_PLUGIN_BASENAME', plugin_basename(__FILE__));
@@ -32,7 +32,7 @@ define('QUESTIFY_PLUGIN_BASENAME', plugin_basename(__FILE__));
 /**
  * Plugin activation
  */
-function activate_questify(): void {
+function questify_activate(): void {
     require_once QUESTIFY_PLUGIN_DIR . 'includes/class-chatbot-activator.php';
     Chatbot_Activator::activate();
 }
@@ -40,13 +40,13 @@ function activate_questify(): void {
 /**
  * Plugin deactivation
  */
-function deactivate_questify(): void {
+function questify_deactivate(): void {
     require_once QUESTIFY_PLUGIN_DIR . 'includes/class-chatbot-deactivator.php';
     Chatbot_Deactivator::deactivate();
 }
 
-register_activation_hook(__FILE__, 'activate_questify');
-register_deactivation_hook(__FILE__, 'deactivate_questify');
+register_activation_hook(__FILE__, 'questify_activate');
+register_deactivation_hook(__FILE__, 'questify_deactivate');
 
 /**
  * Main plugin class
@@ -120,13 +120,7 @@ class Questify {
      * Set up localization
      */
     private function set_locale(): void {
-        add_action('plugins_loaded', function() {
-            load_plugin_textdomain(
-                'questify',
-                false,
-                dirname(QUESTIFY_PLUGIN_BASENAME) . '/languages/'
-            );
-        });
+        // Translation files are loaded automatically on WordPress.org.
     }
 
     /**
@@ -169,7 +163,7 @@ add_action('plugins_loaded', 'questify_init');
 function questify_activation_redirect(): void {
     if (get_transient('chatbot_activation_redirect')) {
         delete_transient('chatbot_activation_redirect');
-        if (!isset($_GET['activate-multi'])) {
+        if (!isset($_GET['activate-multi'])) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Core flag, no action based on user input.
             wp_safe_redirect(admin_url('admin.php?page=chatbot-dashboard&welcome=1'));
             exit;
         }

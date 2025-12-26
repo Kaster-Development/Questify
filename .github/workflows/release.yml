@@ -1,0 +1,120 @@
+# GitHub Actions: WordPress Plugin paketieren und releasen
+# Erstellt automatisch einen Release bei Push auf main
+# Nutzt .gitattributes export-ignore für sauberes ZIP
+
+name: Release Plugin
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Ermöglicht manuelles Auslösen
+
+# Einstellungen (Plugin)
+env:
+  PLUGIN_MAIN_FILE: "questify.php"
+  PLUGIN_SLUG: "questify"
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Erforderlich für Release-Erstellung
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Vollständige Historie für git archive
+
+      - name: Extract Plugin Version
+        id: version
+        run: |
+          # Version aus Haupt-Plugin-Datei lesen
+          PLUGIN_VERSION=$(
+            sed -n 's/^[[:space:]]*\**[[:space:]]*Version:[[:space:]]*\(.*\)$/\1/p' "${{ env.PLUGIN_MAIN_FILE }}" \
+            | head -n1 \
+            | tr -d '\r' \
+            | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'
+          )
+          echo "Gefundene Plugin-Version: $PLUGIN_VERSION"
+          
+          if [ -z "$PLUGIN_VERSION" ]; then
+            echo "Fehler: Konnte die Plugin-Version nicht ermitteln."
+            exit 1
+          fi
+          
+          echo "version=$PLUGIN_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Check if Release Already Exists
+        id: check_release
+        run: |
+          VERSION="v${{ steps.version.outputs.version }}"
+          if gh release view "$VERSION" > /dev/null 2>&1; then
+            echo "Release $VERSION existiert bereits."
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "Release $VERSION existiert noch nicht."
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Release Notes
+        if: steps.check_release.outputs.exists == 'false'
+        id: release_notes
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          
+          # Release Notes aus CHANGELOG.md extrahieren
+          if [ -f CHANGELOG.md ]; then
+            awk -v ver="$VERSION" '
+              BEGIN{ insec=0 }
+              /^##[[:space:]]/ {
+                if (insec) exit
+                if ($0 ~ "^##[[:space:]]*\\[" ver "\\]" || $0 ~ "^##[[:space:]]*" ver) { insec=1; next }
+              }
+              { if (insec) print }
+            ' CHANGELOG.md > release_notes.txt || true
+          fi
+          
+          # Fallback, falls kein Abschnitt gefunden wurde
+          if [ ! -s release_notes.txt ]; then
+            printf "Release v%s\n\nBitte CHANGELOG.md für Versionshinweise pflegen." "$VERSION" > release_notes.txt
+          fi
+          
+          echo "Release Notes:"
+          cat release_notes.txt
+
+      - name: Build Plugin ZIP
+        if: steps.check_release.outputs.exists == 'false'
+        run: |
+          # ZIP bauen; nutzt export-ignore aus .gitattributes
+          git archive --format=zip --prefix="${{ env.PLUGIN_SLUG }}/" -o "${{ env.PLUGIN_SLUG }}.zip" HEAD
+          
+          echo "ZIP erstellt:"
+          ls -la "${{ env.PLUGIN_SLUG }}.zip"
+          
+          # ZIP-Inhalt anzeigen (zur Kontrolle)
+          echo "ZIP-Inhalt:"
+          unzip -l "${{ env.PLUGIN_SLUG }}.zip" | head -50
+
+      - name: Create GitHub Release
+        if: steps.check_release.outputs.exists == 'false'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: ${{ env.PLUGIN_SLUG }} v${{ steps.version.outputs.version }}
+          body_path: release_notes.txt
+          files: ${{ env.PLUGIN_SLUG }}.zip
+          draft: false
+          prerelease: false
+          generate_release_notes: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Skip Release (Already Exists)
+        if: steps.check_release.outputs.exists == 'true'
+        run: |
+          echo "⏭️ Release v${{ steps.version.outputs.version }} existiert bereits - übersprungen."
+          echo "Um einen neuen Release zu erstellen, bitte die Version in ${{ env.PLUGIN_MAIN_FILE }} erhöhen."

@@ -1,0 +1,22 @@
+/**
+ * Inquiry Detail Page Styles
+ *
+ * @package Questify
+ * @since 1.0.0
+ */
+
+.chatbot-inquiry-detail > div {
+    background: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.chatbot-question-box,
+.chatbot-match-box {
+    background: #f9f9f9;
+    padding: 15px;
+    border-left: 4px solid #0073aa;
+    margin: 10px 0;
+}

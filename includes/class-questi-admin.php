@@ -127,7 +127,7 @@ class Questi_Admin {
      */
     public function enqueue_admin_assets(string $hook): void {
         // Nur auf unseren Plugin-Seiten laden
-        if (strpos($hook, 'chatbot-') === false) {
+        if (strpos($hook, 'questi-') === false) {
             return;
         }
 
@@ -151,17 +151,6 @@ class Questi_Admin {
             true
         );
 
-        // Chart.js für Analytics
-        if ($hook === 'questi-dashboard_page_questi-analytics') {
-            wp_enqueue_script(
-                'questify-simple-charts',
-                QUESTIFY_PLUGIN_URL . 'admin/js/simple-charts.js',
-                [],
-                QUESTIFY_VERSION,
-                true
-            );
-        }
-
         // Lokalisierung
         wp_localize_script('questi-admin-script', 'questiAdmin', [
             'ajaxurl' => admin_url('admin-ajax.php'),
@@ -175,6 +164,164 @@ class Questi_Admin {
 
         // WordPress Color Picker
         wp_enqueue_style('wp-color-picker');
+
+        // Seitenspezifische Assets laden
+        $this->enqueue_page_specific_assets($hook);
+    }
+
+    /**
+     * Lädt seitenspezifische Assets
+     *
+     * @param string $hook Aktueller Admin-Hook
+     * @return void
+     * @since 1.0.0
+     */
+    private function enqueue_page_specific_assets(string $hook): void {
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only routing parameter for asset loading.
+        $action = isset($_GET['action']) ? sanitize_key(wp_unslash($_GET['action'])) : '';
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only routing parameter for asset loading.
+        $inquiry_id = isset($_GET['id']) ? absint(wp_unslash($_GET['id'])) : 0;
+
+        // Analytics Page
+        if (strpos($hook, 'questi-analytics') !== false) {
+            wp_enqueue_style(
+                'questi-analytics-style',
+                QUESTIFY_PLUGIN_URL . 'admin/css/analytics.css',
+                ['questi-admin-style'],
+                QUESTIFY_VERSION
+            );
+
+            wp_enqueue_script(
+                'questify-simple-charts',
+                QUESTIFY_PLUGIN_URL . 'admin/js/simple-charts.js',
+                [],
+                QUESTIFY_VERSION,
+                true
+            );
+
+            wp_enqueue_script(
+                'questi-analytics-script',
+                QUESTIFY_PLUGIN_URL . 'admin/js/analytics.js',
+                ['jquery', 'questify-simple-charts'],
+                QUESTIFY_VERSION,
+                true
+            );
+        }
+
+        // FAQs List Page
+        if (strpos($hook, 'questi-faqs') !== false && empty($action)) {
+            wp_enqueue_style(
+                'questi-faqs-list-style',
+                QUESTIFY_PLUGIN_URL . 'admin/css/faqs-list.css',
+                ['questi-admin-style'],
+                QUESTIFY_VERSION
+            );
+
+            wp_enqueue_script(
+                'questi-faqs-list-script',
+                QUESTIFY_PLUGIN_URL . 'admin/js/faqs-list.js',
+                ['jquery', 'questi-admin-script'],
+                QUESTIFY_VERSION,
+                true
+            );
+
+            wp_localize_script('questi-faqs-list-script', 'questiFaqsList', [
+                'strings' => [
+                    'pasteFirst' => __('Bitte fügen Sie zuerst Text ein.', 'questify'),
+                    'noDataFound' => __('Keine Daten gefunden.', 'questify'),
+                    'noValidData' => __('Keine gültigen Daten gefunden. Mindestens 2 Spalten erforderlich.', 'questify'),
+                    'foundFaqs' => __('Gefundene FAQs:', 'questify'),
+                    'question' => __('Frage', 'questify'),
+                    'answer' => __('Antwort', 'questify'),
+                    'keywords' => __('Keywords', 'questify'),
+                    'auto' => __('Auto', 'questify'),
+                    'andMore' => __('...und', 'questify'),
+                    'more' => __('weitere', 'questify'),
+                    'readyToImport' => __('Bereit zum Import:', 'questify'),
+                    'selectFile' => __('Bitte wählen Sie eine Datei aus.', 'questify'),
+                    'clickPreviewFirst' => __('Bitte klicken Sie zuerst auf "Vorschau anzeigen".', 'questify'),
+                    'successfullyImported' => __('Erfolgreich importiert:', 'questify'),
+                    'errors' => __('Fehler:', 'questify'),
+                    'showDetails' => __('Details anzeigen', 'questify'),
+                    'importFailed' => __('Import fehlgeschlagen:', 'questify'),
+                    'debugInfo' => __('Debug-Informationen', 'questify'),
+                    'importError' => __('Fehler beim Import:', 'questify'),
+                    'showServerResponse' => __('Server-Antwort anzeigen', 'questify'),
+                    'debugTip' => __('Tipp: Aktivieren Sie den Debug-Modus in den Einstellungen für detaillierte Fehlerinformationen.', 'questify'),
+                ],
+            ]);
+        }
+
+        // FAQ Edit Page
+        if (strpos($hook, 'questi-faqs') !== false && in_array($action, ['new', 'edit', 'add'], true)) {
+            wp_enqueue_style(
+                'questi-faq-edit-style',
+                QUESTIFY_PLUGIN_URL . 'admin/css/faq-edit.css',
+                ['questi-admin-style'],
+                QUESTIFY_VERSION
+            );
+
+            wp_enqueue_script(
+                'questi-faq-edit-script',
+                QUESTIFY_PLUGIN_URL . 'admin/js/faq-edit.js',
+                ['jquery', 'questi-admin-script'],
+                QUESTIFY_VERSION,
+                true
+            );
+
+            wp_localize_script('questi-faq-edit-script', 'questiFaqEdit', [
+                'strings' => [
+                    'enterQuestionFirst' => __('Bitte geben Sie zuerst eine Frage ein.', 'questify'),
+                    'generating' => __('Generiere...', 'questify'),
+                ],
+            ]);
+        }
+
+        // Settings Page
+        if (strpos($hook, 'questi-settings') !== false) {
+            wp_enqueue_script(
+                'questi-settings-script',
+                QUESTIFY_PLUGIN_URL . 'admin/js/settings.js',
+                ['jquery', 'questi-admin-script', 'wp-color-picker'],
+                QUESTIFY_VERSION,
+                true
+            );
+
+            wp_localize_script('questi-settings-script', 'questiSettings', [
+                'strings' => [
+                    'sending' => __('Sende...', 'questify'),
+                    'sendTestEmail' => __('Test-E-Mail senden', 'questify'),
+                    'confirmRestore' => __('Möchten Sie wirklich alle Einstellungen auf die Standardwerte zurücksetzen? Dies kann nicht rückgängig gemacht werden!', 'questify'),
+                    'restoring' => __('Wiederherstellen...', 'questify'),
+                    'restoreError' => __('Fehler beim Wiederherstellen der Standardwerte.', 'questify'),
+                ],
+            ]);
+        }
+
+        // Inquiry Detail Page
+        if (strpos($hook, 'questi-inquiries') !== false && $inquiry_id > 0) {
+            wp_enqueue_style(
+                'questi-inquiry-detail-style',
+                QUESTIFY_PLUGIN_URL . 'admin/css/inquiry-detail.css',
+                ['questi-admin-style'],
+                QUESTIFY_VERSION
+            );
+
+            wp_enqueue_script(
+                'questi-inquiry-detail-script',
+                QUESTIFY_PLUGIN_URL . 'admin/js/inquiry-detail.js',
+                ['jquery', 'questi-admin-script'],
+                QUESTIFY_VERSION,
+                true
+            );
+
+            wp_localize_script('questi-inquiry-detail-script', 'questiInquiryDetail', [
+                'inquiriesUrl' => admin_url('admin.php?page=questi-inquiries'),
+                'strings' => [
+                    'confirmDelete' => __('Sind Sie sicher?', 'questify'),
+                ],
+            ]);
+        }
     }
 
     /**

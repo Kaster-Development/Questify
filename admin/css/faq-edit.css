@@ -1,0 +1,40 @@
+/**
+ * FAQ Edit Page Styles
+ *
+ * @package Questify
+ * @since 1.0.0
+ */
+
+.chatbot-form-group {
+    margin-bottom: 25px;
+}
+
+.chatbot-form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.chatbot-form-group .required {
+    color: #d63638;
+}
+
+.chatbot-back-link {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+}
+
+#publishing-action .button-primary .dashicons {
+    margin-top: 4px;
+    margin-right: 5px;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

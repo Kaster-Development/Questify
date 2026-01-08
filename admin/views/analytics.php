@@ -25,28 +25,13 @@ $questify_stats = $questify_db->get_dashboard_stats($questify_period);
 $questify_timeline_data = $questify_db->get_timeline_data($questify_days);
 $questify_top_faqs = $questify_db->get_top_faqs(10);
 
-// Timeline-Daten fü¼r Chart.js vorbereiten
+// Timeline-Daten für Chart.js vorbereiten
 $questify_timeline_labels = [];
 $questify_timeline_values = [];
 foreach ($questify_timeline_data as $questify_timeline_row) {
     $questify_timeline_labels[] = date_i18n('d.m.', strtotime($questify_timeline_row->date));
     $questify_timeline_values[] = $questify_timeline_row->count;
 }
-
-$questify_timeline_labels_json = wp_json_encode($questify_timeline_labels);
-$questify_timeline_values_json = wp_json_encode(array_map('absint', $questify_timeline_values));
-$questify_success_counts_json = wp_json_encode([
-    absint($questify_stats['answered'] ?? 0),
-    absint($questify_stats['not_answered'] ?? 0),
-]);
-$questify_top_faq_labels_json = wp_json_encode(array_map(
-    static fn($questify_faq) => wp_trim_words($questify_faq->question, 8),
-    is_array($questify_top_faqs) ? $questify_top_faqs : []
-));
-$questify_top_faq_views_json = wp_json_encode(array_map(
-    static fn($questify_faq) => absint($questify_faq->view_count),
-    is_array($questify_top_faqs) ? $questify_top_faqs : []
-));
 ?>
 
 <div class="wrap">
@@ -116,65 +101,31 @@ $questify_top_faq_views_json = wp_json_encode(array_map(
     </div>
 </div>
 
-<script>
-jQuery(document).ready(function($) {
-    $('#period-filter').on('change', function() {
-        window.location.href = '<?php echo esc_js(admin_url('admin.php?page=questi-analytics')); ?>&period=' + $(this).val();
-    });
+<?php
+// Dynamische Chart-Daten über wp_add_inline_script übergeben
+$questify_analytics_data = wp_json_encode([
+    'analyticsUrl' => admin_url('admin.php?page=questi-analytics'),
+    'timelineLabels' => $questify_timeline_labels,
+    'timelineValues' => array_map('absint', $questify_timeline_values),
+    'successCounts' => [
+        absint($questify_stats['answered'] ?? 0),
+        absint($questify_stats['not_answered'] ?? 0),
+    ],
+    'topFaqLabels' => array_map(
+        static fn($questify_faq) => wp_trim_words($questify_faq->question, 8),
+        is_array($questify_top_faqs) ? $questify_top_faqs : []
+    ),
+    'topFaqViews' => array_map(
+        static fn($questify_faq) => absint($questify_faq->view_count),
+        is_array($questify_top_faqs) ? $questify_top_faqs : []
+    ),
+]);
 
-    if (window.QuestifyCharts) {
-        // Timeline
-        QuestifyCharts.line(
-            'timeline-chart',
-            <?php echo $questify_timeline_labels_json; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON for JS */ ?>,
-            <?php echo $questify_timeline_values_json; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON for JS */ ?>,
-            {
-                borderColor: '#0073aa',
-                backgroundColor: 'rgba(0, 115, 170, 0.1)'
-            }
-        );
-
-        // Success
-        QuestifyCharts.doughnut(
-            'success-chart',
-            <?php echo $questify_success_counts_json; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON for JS */ ?>,
-            ['#46b450', '#dc3232']
-        );
-
-        // Top FAQs
-        QuestifyCharts.barHorizontal(
-            'top-faqs-chart',
-            <?php echo $questify_top_faq_labels_json; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON for JS */ ?>,
-            <?php echo $questify_top_faq_views_json; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON for JS */ ?>,
-            { backgroundColor: '#0073aa' }
-        );
-    }
-});
-</script>
-
-<style>
-.chatbot-period-filter {
-    margin-bottom: 20px;
-}
-.questi-analytics-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    margin-top: 20px;
-}
-.chatbot-chart-box {
-    background: white;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    min-height: 300px;
-}
-.chatbot-chart-box-wide {
-    grid-column: span 2;
-}
-.chatbot-chart-box canvas {
-    max-height: 400px;
-}
-</style>
+wp_add_inline_script(
+    'questi-analytics-script',
+    'var questiAnalytics = ' . $questify_analytics_data . ';', // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped via wp_json_encode
+    'before'
+);
+?>
 
 

@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [1.0.7] - 2026-01-09
 
 ### Changed
+- **Asset-Enqueuing refaktorisiert**: Alle Inline-`<style>` und `<script>` Tags durch WordPress-konforme `wp_enqueue_*` Funktionen ersetzt für bessere Performance und Kompatibilität:
+  - Neue seitenspezifische CSS-Dateien: `faq-edit.css`, `analytics.css`, `faqs-list.css`, `inquiry-detail.css`
+  - Neue seitenspezifische JS-Dateien: `faq-edit.js`, `analytics.js`, `faqs-list.js`, `settings.js`, `inquiry-detail.js`
+  - Neue Methode `enqueue_page_specific_assets()` in Admin-Klasse für bedingte Asset-Ladung
+  - Dynamische Daten via `wp_localize_script()` und `wp_add_inline_script()` statt Inline-PHP in Script-Tags
 - **Namespace-Refaktorisierung**: Alle Plugin-spezifischen Bezeichner von `chatbot_` auf `questi_` Präfix umgestellt, um WordPress-Namenskollisionen zu vermeiden:
   - **Klassen**: `Chatbot_*` → `Questi_*` (Admin, Ajax, Database, Email, Matcher, Keyword_Generator, Activator, Deactivator, Frontend)
   - **Klassendateien**: `class-chatbot-*.php` → `class-questi-*.php`

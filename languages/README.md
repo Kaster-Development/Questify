@@ -84,7 +84,7 @@ If you have created a new translation, feel free to contribute:
 
 1. Create the .po file with complete translation
 2. Test the translation in WordPress
-3. Send the .po file to: info@kaster-development.de
+3. Send the .po file to: steffen.kaster@live.de
 4. Or create a pull request on GitHub/GitLab
 
 Thank you for your support!
@@ -101,5 +101,5 @@ Thank you for your support!
 
 For questions about translations:
 
-**Email:** info@kaster-development.de
+**Email:** steffen.kaster@live.de
 **Website:** https://kaster-development.de

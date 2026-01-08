@@ -1,9 +1,9 @@
 === Questify ===
-Contributors: steffenkaster
+Contributors: steffenka
 Requires at least: 6.5
 Tested up to: 6.9
 Requires PHP: 8.2
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,7 +24,7 @@ Intelligent FAQ chatbot for WordPress with backend management, email integration
 
 ## Installation
 
-1. Upload the `wp-faq-chat` plugin directory to the `/wp-content/plugins/` directory
+1. Upload the `questify` plugin directory to the `/wp-content/plugins/` directory
 2. Activate the plugin through the WordPress admin menu "Plugins"
 3. Go to "FAQ Chatbot" > "Settings" to configure the plugin
 4. Create your first FAQs under "Questions & Answers"

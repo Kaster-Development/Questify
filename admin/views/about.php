@@ -26,7 +26,7 @@ $questify_company_name = questify_get_chatbot_option('chatbot_company_name', 'St
 $questify_company_address = questify_get_chatbot_option('chatbot_company_address', '');
 $questify_company_phone = questify_get_chatbot_option('chatbot_company_phone', '');
 $questify_company_website = questify_get_chatbot_option('chatbot_company_website', 'https://kaster-development.de');
-$questify_feedback_email = questify_get_chatbot_option('chatbot_feedback_email', 'info@kaster-development.de');
+$questify_feedback_email = questify_get_chatbot_option('chatbot_feedback_email', 'steffen.kaster@live.de');
 
 // GitHub (Support/Feedback)
 $questify_github_repo_url = 'https://github.com/Kaster-Development/Questify';

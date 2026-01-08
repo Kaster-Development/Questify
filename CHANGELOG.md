@@ -9,10 +9,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [1.0.7] - 2026-01-09
 
+### Changed
+- **Namespace-Refaktorisierung**: Alle Plugin-spezifischen Bezeichner von `chatbot_` auf `questi_` Präfix umgestellt, um WordPress-Namenskollisionen zu vermeiden:
+  - **Klassen**: `Chatbot_*` → `Questi_*` (Admin, Ajax, Database, Email, Matcher, Keyword_Generator, Activator, Deactivator, Frontend)
+  - **Klassendateien**: `class-chatbot-*.php` → `class-questi-*.php`
+  - **WordPress-Optionen**: Alle `chatbot_*` Optionen zu `questi_*` umbenannt
+  - **Transients**: `chatbot_activation_redirect`, `chatbot_active_faqs` → `questi_*`
+  - **AJAX-Actions**: Alle Actions von `chatbot_*` zu `questi_*` (z.B. `questi_get_answer`, `questi_send_inquiry`)
+  - **Admin-Menü-Slugs**: `chatbot-dashboard`, `chatbot-settings` etc. → `questi-*`
+  - **Script/Style-Handles**: `chatbot-script`, `chatbot-admin-*` → `questi-*`
+  - **Localize-Objekte**: `chatbotData` → `questiData`, `chatbotAdmin` → `questiAdmin`
+  - **Nonces**: `chatbot_ajax`, `chatbot_admin_ajax` → `questi_ajax`, `questi_admin_ajax`
+  - **Cron-Hooks**: `chatbot_cleanup_old_data` → `questi_cleanup_old_data`
+  - **Shortcode**: `wp_faq_chat` → `questi_faq_chat`
+- **Datenbanktabellen**: Namen beibehalten (`chatbot_faqs`, `chatbot_inquiries`, `chatbot_conversations`) um Migration für bestehende Installationen zu vermeiden
+
 ### Fixed
 - **Security (Bulk Actions)**: Nonce- und Berechtigungsprüfung für Bulk-Actions hinzugefügt (`handle_bulk_actions`), um unautorisierte Massenaktionen zu verhindern.
-
-### Changed
 - **Readme metadata**: Updated `Contributors` username to `steffenka`.
 - **Contact email**: Updated default support/feedback email to `steffen.kaster@live.de` (About page default and translation metadata/docs).
 

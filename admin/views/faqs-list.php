@@ -51,21 +51,21 @@ $questify_faqs = $questify_db->get_all_faqs($questify_faq_args);
 $questify_total_faqs = $questify_db->count_faqs($questify_faq_args);
 $questify_total_pages = ceil($questify_total_faqs / $per_page);
 
-// Löschaktion verarbeiten
+// Lü¶schaktion verarbeiten
 if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['faq'])) {
     // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is verified via check_admin_referer().
     $questify_faq_id = absint(wp_unslash($_GET['faq']));
     check_admin_referer('delete-faq-' . $questify_faq_id);
     if ($questify_db->delete_faq($questify_faq_id)) {
-        echo '<div class="notice notice-success"><p>' . esc_html__('FAQ erfolgreich gelöscht.', 'questify') . '</p></div>';
+        echo '<div class="notice notice-success"><p>' . esc_html__('FAQ erfolgreich gelü¶scht.', 'questify') . '</p></div>';
     }
 }
 ?>
 
 <div class="wrap">
     <h1 class="wp-heading-inline"><?php echo esc_html(get_admin_page_title()); ?></h1>
-    <a href="<?php echo esc_url(admin_url('admin.php?page=chatbot-faqs&action=add')); ?>" class="page-title-action">
-        <?php esc_html_e('Neu hinzufügen', 'questify'); ?>
+    <a href="<?php echo esc_url(admin_url('admin.php?page=questi-faqs&action=add')); ?>" class="page-title-action">
+        <?php esc_html_e('Neu hinzufü¼gen', 'questify'); ?>
     </a>
     <hr class="wp-header-end">
 
@@ -77,7 +77,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['faq']
                 <option value="1" <?php selected($questify_filter_active, 1); ?>><?php esc_html_e('Aktiv', 'questify'); ?></option>
                 <option value="0" <?php selected($questify_filter_active, 0); ?>><?php esc_html_e('Inaktiv', 'questify'); ?></option>
             </select>
-            <input type="button" class="button" value="<?php echo esc_attr__('Filtern', 'questify'); ?>" onclick="location.href='<?php echo esc_js(admin_url('admin.php?page=chatbot-faqs')); ?>&filter_active=' + document.getElementById('filter-active').value">
+            <input type="button" class="button" value="<?php echo esc_attr__('Filtern', 'questify'); ?>" onclick="location.href='<?php echo esc_js(admin_url('admin.php?page=questi-faqs')); ?>&filter_active=' + document.getElementById('filter-active').value">
 
             <!-- Export -->
             <div class="chatbot-export-dropdown" style="display: inline-block; margin-left: 10px;">
@@ -86,13 +86,13 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['faq']
                     <?php esc_html_e('Exportieren', 'questify'); ?>
                 </button>
                 <div id="export-menu" class="chatbot-dropdown-menu" style="display: none;">
-                    <a href="<?php echo esc_url(admin_url('admin-ajax.php?action=chatbot_export_faqs&format=json&nonce=' . wp_create_nonce('chatbot_admin_ajax'))); ?>">
+                    <a href="<?php echo esc_url(admin_url('admin-ajax.php?action=chatbot_export_faqs&format=json&nonce=' . wp_create_nonce('questi_admin_ajax'))); ?>">
                         <span class="dashicons dashicons-media-code"></span> <?php esc_html_e('Als JSON exportieren', 'questify'); ?>
                     </a>
-                    <a href="<?php echo esc_url(admin_url('admin-ajax.php?action=chatbot_export_faqs&format=csv&nonce=' . wp_create_nonce('chatbot_admin_ajax'))); ?>">
+                    <a href="<?php echo esc_url(admin_url('admin-ajax.php?action=chatbot_export_faqs&format=csv&nonce=' . wp_create_nonce('questi_admin_ajax'))); ?>">
                         <span class="dashicons dashicons-media-spreadsheet"></span> <?php esc_html_e('Als CSV exportieren', 'questify'); ?>
                     </a>
-                    <a href="<?php echo esc_url(admin_url('admin-ajax.php?action=chatbot_export_faqs&format=json&include_inactive=1&nonce=' . wp_create_nonce('chatbot_admin_ajax'))); ?>">
+                    <a href="<?php echo esc_url(admin_url('admin-ajax.php?action=chatbot_export_faqs&format=json&include_inactive=1&nonce=' . wp_create_nonce('questi_admin_ajax'))); ?>">
                         <span class="dashicons dashicons-media-code"></span> <?php esc_html_e('JSON (inkl. inaktive)', 'questify'); ?>
                     </a>
                 </div>
@@ -107,7 +107,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['faq']
 
         <div class="alignright">
             <form method="get">
-                <input type="hidden" name="page" value="chatbot-faqs">
+                <input type="hidden" name="page" value="questi-faqs">
                 <?php if ($questify_filter_active !== null): ?>
                 <input type="hidden" name="filter_active" value="<?php echo esc_attr($questify_filter_active); ?>">
                 <?php endif; ?>
@@ -122,13 +122,13 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['faq']
             <span class="dashicons dashicons-format-chat"></span>
             <h2><?php esc_html_e('Noch keine FAQs vorhanden', 'questify'); ?></h2>
             <p><?php esc_html_e('Erstellen Sie Ihre erste FAQ, um loszulegen.', 'questify'); ?></p>
-            <a href="<?php echo esc_url(admin_url('admin.php?page=chatbot-faqs&action=add')); ?>" class="button button-primary button-hero">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=questi-faqs&action=add')); ?>" class="button button-primary button-hero">
                 <?php esc_html_e('Erste FAQ erstellen', 'questify'); ?>
             </a>
         </div>
     <?php else: ?>
         <form method="post">
-            <?php wp_nonce_field('chatbot_bulk_action', 'chatbot_bulk_nonce'); ?>
+            <?php wp_nonce_field('questi_bulk_action', 'questi_bulk_nonce'); ?>
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
@@ -153,7 +153,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['faq']
                         <td><?php echo esc_html((string) $questify_faq->id); ?></td>
                         <td>
                             <strong>
-                                <a href="<?php echo esc_url(admin_url('admin.php?page=chatbot-faqs&action=edit&faq=' . $questify_faq->id)); ?>">
+                                <a href="<?php echo esc_url(admin_url('admin.php?page=questi-faqs&action=edit&faq=' . $questify_faq->id)); ?>">
                                     <?php echo esc_html(wp_trim_words($questify_faq->question, 15)); ?>
                                 </a>
                             </strong>
@@ -169,12 +169,12 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['faq']
                         <td><?php echo esc_html(number_format_i18n($questify_faq->view_count)); ?></td>
                         <td><?php echo esc_html(date_i18n('d.m.Y', strtotime($questify_faq->created_at))); ?></td>
                         <td class="chatbot-actions">
-                            <a href="<?php echo esc_url(admin_url('admin.php?page=chatbot-faqs&action=edit&faq=' . $questify_faq->id)); ?>" title="<?php echo esc_attr__('Bearbeiten', 'questify'); ?>">
+                            <a href="<?php echo esc_url(admin_url('admin.php?page=questi-faqs&action=edit&faq=' . $questify_faq->id)); ?>" title="<?php echo esc_attr__('Bearbeiten', 'questify'); ?>">
                                 <span class="dashicons dashicons-edit"></span>
                             </a>
-                            <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin.php?page=chatbot-faqs&action=delete&faq=' . $questify_faq->id), 'delete-faq-' . $questify_faq->id)); ?>"
+                            <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin.php?page=questi-faqs&action=delete&faq=' . $questify_faq->id), 'delete-faq-' . $questify_faq->id)); ?>"
                                onclick="return confirm('<?php echo esc_js(__('Sind Sie sicher?', 'questify')); ?>');"
-                               title="<?php echo esc_attr__('Löschen', 'questify'); ?>"
+                               title="<?php echo esc_attr__('Lü¶schen', 'questify'); ?>"
                                class="chatbot-delete-link">
                                 <span class="dashicons dashicons-trash"></span>
                             </a>
@@ -219,19 +219,19 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['faq']
         <span class="chatbot-modal-close">&times;</span>
         <h2><?php esc_html_e('FAQs importieren', 'questify'); ?></h2>
 
-        <!-- Import-Methode wählen -->
+        <!-- Import-Methode wü¤hlen -->
         <div id="import-method-selector" style="margin: 20px 0;">
-            <h3><?php esc_html_e('Import-Methode wählen:', 'questify'); ?></h3>
+            <h3><?php esc_html_e('Import-Methode wü¤hlen:', 'questify'); ?></h3>
             <div style="display: flex; gap: 15px; margin: 15px 0;">
                 <label style="flex: 1; padding: 15px; border: 2px solid #ddd; border-radius: 5px; cursor: pointer; transition: all 0.3s;">
                     <input type="radio" name="import_method" value="file" checked style="margin-right: 8px;">
-                    <strong><?php esc_html_e('📁 Datei-Upload', 'questify'); ?></strong><br>
+                    <strong><?php esc_html_e('ðŸ“ Datei-Upload', 'questify'); ?></strong><br>
                        <small><?php esc_html_e('JSON oder CSV-Datei hochladen', 'questify'); ?></small>
                 </label>
                 <label style="flex: 1; padding: 15px; border: 2px solid #ddd; border-radius: 5px; cursor: pointer; transition: all 0.3s;">
                     <input type="radio" name="import_method" value="paste" style="margin-right: 8px;">
-                    <strong><?php esc_html_e('📋 Copy & Paste', 'questify'); ?></strong><br>
-                       <small><?php esc_html_e('Text direkt einfügen', 'questify'); ?></small>
+                    <strong><?php esc_html_e('ðŸ“‹ Copy & Paste', 'questify'); ?></strong><br>
+                       <small><?php esc_html_e('Text direkt einfü¼gen', 'questify'); ?></small>
                 </label>
             </div>
         </div>
@@ -240,13 +240,13 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['faq']
 
             <!-- Datei-Upload Methode -->
             <div id="import-file-section">
-                <h3><?php esc_html_e('Datei auswählen', 'questify'); ?></h3>
+                <h3><?php esc_html_e('Datei auswü¤hlen', 'questify'); ?></h3>
                 <div style="margin: 15px 0;">
                     <input type="file" id="import-file" name="import_file" accept=".json,.csv,.txt">
                 </div>
 
                 <div class="notice notice-info inline" style="margin: 15px 0;">
-                    <p><strong><?php esc_html_e('Unterstützte Formate:', 'questify'); ?></strong></p>
+                    <p><strong><?php esc_html_e('Unterstü¼tzte Formate:', 'questify'); ?></strong></p>
                     <ul style="margin-left: 20px;">
                         <li><strong>JSON:</strong> <?php esc_html_e('Exportierte Datei von diesem Plugin', 'questify'); ?></li>
                         <li><strong>CSV (Standard):</strong> <?php esc_html_e('Spalten: Frage, Antwort, Keywords (optional)', 'questify'); ?></li>
@@ -257,10 +257,10 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['faq']
 
             <!-- Copy & Paste Methode -->
             <div id="import-paste-section" style="display: none;">
-                <h3><?php esc_html_e('Text einfügen', 'questify'); ?></h3>
+                <h3><?php esc_html_e('Text einfü¼gen', 'questify'); ?></h3>
 
                 <div style="margin: 15px 0;">
-                       <label><strong><?php esc_html_e('Format wählen:', 'questify'); ?></strong></label>
+                       <label><strong><?php esc_html_e('Format wü¤hlen:', 'questify'); ?></strong></label>
                     <select id="paste-format" style="width: 100%; margin: 10px 0; padding: 8px;">
                         <option value="tab"><?php esc_html_e('Tab-getrennt (aus Excel/Google Sheets kopiert)', 'questify'); ?></option>
                         <option value="comma"><?php esc_html_e('Komma-getrennt (CSV)', 'questify'); ?></option>
@@ -272,12 +272,12 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['faq']
                 <div style="margin: 15px 0;">
                     <label>
                         <input type="checkbox" id="has-headers" checked>
-                        <?php esc_html_e('Erste Zeile enthält Überschriften', 'questify'); ?>
+                        <?php esc_html_e('Erste Zeile enthü¤lt üœberschriften', 'questify'); ?>
                     </label>
                 </div>
 
                 <div style="margin: 15px 0;">
-                       <textarea id="paste-content" placeholder="<?php echo esc_attr__('Fügen Sie hier Ihre Daten ein...\n\nBeispiel (Tab-getrennt):\nFrage	Antwort	Keywords\nWas kostet...?	Der Preis beträgt...	preis, kosten\nWie lange...?	Die Dauer ist...	dauer, zeit', 'questify'); ?>"
+                       <textarea id="paste-content" placeholder="<?php echo esc_attr__('Fü¼gen Sie hier Ihre Daten ein...\n\nBeispiel (Tab-getrennt):\nFrage	Antwort	Keywords\nWas kostet...?	Der Preis betrü¤gt...	preis, kosten\nWie lange...?	Die Dauer ist...	dauer, zeit', 'questify'); ?>"
                                  style="width: 100%; height: 250px; font-family: monospace; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
                 </div>
 
@@ -285,9 +285,9 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['faq']
                     <p><strong><?php esc_html_e('Hinweise:', 'questify'); ?></strong></p>
                     <ul style="margin-left: 20px;">
                         <li><?php esc_html_e('Mindestens 2 Spalten: Frage und Antwort', 'questify'); ?></li>
-                        <li><?php esc_html_e('Optional: 3. Spalte für Keywords (kommasepariert)', 'questify'); ?></li>
+                        <li><?php esc_html_e('Optional: 3. Spalte fü¼r Keywords (kommasepariert)', 'questify'); ?></li>
                         <li><?php esc_html_e('Wenn keine Keywords angegeben, werden sie automatisch generiert', 'questify'); ?></li>
-                        <li><?php esc_html_e('Aus Excel/Sheets: Markieren → Kopieren → Hier einfügen', 'questify'); ?></li>
+                        <li><?php esc_html_e('Aus Excel/Sheets: Markieren â†’ Kopieren â†’ Hier einfü¼gen', 'questify'); ?></li>
                     </ul>
                 </div>
 
@@ -478,7 +478,7 @@ jQuery(document).ready(function($) {
         $('#import-count').text('');
     });
 
-    // Visual Feedback für Methoden-Auswahl
+    // Visual Feedback fü¼r Methoden-Auswahl
     $('input[name="import_method"]').on('change', function() {
         $('input[name="import_method"]').parent().css({
             'border-color': '#ddd',
@@ -531,7 +531,7 @@ jQuery(document).ready(function($) {
         var content = $('#paste-content').val().trim();
 
         if (!content) {
-            alert('<?php echo esc_js(__('Bitte fügen Sie zuerst Text ein.', 'questify')); ?>');
+            alert('<?php echo esc_js(__('Bitte fü¼gen Sie zuerst Text ein.', 'questify')); ?>');
             return;
         }
 
@@ -553,7 +553,7 @@ jQuery(document).ready(function($) {
             return;
         }
 
-        // Erste Zeile überspringen wenn Headers
+        // Erste Zeile ü¼berspringen wenn Headers
         var startIndex = hasHeaders ? 1 : 0;
         parsedData = [];
 
@@ -568,7 +568,7 @@ jQuery(document).ready(function($) {
         }
 
         if (parsedData.length === 0) {
-            alert('<?php echo esc_js(__('Keine gültigen Daten gefunden. Mindestens 2 Spalten erforderlich.', 'questify')); ?>');
+            alert('<?php echo esc_js(__('Keine gü¼ltigen Daten gefunden. Mindestens 2 Spalten erforderlich.', 'questify')); ?>');
             return;
         }
 
@@ -610,7 +610,7 @@ jQuery(document).ready(function($) {
 
         var method = $('input[name="import_method"]:checked').val();
         var ajaxSettings = {
-            url: chatbotAdmin.ajaxurl,
+            url: questiAdmin.ajaxurl,
             type: 'POST'
         };
 
@@ -618,15 +618,15 @@ jQuery(document).ready(function($) {
             var file = $('#import-file')[0].files[0];
 
             if (!file) {
-                alert('<?php echo esc_js(__('Bitte wählen Sie eine Datei aus.', 'questify')); ?>');
+                alert('<?php echo esc_js(__('Bitte wü¤hlen Sie eine Datei aus.', 'questify')); ?>');
                 return;
             }
 
             var formData = new FormData();
             formData.append('import_file', file);
             formData.append('import_method', 'file');
-            formData.append('action', 'chatbot_import_faqs');
-            formData.append('nonce', chatbotAdmin.nonce);
+            formData.append('action', 'questi_import_faqs');
+            formData.append('nonce', questiAdmin.nonce);
 
             ajaxSettings.data = formData;
             ajaxSettings.processData = false;
@@ -639,14 +639,14 @@ jQuery(document).ready(function($) {
                 return;
             }
 
-            // Console-Log für Debugging
+            // Console-Log fü¼r Debugging
             console.log('Import-Daten:', parsedData);
             console.log('Anzahl FAQs:', parsedData.length);
 
-            // Normales POST-Request ohne FormData für bessere Kompatibilität
+            // Normales POST-Request ohne FormData fü¼r bessere Kompatibilitü¤t
             ajaxSettings.data = {
-                action: 'chatbot_import_faqs',
-                nonce: chatbotAdmin.nonce,
+                action: 'questi_import_faqs',
+                nonce: questiAdmin.nonce,
                 import_method: 'paste',
                 import_data: JSON.stringify(parsedData)
             };
@@ -687,7 +687,7 @@ jQuery(document).ready(function($) {
                 }, 2000);
             } else {
                 var errorHtml = '<div class="notice notice-error inline"><p><strong><?php echo esc_js(__('Import fehlgeschlagen:', 'questify')); ?></strong><br>';
-                errorHtml += (response.data.message || chatbotAdmin.strings.error) + '</p>';
+                errorHtml += (response.data.message || questiAdmin.strings.error) + '</p>';
 
                 // Debug-Informationen wenn vorhanden
                 if (response.data.debug) {
@@ -713,7 +713,7 @@ jQuery(document).ready(function($) {
                 errorHtml += '<details><summary><?php echo esc_js(__('Server-Antwort anzeigen', 'questify')); ?></summary><pre style="background:#f5f5f5;padding:10px;overflow:auto;max-height:200px;">' + xhr.responseText.substring(0, 1000) + '</pre></details>';
             }
 
-            errorHtml += '<p><small><?php echo esc_js(__('Tipp: Aktivieren Sie den Debug-Modus in den Einstellungen für detaillierte Fehlerinformationen.', 'questify')); ?></small></p></div>';
+            errorHtml += '<p><small><?php echo esc_js(__('Tipp: Aktivieren Sie den Debug-Modus in den Einstellungen fü¼r detaillierte Fehlerinformationen.', 'questify')); ?></small></p></div>';
             $('#import-result').html(errorHtml).show();
         };
 
@@ -721,3 +721,5 @@ jQuery(document).ready(function($) {
     });
 });
 </script>
+
+

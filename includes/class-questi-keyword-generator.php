@@ -2,7 +2,7 @@
 /**
  * Keyword-Generator-Klasse
  *
- * @package WP_FAQ_Chat
+ * @package Questify
  * @since 1.0.0
  */
 
@@ -14,12 +14,12 @@ if (!defined('ABSPATH')) {
 /**
  * Klasse für automatische Keyword-Generierung
  */
-class Chatbot_Keyword_Generator {
+class Questi_Keyword_Generator {
 
     /**
      * Singleton-Instanz
      */
-    private static ?Chatbot_Keyword_Generator $instance = null;
+    private static ?Questi_Keyword_Generator $instance = null;
 
     /**
      * Stoppwörter (häufige Wörter, die ignoriert werden)
@@ -51,7 +51,7 @@ class Chatbot_Keyword_Generator {
     /**
      * Singleton-Methode
      */
-    public static function get_instance(): Chatbot_Keyword_Generator {
+    public static function get_instance(): Questi_Keyword_Generator {
         if (self::$instance === null) {
             self::$instance = new self();
         }
@@ -63,7 +63,7 @@ class Chatbot_Keyword_Generator {
      */
     private function __construct() {
         // Stoppwörter aus Einstellungen laden (falls vorhanden)
-        $custom_stopwords = get_option('chatbot_stopwords', '');
+        $custom_stopwords = get_option('questi_stopwords', '');
         if (!empty($custom_stopwords)) {
             $custom = array_map('trim', explode(',', $custom_stopwords));
             $this->stopwords = array_unique(array_merge($this->stopwords, $custom));
@@ -149,7 +149,7 @@ class Chatbot_Keyword_Generator {
             }
 
             // Nur Buchstaben und Zahlen
-            if (!preg_match('/^[a-zäöüß0-9]+$/i', $word)) {
+            if (!preg_match('/^[a-zäöüÖŸ0-9]+$/i', $word)) {
                 continue;
             }
 
@@ -186,38 +186,38 @@ class Chatbot_Keyword_Generator {
         // Einfache deutsche Plural-Regeln
         // Diese sind nicht perfekt, decken aber viele Fälle ab
 
-        // Endet auf 'e' → 'n' anhängen (Schule → Schulen)
+        // Endet auf 'e' â†’ 'n' anhängen (Schule â†’ Schulen)
         if (substr($word, -1) === 'e') {
             $variations[] = $word . 'n';
         }
 
-        // Endet auf Konsonant → 'en' anhängen (Klasse → Klassen)
+        // Endet auf Konsonant â†’ 'en' anhängen (Klasse â†’ Klassen)
         if (!in_array(substr($word, -1), ['a', 'e', 'i', 'o', 'u', 'ä', 'ö', 'ü'])) {
             $variations[] = $word . 'en';
         }
 
-        // Endet auf 'en' → 'e' entfernen (Schulen → Schule)
+        // Endet auf 'en' â†’ 'e' entfernen (Schulen â†’ Schule)
         if (substr($word, -2) === 'en' && strlen($word) > 3) {
             $variations[] = substr($word, 0, -2);
             $variations[] = substr($word, 0, -1);
         }
 
-        // Endet auf 'n' → entfernen (Schulen → Schule)
+        // Endet auf 'n' â†’ entfernen (Schulen â†’ Schule)
         if (substr($word, -1) === 'n' && strlen($word) > 3) {
             $variations[] = substr($word, 0, -1);
         }
 
-        // Endet auf 's' → 's' entfernen (Autos → Auto)
+        // Endet auf 's' â†’ 's' entfernen (Autos â†’ Auto)
         if (substr($word, -1) === 's' && strlen($word) > 3) {
             $variations[] = substr($word, 0, -1);
         }
 
-        // Endet auf 'er' → 'er' entfernen (Lehrer → Lehr, aber auch Lehrer)
+        // Endet auf 'er' â†’ 'er' entfernen (Lehrer â†’ Lehr, aber auch Lehrer)
         if (substr($word, -2) === 'er' && strlen($word) > 4) {
             $variations[] = substr($word, 0, -2);
         }
 
-        // Umlaute (ä → a, ö → o, ü → u)
+        // Umlaute (ä â†’ a, ö â†’ o, ü â†’ u)
         if (strpos($word, 'ä') !== false || strpos($word, 'ö') !== false || strpos($word, 'ü') !== false) {
             $umlaut_variant = str_replace(
                 ['ä', 'ö', 'ü'],
@@ -227,7 +227,7 @@ class Chatbot_Keyword_Generator {
             $variations[] = $umlaut_variant;
         }
 
-        // Keine Umlaute (a → ä, o → ö, u → ü) - nur bei kurzen Wörtern
+        // Keine Umlaute (a â†’ ä, o â†’ ö, u â†’ ü) - nur bei kurzen Wörtern
         if (strlen($word) <= 8) {
             if (strpos($word, 'a') !== false) {
                 $variations[] = str_replace('a', 'ä', $word);
@@ -254,8 +254,8 @@ class Chatbot_Keyword_Generator {
         // Zu Kleinbuchstaben
         $text = mb_strtolower($text, 'UTF-8');
 
-        // Sonderzeichen entfernen (außer Umlaute, ß und Leerzeichen)
-        $text = preg_replace('/[^a-zäöüß0-9\s]/', ' ', $text);
+        // Sonderzeichen entfernen (auÖŸer Umlaute, ÖŸ und Leerzeichen)
+        $text = preg_replace('/[^a-zäöüÖŸ0-9\s]/', ' ', $text);
 
         // Mehrfache Leerzeichen entfernen
         $text = preg_replace('/\s+/', ' ', $text);

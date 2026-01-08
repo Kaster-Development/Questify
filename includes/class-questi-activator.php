@@ -2,7 +2,7 @@
 /**
  * Plugin-Aktivierungs-Klasse
  *
- * @package WP_FAQ_Chat
+ * @package Questify
  * @since 1.0.0
  */
 
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 /**
  * Klasse für Plugin-Aktivierung
  */
-class Chatbot_Activator {
+class Questi_Activator {
 
     /**
      * Aktivierungs-Funktion
@@ -35,7 +35,7 @@ class Chatbot_Activator {
         self::schedule_cron_jobs();
 
         // Redirect-Flag setzen
-        set_transient('chatbot_activation_redirect', true, 30);
+        set_transient('questi_activation_redirect', true, 30);
 
         // Flush Rewrite Rules
         flush_rewrite_rules();
@@ -153,40 +153,40 @@ class Chatbot_Activator {
     private static function set_default_options(): void {
         $default_options = [
             // Allgemein
-            'chatbot_enabled' => true,
-            'chatbot_welcome_message' => 'Hallo! 😊 Wie kann ich Ihnen helfen?',
-            'chatbot_placeholder_text' => 'Stellen Sie Ihre Frage...',
-            'chatbot_no_answer_message' => 'Ich konnte leider keine passende Antwort finden. Möchten Sie uns Ihre Frage per E-Mail senden?',
-            'chatbot_thank_you_message' => 'Vielen Dank! Wir haben Ihre Anfrage erhalten und melden uns in Kürze bei Ihnen.',
-            'chatbot_history_mode' => 'manual',
+            'questi_enabled' => true,
+            'questi_welcome_message' => 'Hallo! 😊 Wie kann ich Ihnen helfen?',
+            'questi_placeholder_text' => 'Stellen Sie Ihre Frage...',
+            'questi_no_answer_message' => 'Ich konnte leider keine passende Antwort finden. Möchten Sie uns Ihre Frage per E-Mail senden?',
+            'questi_thank_you_message' => 'Vielen Dank! Wir haben Ihre Anfrage erhalten und melden uns in Kürze bei Ihnen.',
+            'questi_history_mode' => 'manual',
 
             // Design
-            'chatbot_position' => 'right',
-            'chatbot_primary_color' => '#0073aa',
-            'chatbot_button_text' => 'Fragen?',
-            'chatbot_size' => 'medium',
-            'chatbot_text_color' => '#333333',
-            'chatbot_user_text_color' => '#ffffff',
-            'chatbot_font_family' => 'system',
-            'chatbot_font_size' => '14px',
+            'questi_position' => 'right',
+            'questi_primary_color' => '#0073aa',
+            'questi_button_text' => 'Fragen?',
+            'questi_size' => 'medium',
+            'questi_text_color' => '#333333',
+            'questi_user_text_color' => '#ffffff',
+            'questi_font_family' => 'system',
+            'questi_font_size' => '14px',
 
             // E-Mail
-            'chatbot_notification_emails' => get_option('admin_email'),
-            'chatbot_email_prefix' => '[Chatbot]',
+            'questi_notification_emails' => get_option('admin_email'),
+            'questi_email_prefix' => '[Chatbot]',
 
             // Erweitert
-            'chatbot_gdpr_checkbox' => true,
-            'chatbot_gdpr_text' => 'Ich akzeptiere die Datenschutzerklärung.',
-            'chatbot_ip_anonymize_days' => 30,
-            'chatbot_auto_embed' => true,
-            'chatbot_exclude_pages' => [],
-            'chatbot_debug_mode' => false,
+            'questi_gdpr_checkbox' => true,
+            'questi_gdpr_text' => 'Ich akzeptiere die Datenschutzerklärung.',
+            'questi_ip_anonymize_days' => 30,
+            'questi_auto_embed' => true,
+            'questi_exclude_pages' => [],
+            'questi_debug_mode' => false,
 
             // Matching
-            'chatbot_min_score' => 60,
-            'chatbot_fuzzy_matching' => true,
-            'chatbot_levenshtein_threshold' => 3,
-            'chatbot_stopwords' => 'der, die, das, und, oder, aber, ist, sind, haben, sein, ein, eine, mit, von, zu, für, auf, an, in, aus',
+            'questi_min_score' => 60,
+            'questi_fuzzy_matching' => true,
+            'questi_levenshtein_threshold' => 3,
+            'questi_stopwords' => 'der, die, das, und, oder, aber, ist, sind, haben, sein, ein, eine, mit, von, zu, für, auf, an, in, aus',
         ];
 
         foreach ($default_options as $key => $value) {
@@ -211,40 +211,40 @@ class Chatbot_Activator {
     public static function restore_defaults(): void {
         $default_options = [
             // Allgemein
-            'chatbot_enabled' => true,
-            'chatbot_welcome_message' => 'Hallo! 😊 Wie kann ich Ihnen helfen?',
-            'chatbot_placeholder_text' => 'Stellen Sie Ihre Frage...',
-            'chatbot_no_answer_message' => 'Ich konnte leider keine passende Antwort finden. Möchten Sie uns Ihre Frage per E-Mail senden?',
-            'chatbot_thank_you_message' => 'Vielen Dank! Wir haben Ihre Anfrage erhalten und melden uns in Kürze bei Ihnen.',
-            'chatbot_history_mode' => 'manual',
+            'questi_enabled' => true,
+            'questi_welcome_message' => 'Hallo! 😊 Wie kann ich Ihnen helfen?',
+            'questi_placeholder_text' => 'Stellen Sie Ihre Frage...',
+            'questi_no_answer_message' => 'Ich konnte leider keine passende Antwort finden. Möchten Sie uns Ihre Frage per E-Mail senden?',
+            'questi_thank_you_message' => 'Vielen Dank! Wir haben Ihre Anfrage erhalten und melden uns in Kürze bei Ihnen.',
+            'questi_history_mode' => 'manual',
 
             // Design
-            'chatbot_position' => 'right',
-            'chatbot_primary_color' => '#0073aa',
-            'chatbot_button_text' => 'Fragen?',
-            'chatbot_size' => 'medium',
-            'chatbot_text_color' => '#333333',
-            'chatbot_user_text_color' => '#ffffff',
-            'chatbot_font_family' => 'system',
-            'chatbot_font_size' => '14px',
+            'questi_position' => 'right',
+            'questi_primary_color' => '#0073aa',
+            'questi_button_text' => 'Fragen?',
+            'questi_size' => 'medium',
+            'questi_text_color' => '#333333',
+            'questi_user_text_color' => '#ffffff',
+            'questi_font_family' => 'system',
+            'questi_font_size' => '14px',
 
             // E-Mail
-            'chatbot_notification_emails' => get_option('admin_email'),
-            'chatbot_email_prefix' => '[Chatbot]',
+            'questi_notification_emails' => get_option('admin_email'),
+            'questi_email_prefix' => '[Chatbot]',
 
             // Erweitert
-            'chatbot_gdpr_checkbox' => true,
-            'chatbot_gdpr_text' => 'Ich akzeptiere die Datenschutzerklärung.',
-            'chatbot_ip_anonymize_days' => 30,
-            'chatbot_auto_embed' => true,
-            'chatbot_exclude_pages' => [],
-            'chatbot_debug_mode' => false,
+            'questi_gdpr_checkbox' => true,
+            'questi_gdpr_text' => 'Ich akzeptiere die Datenschutzerklärung.',
+            'questi_ip_anonymize_days' => 30,
+            'questi_auto_embed' => true,
+            'questi_exclude_pages' => [],
+            'questi_debug_mode' => false,
 
             // Matching
-            'chatbot_min_score' => 60,
-            'chatbot_fuzzy_matching' => true,
-            'chatbot_levenshtein_threshold' => 3,
-            'chatbot_stopwords' => 'der, die, das, und, oder, aber, ist, sind, haben, sein, ein, eine, mit, von, zu, für, auf, an, in, aus',
+            'questi_min_score' => 60,
+            'questi_fuzzy_matching' => true,
+            'questi_levenshtein_threshold' => 3,
+            'questi_stopwords' => 'der, die, das, und, oder, aber, ist, sind, haben, sein, ein, eine, mit, von, zu, für, auf, an, in, aus',
         ];
 
         foreach ($default_options as $key => $value) {
@@ -258,8 +258,8 @@ class Chatbot_Activator {
      * @since 1.0.0
      */
     private static function schedule_cron_jobs(): void {
-        if (!wp_next_scheduled('chatbot_cleanup_old_data')) {
-            wp_schedule_event(time(), 'daily', 'chatbot_cleanup_old_data');
+        if (!wp_next_scheduled('questi_cleanup_old_data')) {
+            wp_schedule_event(time(), 'daily', 'questi_cleanup_old_data');
         }
     }
 }

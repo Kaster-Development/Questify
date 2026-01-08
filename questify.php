@@ -33,16 +33,16 @@ define('QUESTIFY_PLUGIN_BASENAME', plugin_basename(__FILE__));
  * Plugin activation
  */
 function questify_activate(): void {
-    require_once QUESTIFY_PLUGIN_DIR . 'includes/class-chatbot-activator.php';
-    Chatbot_Activator::activate();
+    require_once QUESTIFY_PLUGIN_DIR . 'includes/class-questi-activator.php';
+    Questi_Activator::activate();
 }
 
 /**
  * Plugin deactivation
  */
 function questify_deactivate(): void {
-    require_once QUESTIFY_PLUGIN_DIR . 'includes/class-chatbot-deactivator.php';
-    Chatbot_Deactivator::deactivate();
+    require_once QUESTIFY_PLUGIN_DIR . 'includes/class-questi-deactivator.php';
+    Questi_Deactivator::deactivate();
 }
 
 register_activation_hook(__FILE__, 'questify_activate');
@@ -61,17 +61,17 @@ class Questify {
     /**
      * Admin instance
      */
-    private ?Chatbot_Admin $admin = null;
+    private ?Questi_Admin $admin = null;
 
     /**
      * Frontend instance
      */
-    private ?Chatbot_Frontend $frontend = null;
+    private ?Questi_Frontend $frontend = null;
 
     /**
      * AJAX instance
      */
-    private ?Chatbot_Ajax $ajax = null;
+    private ?Questi_Ajax $ajax = null;
 
     /**
      * Singleton method
@@ -99,20 +99,20 @@ class Questify {
      */
     private function load_dependencies(): void {
         // Core classes
-        require_once QUESTIFY_PLUGIN_DIR . 'includes/class-chatbot-database.php';
-        require_once QUESTIFY_PLUGIN_DIR . 'includes/class-chatbot-email.php';
-        require_once QUESTIFY_PLUGIN_DIR . 'includes/class-chatbot-matcher.php';
-        require_once QUESTIFY_PLUGIN_DIR . 'includes/class-chatbot-keyword-generator.php';
-        require_once QUESTIFY_PLUGIN_DIR . 'includes/class-chatbot-ajax.php';
+        require_once QUESTIFY_PLUGIN_DIR . 'includes/class-questi-database.php';
+        require_once QUESTIFY_PLUGIN_DIR . 'includes/class-questi-email.php';
+        require_once QUESTIFY_PLUGIN_DIR . 'includes/class-questi-matcher.php';
+        require_once QUESTIFY_PLUGIN_DIR . 'includes/class-questi-keyword-generator.php';
+        require_once QUESTIFY_PLUGIN_DIR . 'includes/class-questi-ajax.php';
 
         // Admin classes
         if (is_admin()) {
-            require_once QUESTIFY_PLUGIN_DIR . 'includes/class-chatbot-admin.php';
+            require_once QUESTIFY_PLUGIN_DIR . 'includes/class-questi-admin.php';
         }
 
         // Frontend classes
         if (!is_admin()) {
-            require_once QUESTIFY_PLUGIN_DIR . 'includes/class-chatbot-frontend.php';
+            require_once QUESTIFY_PLUGIN_DIR . 'includes/class-questi-frontend.php';
         }
     }
 
@@ -128,7 +128,7 @@ class Questify {
      */
     private function define_admin_hooks(): void {
         if (is_admin()) {
-            $this->admin = new Chatbot_Admin();
+            $this->admin = new Questi_Admin();
         }
     }
 
@@ -137,7 +137,7 @@ class Questify {
      */
     private function define_public_hooks(): void {
         if (!is_admin()) {
-            $this->frontend = new Chatbot_Frontend();
+            $this->frontend = new Questi_Frontend();
         }
     }
 
@@ -145,7 +145,7 @@ class Questify {
      * Define AJAX hooks
      */
     private function define_ajax_hooks(): void {
-        $this->ajax = new Chatbot_Ajax();
+        $this->ajax = new Questi_Ajax();
     }
 }
 
@@ -161,10 +161,10 @@ add_action('plugins_loaded', 'questify_init');
  * Activation redirect
  */
 function questify_activation_redirect(): void {
-    if (get_transient('chatbot_activation_redirect')) {
-        delete_transient('chatbot_activation_redirect');
+    if (get_transient('questi_activation_redirect')) {
+        delete_transient('questi_activation_redirect');
         if (!isset($_GET['activate-multi'])) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Core flag, no action based on user input.
-            wp_safe_redirect(admin_url('admin.php?page=chatbot-dashboard&welcome=1'));
+            wp_safe_redirect(admin_url('admin.php?page=questi-dashboard&welcome=1'));
             exit;
         }
     }

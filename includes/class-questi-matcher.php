@@ -2,7 +2,7 @@
 /**
  * FAQ-Matching-Algorithmus-Klasse
  *
- * @package WP_FAQ_Chat
+ * @package Questify
  * @since 1.0.0
  */
 
@@ -14,17 +14,17 @@ if (!defined('ABSPATH')) {
 /**
  * Klasse für FAQ-Matching (ohne KI)
  */
-class Chatbot_Matcher {
+class Questi_Matcher {
 
     /**
      * Singleton-Instanz
      */
-    private static ?Chatbot_Matcher $instance = null;
+    private static ?Questi_Matcher $instance = null;
 
     /**
      * Database-Instanz
      */
-    private Chatbot_Database $db;
+    private Questi_Database $db;
 
     /**
      * Stoppwörter
@@ -41,7 +41,7 @@ class Chatbot_Matcher {
     /**
      * Singleton-Methode
      */
-    public static function get_instance(): Chatbot_Matcher {
+    public static function get_instance(): Questi_Matcher {
         if (self::$instance === null) {
             self::$instance = new self();
         }
@@ -52,7 +52,7 @@ class Chatbot_Matcher {
      * Konstruktor
      */
     private function __construct() {
-        $this->db = Chatbot_Database::get_instance();
+        $this->db = Questi_Database::get_instance();
         $this->load_settings();
     }
 
@@ -63,11 +63,11 @@ class Chatbot_Matcher {
      * @since 1.0.0
      */
     private function load_settings(): void {
-        $this->min_score = (int) get_option('chatbot_min_score', 60);
-        $this->fuzzy_matching = (bool) get_option('chatbot_fuzzy_matching', true);
-        $this->levenshtein_threshold = (int) get_option('chatbot_levenshtein_threshold', 3);
+        $this->min_score = (int) get_option('questi_min_score', 60);
+        $this->fuzzy_matching = (bool) get_option('questi_fuzzy_matching', true);
+        $this->levenshtein_threshold = (int) get_option('questi_levenshtein_threshold', 3);
 
-        $stopwords_string = get_option('chatbot_stopwords', 'der, die, das, und, oder, aber, ist, sind, haben, sein, ein, eine, mit, von, zu, für, auf, an, in, aus');
+        $stopwords_string = get_option('questi_stopwords', 'der, die, das, und, oder, aber, ist, sind, haben, sein, ein, eine, mit, von, zu, für, auf, an, in, aus');
         $this->stopwords = array_map('trim', explode(',', $stopwords_string));
     }
 
@@ -119,7 +119,7 @@ class Chatbot_Matcher {
         $best = $scored_faqs[0];
 
         // Alternative Vorschläge sammeln (wenn Score-Differenz < 20)
-        // WICHTIG: Größeres Fenster für bessere Disambiguierung bei ähnlichen FAQs
+        // WICHTIG: GröÖŸeres Fenster für bessere Disambiguierung bei ähnlichen FAQs
         $alternatives = [];
         for ($i = 1; $i < count($scored_faqs); $i++) {
             $score_diff = $best['score'] - $scored_faqs[$i]['score'];
@@ -235,12 +235,12 @@ class Chatbot_Matcher {
 
         // 2. Umlaute normalisieren (für besseres Matching)
         $text = str_replace(
-            ['ä', 'ö', 'ü', 'ß', 'Ä', 'Ö', 'Ü'],
+            ['ä', 'ö', 'ü', 'ÖŸ', 'Ö„', 'Ö–', 'Ü'],
             ['ae', 'oe', 'ue', 'ss', 'ae', 'oe', 'ue'],
             $text
         );
 
-        // 3. Sonderzeichen entfernen (außer Leerzeichen)
+        // 3. Sonderzeichen entfernen (auÖŸer Leerzeichen)
         $text = preg_replace('/[^a-z0-9\s]/', '', $text);
 
         // 4. Mehrfache Leerzeichen entfernen

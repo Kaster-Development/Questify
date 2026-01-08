@@ -25,7 +25,7 @@ $questify_stats = $questify_db->get_dashboard_stats($questify_period);
 $questify_timeline_data = $questify_db->get_timeline_data($questify_days);
 $questify_top_faqs = $questify_db->get_top_faqs(10);
 
-// Timeline-Daten für Chart.js vorbereiten
+// Timeline-Daten fü¼r Chart.js vorbereiten
 $questify_timeline_labels = [];
 $questify_timeline_values = [];
 foreach ($questify_timeline_data as $questify_timeline_row) {
@@ -66,28 +66,28 @@ $questify_top_faq_views_json = wp_json_encode(array_map(
     <!-- Statistik-Karten -->
     <div class="chatbot-stats-cards">
         <div class="chatbot-stat-card">
-            <div class="stat-icon">📊</div>
+            <div class="stat-icon">ðŸ“Š</div>
             <div class="stat-content">
                 <h3><?php echo esc_html(number_format_i18n($questify_stats['total_inquiries'] ?? 0)); ?></h3>
                 <p><?php esc_html_e('Gesamt-Anfragen', 'questify'); ?></p>
             </div>
         </div>
         <div class="chatbot-stat-card">
-            <div class="stat-icon stat-success">✓</div>
+            <div class="stat-icon stat-success">âœ“</div>
             <div class="stat-content">
                 <h3><?php echo esc_html(number_format_i18n($questify_stats['answered_percent'] ?? 0)); ?>%</h3>
                 <p><?php esc_html_e('Beantwortet', 'questify'); ?></p>
             </div>
         </div>
         <div class="chatbot-stat-card">
-            <div class="stat-icon stat-warning">⚠</div>
+            <div class="stat-icon stat-warning">âš </div>
             <div class="stat-content">
                 <h3><?php echo esc_html(number_format_i18n($questify_stats['not_answered_percent'] ?? 0)); ?>%</h3>
                 <p><?php esc_html_e('Nicht beantwortet', 'questify'); ?></p>
             </div>
         </div>
         <div class="chatbot-stat-card">
-            <div class="stat-icon stat-info">👍</div>
+            <div class="stat-icon stat-info">ðŸ‘</div>
             <div class="stat-content">
                 <h3><?php echo esc_html(number_format_i18n($questify_stats['helpful_rate'] ?? 0)); ?>%</h3>
                 <p><?php esc_html_e('Hilfreich-Rate', 'questify'); ?></p>
@@ -95,7 +95,7 @@ $questify_top_faq_views_json = wp_json_encode(array_map(
         </div>
     </div>
 
-    <div class="chatbot-analytics-grid">
+    <div class="questi-analytics-grid">
         <!-- Zeitverlauf -->
         <div class="chatbot-chart-box">
             <h2><?php esc_html_e('Anfragen im Zeitverlauf', 'questify'); ?></h2>
@@ -119,7 +119,7 @@ $questify_top_faq_views_json = wp_json_encode(array_map(
 <script>
 jQuery(document).ready(function($) {
     $('#period-filter').on('change', function() {
-        window.location.href = '<?php echo esc_js(admin_url('admin.php?page=chatbot-analytics')); ?>&period=' + $(this).val();
+        window.location.href = '<?php echo esc_js(admin_url('admin.php?page=questi-analytics')); ?>&period=' + $(this).val();
     });
 
     if (window.QuestifyCharts) {
@@ -156,7 +156,7 @@ jQuery(document).ready(function($) {
 .chatbot-period-filter {
     margin-bottom: 20px;
 }
-.chatbot-analytics-grid {
+.questi-analytics-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
@@ -176,3 +176,5 @@ jQuery(document).ready(function($) {
     max-height: 400px;
 }
 </style>
+
+

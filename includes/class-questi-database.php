@@ -2,7 +2,7 @@
 /**
  * Datenbank-Operationen-Klasse
  *
- * @package WP_FAQ_Chat
+ * @package Questify
  * @since 1.0.0
  */
 
@@ -14,12 +14,12 @@ if (!defined('ABSPATH')) {
 /**
  * Klasse für Datenbank-Operationen
  */
-class Chatbot_Database {
+class Questi_Database {
 
     /**
      * Singleton-Instanz
      */
-    private static ?Chatbot_Database $instance = null;
+    private static ?Questi_Database $instance = null;
 
     /**
      * WordPress-Datenbank-Objekt
@@ -36,7 +36,7 @@ class Chatbot_Database {
     /**
      * Singleton-Methode
      */
-    public static function get_instance(): Chatbot_Database {
+    public static function get_instance(): Questi_Database {
         if (self::$instance === null) {
             self::$instance = new self();
         }
@@ -63,7 +63,7 @@ class Chatbot_Database {
      * @since 1.0.0
      */
     public function get_active_faqs(): array {
-        $cache_key = 'chatbot_active_faqs';
+        $cache_key = 'questi_active_faqs';
         $faqs = get_transient($cache_key);
 
         if ($faqs === false) {
@@ -639,7 +639,7 @@ class Chatbot_Database {
      * @since 1.0.0
      */
     public function clear_faq_cache(): void {
-        delete_transient('chatbot_active_faqs');
+        delete_transient('questi_active_faqs');
     }
 
     /**

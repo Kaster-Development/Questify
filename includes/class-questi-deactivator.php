@@ -2,7 +2,7 @@
 /**
  * Plugin-Deaktivierungs-Klasse
  *
- * @package WP_FAQ_Chat
+ * @package Questify
  * @since 1.0.0
  */
 
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 /**
  * Klasse für Plugin-Deaktivierung
  */
-class Chatbot_Deactivator {
+class Questi_Deactivator {
 
     /**
      * Deaktivierungs-Funktion
@@ -38,9 +38,9 @@ class Chatbot_Deactivator {
      * @since 1.0.0
      */
     private static function unschedule_cron_jobs(): void {
-        $timestamp = wp_next_scheduled('chatbot_cleanup_old_data');
+        $timestamp = wp_next_scheduled('questi_cleanup_old_data');
         if ($timestamp) {
-            wp_unschedule_event($timestamp, 'chatbot_cleanup_old_data');
+            wp_unschedule_event($timestamp, 'questi_cleanup_old_data');
         }
     }
 
@@ -56,8 +56,8 @@ class Chatbot_Deactivator {
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Cleanup query on deactivation.
         $wpdb->query(
             "DELETE FROM {$wpdb->options}
-             WHERE option_name LIKE '_transient_chatbot_%'
-             OR option_name LIKE '_transient_timeout_chatbot_%'"
+             WHERE option_name LIKE '_transient_questi_%'
+             OR option_name LIKE '_transient_timeout_questi_%'"
         );
     }
 }

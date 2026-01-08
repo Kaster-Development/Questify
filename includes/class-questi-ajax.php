@@ -2,7 +2,7 @@
 /**
  * AJAX-Handler-Klasse
  *
- * @package WP_FAQ_Chat
+ * @package Questify
  * @since 1.0.0
  */
 
@@ -14,30 +14,30 @@ if (!defined('ABSPATH')) {
 /**
  * Klasse für AJAX-Handler
  */
-class Chatbot_Ajax {
+class Questi_Ajax {
 
     /**
      * Database-Instanz
      */
-    private Chatbot_Database $db;
+    private Questi_Database $db;
 
     /**
      * Matcher-Instanz
      */
-    private Chatbot_Matcher $matcher;
+    private Questi_Matcher $matcher;
 
     /**
      * Email-Instanz
      */
-    private Chatbot_Email $email;
+    private Questi_Email $email;
 
     /**
      * Konstruktor
      */
     public function __construct() {
-        $this->db = Chatbot_Database::get_instance();
-        $this->matcher = Chatbot_Matcher::get_instance();
-        $this->email = Chatbot_Email::get_instance();
+        $this->db = Questi_Database::get_instance();
+        $this->matcher = Questi_Matcher::get_instance();
+        $this->email = Questi_Email::get_instance();
 
         $this->register_ajax_handlers();
     }
@@ -50,29 +50,29 @@ class Chatbot_Ajax {
      */
     private function register_ajax_handlers(): void {
         // Frontend-AJAX (für nicht eingeloggte Benutzer)
-        add_action('wp_ajax_nopriv_chatbot_get_answer', [$this, 'handle_get_answer']);
-        add_action('wp_ajax_nopriv_chatbot_send_inquiry', [$this, 'handle_send_inquiry']);
-        add_action('wp_ajax_nopriv_chatbot_rate_answer', [$this, 'handle_rate_answer']);
-        add_action('wp_ajax_nopriv_chatbot_get_faq_by_id', [$this, 'handle_get_faq_by_id']);
+        add_action('wp_ajax_nopriv_questi_get_answer', [$this, 'handle_get_answer']);
+        add_action('wp_ajax_nopriv_questi_send_inquiry', [$this, 'handle_send_inquiry']);
+        add_action('wp_ajax_nopriv_questi_rate_answer', [$this, 'handle_rate_answer']);
+        add_action('wp_ajax_nopriv_questi_get_faq_by_id', [$this, 'handle_get_faq_by_id']);
 
         // Frontend-AJAX (für eingeloggte Benutzer)
-        add_action('wp_ajax_chatbot_get_answer', [$this, 'handle_get_answer']);
-        add_action('wp_ajax_chatbot_send_inquiry', [$this, 'handle_send_inquiry']);
-        add_action('wp_ajax_chatbot_rate_answer', [$this, 'handle_rate_answer']);
-        add_action('wp_ajax_chatbot_get_faq_by_id', [$this, 'handle_get_faq_by_id']);
+        add_action('wp_ajax_questi_get_answer', [$this, 'handle_get_answer']);
+        add_action('wp_ajax_questi_send_inquiry', [$this, 'handle_send_inquiry']);
+        add_action('wp_ajax_questi_rate_answer', [$this, 'handle_rate_answer']);
+        add_action('wp_ajax_questi_get_faq_by_id', [$this, 'handle_get_faq_by_id']);
 
         // Admin-AJAX
-        add_action('wp_ajax_chatbot_delete_faq', [$this, 'handle_delete_faq']);
-        add_action('wp_ajax_chatbot_toggle_faq_status', [$this, 'handle_toggle_faq_status']);
-        add_action('wp_ajax_chatbot_delete_inquiry', [$this, 'handle_delete_inquiry']);
-        add_action('wp_ajax_chatbot_update_inquiry_status', [$this, 'handle_update_inquiry_status']);
-        add_action('wp_ajax_chatbot_send_test_email', [$this, 'handle_send_test_email']);
-        add_action('wp_ajax_chatbot_export_inquiries', [$this, 'handle_export_inquiries']);
-        add_action('wp_ajax_chatbot_generate_keywords', [$this, 'handle_generate_keywords']);
-        add_action('wp_ajax_chatbot_export_faqs', [$this, 'handle_export_faqs']);
-        add_action('wp_ajax_chatbot_import_faqs', [$this, 'handle_import_faqs']);
-        add_action('wp_ajax_chatbot_restore_defaults', [$this, 'handle_restore_defaults']);
-        add_action('wp_ajax_chatbot_fix_empty_options', [$this, 'handle_fix_empty_options']);
+        add_action('wp_ajax_questi_delete_faq', [$this, 'handle_delete_faq']);
+        add_action('wp_ajax_questi_toggle_faq_status', [$this, 'handle_toggle_faq_status']);
+        add_action('wp_ajax_questi_delete_inquiry', [$this, 'handle_delete_inquiry']);
+        add_action('wp_ajax_questi_update_inquiry_status', [$this, 'handle_update_inquiry_status']);
+        add_action('wp_ajax_questi_send_test_email', [$this, 'handle_send_test_email']);
+        add_action('wp_ajax_questi_export_inquiries', [$this, 'handle_export_inquiries']);
+        add_action('wp_ajax_questi_generate_keywords', [$this, 'handle_generate_keywords']);
+        add_action('wp_ajax_questi_export_faqs', [$this, 'handle_export_faqs']);
+        add_action('wp_ajax_questi_import_faqs', [$this, 'handle_import_faqs']);
+        add_action('wp_ajax_questi_restore_defaults', [$this, 'handle_restore_defaults']);
+        add_action('wp_ajax_questi_fix_empty_options', [$this, 'handle_fix_empty_options']);
     }
 
     // ========== Frontend-AJAX-Handler ==========
@@ -85,7 +85,7 @@ class Chatbot_Ajax {
      */
     public function handle_get_answer(): void {
         // Nonce prüfen (false = nicht sterben bei Fehler)
-        if (!check_ajax_referer('chatbot_ajax', 'nonce', false)) {
+        if (!check_ajax_referer('questi_ajax', 'nonce', false)) {
             wp_send_json_error(['message' => __('Sicherheitsprüfung fehlgeschlagen. Bitte laden Sie die Seite neu.', 'questify')]);
             return;
         }
@@ -207,7 +207,7 @@ class Chatbot_Ajax {
         } else {
             // Keine Antwort gefunden
             $no_answer_message = get_option(
-                'chatbot_no_answer_message',
+                'questi_no_answer_message',
                 'Ich konnte leider keine passende Antwort finden. Möchten Sie uns Ihre Frage per E-Mail senden?'
             );
 
@@ -233,7 +233,7 @@ class Chatbot_Ajax {
      */
     public function handle_send_inquiry(): void {
         // Nonce prüfen (false = nicht sterben bei Fehler)
-        if (!check_ajax_referer('chatbot_ajax', 'nonce', false)) {
+        if (!check_ajax_referer('questi_ajax', 'nonce', false)) {
             wp_send_json_error(['message' => __('Sicherheitsprüfung fehlgeschlagen. Bitte laden Sie die Seite neu.', 'questify')]);
             return;
         }
@@ -282,12 +282,12 @@ class Chatbot_Ajax {
 
         // Dankes-Nachricht
         $thank_you_message = get_option(
-            'chatbot_thank_you_message',
+            'questi_thank_you_message',
             'Vielen Dank! Wir haben Ihre Anfrage erhalten und melden uns in Kürze bei Ihnen.'
         );
 
         // Debug-Modus: E-Mail-Status in Nachricht hinzufügen
-        if (get_option('chatbot_debug_mode') && current_user_can('manage_options')) {
+        if (get_option('questi_debug_mode') && current_user_can('manage_options')) {
             $thank_you_message .= ' [Debug: E-Mail ' . ($email_sent ? 'gesendet' : 'NICHT gesendet') . ']';
         }
 
@@ -306,7 +306,7 @@ class Chatbot_Ajax {
      */
     public function handle_get_faq_by_id(): void {
         // Nonce prüfen (false = nicht sterben bei Fehler)
-        if (!check_ajax_referer('chatbot_ajax', 'nonce', false)) {
+        if (!check_ajax_referer('questi_ajax', 'nonce', false)) {
             wp_send_json_error(['message' => __('Sicherheitsprüfung fehlgeschlagen. Bitte laden Sie die Seite neu.', 'questify')]);
             return;
         }
@@ -352,7 +352,7 @@ class Chatbot_Ajax {
      */
     public function handle_rate_answer(): void {
         // Nonce prüfen (false = nicht sterben bei Fehler)
-        if (!check_ajax_referer('chatbot_ajax', 'nonce', false)) {
+        if (!check_ajax_referer('questi_ajax', 'nonce', false)) {
             wp_send_json_error(['message' => __('Sicherheitsprüfung fehlgeschlagen. Bitte laden Sie die Seite neu.', 'questify')]);
             return;
         }
@@ -395,7 +395,7 @@ class Chatbot_Ajax {
      * @since 1.0.0
      */
     public function handle_delete_faq(): void {
-        check_ajax_referer('chatbot_admin_ajax', 'nonce');
+        check_ajax_referer('questi_admin_ajax', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('Keine Berechtigung.', 'questify')]);
@@ -421,7 +421,7 @@ class Chatbot_Ajax {
      * @since 1.0.0
      */
     public function handle_toggle_faq_status(): void {
-        check_ajax_referer('chatbot_admin_ajax', 'nonce');
+        check_ajax_referer('questi_admin_ajax', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('Keine Berechtigung.', 'questify')]);
@@ -448,7 +448,7 @@ class Chatbot_Ajax {
      * @since 1.0.0
      */
     public function handle_delete_inquiry(): void {
-        check_ajax_referer('chatbot_admin_ajax', 'nonce');
+        check_ajax_referer('questi_admin_ajax', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('Keine Berechtigung.', 'questify')]);
@@ -474,7 +474,7 @@ class Chatbot_Ajax {
      * @since 1.0.0
      */
     public function handle_update_inquiry_status(): void {
-        check_ajax_referer('chatbot_admin_ajax', 'nonce');
+        check_ajax_referer('questi_admin_ajax', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('Keine Berechtigung.', 'questify')]);
@@ -501,7 +501,7 @@ class Chatbot_Ajax {
      * @since 1.0.0
      */
     public function handle_send_test_email(): void {
-        check_ajax_referer('chatbot_admin_ajax', 'nonce');
+        check_ajax_referer('questi_admin_ajax', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => esc_html__('Keine Berechtigung.', 'questify')]);
@@ -521,7 +521,7 @@ class Chatbot_Ajax {
      * @since 1.0.0
      */
     public function handle_export_inquiries(): void {
-        check_ajax_referer('chatbot_admin_ajax', 'nonce');
+        check_ajax_referer('questi_admin_ajax', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_die(esc_html__('Keine Berechtigung.', 'questify'));
@@ -531,7 +531,7 @@ class Chatbot_Ajax {
 
         // CSV-Header
         header('Content-Type: text/csv; charset=utf-8');
-        header('Content-Disposition: attachment; filename="chatbot-inquiries-' . gmdate('Y-m-d') . '.csv"');
+        header('Content-Disposition: attachment; filename="questi-inquiries-' . gmdate('Y-m-d') . '.csv"');
         header('Pragma: no-cache');
         header('Expires: 0');
 
@@ -577,7 +577,7 @@ class Chatbot_Ajax {
      * @since 1.0.0
      */
     public function handle_generate_keywords(): void {
-        check_ajax_referer('chatbot_admin_ajax', 'nonce');
+        check_ajax_referer('questi_admin_ajax', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => esc_html__('Keine Berechtigung.', 'questify')]);
@@ -590,7 +590,7 @@ class Chatbot_Ajax {
             wp_send_json_error(['message' => esc_html__('Bitte geben Sie eine Frage ein.', 'questify')]);
         }
 
-        $generator = Chatbot_Keyword_Generator::get_instance();
+        $generator = Questi_Keyword_Generator::get_instance();
         $keywords = $generator->generate_keywords($question, $answer);
 
         wp_send_json_success([
@@ -606,7 +606,7 @@ class Chatbot_Ajax {
      * @since 1.0.0
      */
     public function handle_export_faqs(): void {
-        check_ajax_referer('chatbot_admin_ajax', 'nonce');
+        check_ajax_referer('questi_admin_ajax', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_die(esc_html__('Keine Berechtigung.', 'questify'));
@@ -626,7 +626,7 @@ class Chatbot_Ajax {
         if ($format === 'csv') {
             // CSV-Export
             header('Content-Type: text/csv; charset=utf-8');
-            header('Content-Disposition: attachment; filename="chatbot-faqs-' . gmdate('Y-m-d') . '.csv"');
+            header('Content-Disposition: attachment; filename="questi-faqs-' . gmdate('Y-m-d') . '.csv"');
             header('Pragma: no-cache');
             header('Expires: 0');
 
@@ -663,7 +663,7 @@ class Chatbot_Ajax {
         } else {
             // JSON-Export
             header('Content-Type: application/json; charset=utf-8');
-            header('Content-Disposition: attachment; filename="chatbot-faqs-' . gmdate('Y-m-d') . '.json"');
+            header('Content-Disposition: attachment; filename="questi-faqs-' . gmdate('Y-m-d') . '.json"');
             header('Pragma: no-cache');
             header('Expires: 0');
 
@@ -696,7 +696,7 @@ class Chatbot_Ajax {
      */
     public function handle_import_faqs(): void {
         // Nonce-Prüfung (false = nicht direkt sterben, sondern false zurückgeben)
-        if (!check_ajax_referer('chatbot_admin_ajax', 'nonce', false)) {
+        if (!check_ajax_referer('questi_admin_ajax', 'nonce', false)) {
             wp_send_json_error(['message' => __('Sicherheitsprüfung fehlgeschlagen. Bitte Seite neu laden.', 'questify')]);
             return;
         }
@@ -734,15 +734,15 @@ class Chatbot_Ajax {
                 }
 
                 // Keyword-Generator laden (nur wenn noch nicht geladen)
-                if (!class_exists('Chatbot_Keyword_Generator')) {
-                    $generator_file = QUESTIFY_PLUGIN_DIR . 'includes/class-chatbot-keyword-generator.php';
+                if (!class_exists('Questi_Keyword_Generator')) {
+                    $generator_file = QUESTIFY_PLUGIN_DIR . 'includes/class-questi-keyword-generator.php';
                     if (!file_exists($generator_file)) {
                         throw new Exception(__('Keyword-Generator Datei nicht gefunden.', 'questify'));
                     }
                     require_once $generator_file;
                 }
 
-                $keyword_generator = Chatbot_Keyword_Generator::get_instance();
+                $keyword_generator = Questi_Keyword_Generator::get_instance();
 
                 foreach ($import_data as $index => $item) {
                     try {
@@ -907,10 +907,10 @@ class Chatbot_Ajax {
                     }
 
                     // Keyword-Generator laden (nur wenn noch nicht geladen)
-                    if (!class_exists('Chatbot_Keyword_Generator')) {
-                        require_once QUESTIFY_PLUGIN_DIR . 'includes/class-chatbot-keyword-generator.php';
+                    if (!class_exists('Questi_Keyword_Generator')) {
+                        require_once QUESTIFY_PLUGIN_DIR . 'includes/class-questi-keyword-generator.php';
                     }
-                    $keyword_generator = Chatbot_Keyword_Generator::get_instance();
+                    $keyword_generator = Questi_Keyword_Generator::get_instance();
 
                     $lines = preg_split("/\r\n|\n|\r/", $file_contents);
                     $lines = is_array($lines) ? $lines : [];
@@ -1058,13 +1058,13 @@ class Chatbot_Ajax {
         } catch (Exception $e) {
             wp_send_json_error([
                 'message' => $e->getMessage(),
-                'debug' => get_option('chatbot_debug_mode') ? $e->getTraceAsString() : null
+                'debug' => get_option('questi_debug_mode') ? $e->getTraceAsString() : null
             ]);
         } catch (Error $e) {
             // PHP Fehler abfangen
             wp_send_json_error([
                 'message' => __('Ein schwerwiegender Fehler ist aufgetreten beim Import.', 'questify'),
-                'debug' => get_option('chatbot_debug_mode') ? $e->getMessage() : null
+                'debug' => get_option('questi_debug_mode') ? $e->getMessage() : null
             ]);
         }
     }
@@ -1079,15 +1079,15 @@ class Chatbot_Ajax {
      * @since 1.0.0
      */
     public function handle_restore_defaults(): void {
-        check_ajax_referer('chatbot_admin_ajax', 'nonce');
+        check_ajax_referer('questi_admin_ajax', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('Keine Berechtigung.', 'questify')]);
         }
 
         // Activator laden und Standardwerte wiederherstellen
-        require_once QUESTIFY_PLUGIN_DIR . 'includes/class-chatbot-activator.php';
-        Chatbot_Activator::restore_defaults();
+        require_once QUESTIFY_PLUGIN_DIR . 'includes/class-questi-activator.php';
+        Questi_Activator::restore_defaults();
 
         wp_send_json_success([
             'message' => __('Standardwerte wurden erfolgreich wiederhergestellt!', 'questify')
@@ -1101,19 +1101,19 @@ class Chatbot_Ajax {
      * @since 1.0.0
      */
     public function handle_fix_empty_options(): void {
-        check_ajax_referer('chatbot_admin_ajax', 'nonce');
+        check_ajax_referer('questi_admin_ajax', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('Keine Berechtigung.', 'questify')]);
         }
 
         $default_options = [
-            'chatbot_welcome_message' => 'Hallo! 😊 Wie kann ich Ihnen helfen?',
-            'chatbot_placeholder_text' => 'Stellen Sie Ihre Frage...',
-            'chatbot_no_answer_message' => 'Ich konnte leider keine passende Antwort finden. Möchten Sie uns Ihre Frage per E-Mail senden?',
-            'chatbot_thank_you_message' => 'Vielen Dank! Wir haben Ihre Anfrage erhalten und melden uns in Kürze bei Ihnen.',
-            'chatbot_button_text' => 'Fragen?',
-            'chatbot_gdpr_text' => 'Ich akzeptiere die Datenschutzerklärung.',
+            'questi_welcome_message' => 'Hallo! 😊 Wie kann ich Ihnen helfen?',
+            'questi_placeholder_text' => 'Stellen Sie Ihre Frage...',
+            'questi_no_answer_message' => 'Ich konnte leider keine passende Antwort finden. Möchten Sie uns Ihre Frage per E-Mail senden?',
+            'questi_thank_you_message' => 'Vielen Dank! Wir haben Ihre Anfrage erhalten und melden uns in Kürze bei Ihnen.',
+            'questi_button_text' => 'Fragen?',
+            'questi_gdpr_text' => 'Ich akzeptiere die Datenschutzerklärung.',
         ];
 
         $fixed = 0;

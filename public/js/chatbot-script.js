@@ -1,7 +1,7 @@
 /**
  * Frontend Chatbot JavaScript
  *
- * @package WP_FAQ_Chat
+ * @package Questify
  * @since 1.0.0
  */
 
@@ -14,7 +14,7 @@
             this.messageHistory = [];
             this.isOpen = false;
             this.currentFaqId = null;
-            this.settings = chatbotData.settings;
+            this.settings = questiData.settings;
 
             this.init();
         }
@@ -215,9 +215,9 @@
             this.showTyping();
 
             // AJAX request
-            $.post(chatbotData.ajaxurl, {
-                action: 'chatbot_get_answer',
-                nonce: chatbotData.nonce,
+            $.post(questiData.ajaxurl, {
+                action: 'questi_get_answer',
+                nonce: questiData.nonce,
                 question: question,
                 session_id: this.sessionId
             }, (response) => {
@@ -362,9 +362,9 @@
             this.showTyping();
 
             // AJAX-Request für spezifische FAQ
-            $.post(chatbotData.ajaxurl, {
-                action: 'chatbot_get_faq_by_id',
-                nonce: chatbotData.nonce,
+            $.post(questiData.ajaxurl, {
+                action: 'questi_get_faq_by_id',
+                nonce: questiData.nonce,
                 faq_id: faqId,
                 session_id: this.sessionId
             }, (response) => {
@@ -471,9 +471,9 @@
 
             $('#chatbot-contact-submit').prop('disabled', true).text('Sende...');
 
-            $.post(chatbotData.ajaxurl, {
-                action: 'chatbot_send_inquiry',
-                nonce: chatbotData.nonce,
+            $.post(questiData.ajaxurl, {
+                action: 'questi_send_inquiry',
+                nonce: questiData.nonce,
                 name: name,
                 email: email,
                 question: question,
@@ -497,9 +497,9 @@
         }
 
         rateAnswer(faqId, helpful) {
-            $.post(chatbotData.ajaxurl, {
-                action: 'chatbot_rate_answer',
-                nonce: chatbotData.nonce,
+            $.post(questiData.ajaxurl, {
+                action: 'questi_rate_answer',
+                nonce: questiData.nonce,
                 faq_id: faqId,
                 helpful: helpful,
                 session_id: this.sessionId

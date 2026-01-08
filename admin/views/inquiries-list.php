@@ -55,16 +55,16 @@ $questify_total_pages = ceil($questify_total / $per_page);
                 <option value="in_progress" <?php selected($questify_filter_status, 'in_progress'); ?>><?php esc_html_e('In Bearbeitung', 'questify'); ?></option>
                 <option value="answered" <?php selected($questify_filter_status, 'answered'); ?>><?php esc_html_e('Beantwortet', 'questify'); ?></option>
             </select>
-            <input type="button" class="button" value="<?php echo esc_attr__('Filtern', 'questify'); ?>" onclick="location.href='<?php echo esc_js(admin_url('admin.php?page=chatbot-inquiries')); ?>&filter_status=' + document.getElementById('filter-status').value">
+            <input type="button" class="button" value="<?php echo esc_attr__('Filtern', 'questify'); ?>" onclick="location.href='<?php echo esc_js(admin_url('admin.php?page=questi-inquiries')); ?>&filter_status=' + document.getElementById('filter-status').value">
 
-            <a href="<?php echo esc_url(admin_url('admin-ajax.php?action=chatbot_export_inquiries&nonce=' . wp_create_nonce('chatbot_admin_ajax'))); ?>" class="button">
+            <a href="<?php echo esc_url(admin_url('admin-ajax.php?action=chatbot_export_inquiries&nonce=' . wp_create_nonce('questi_admin_ajax'))); ?>" class="button">
                 <span class="dashicons dashicons-download"></span> <?php esc_html_e('CSV Export', 'questify'); ?>
             </a>
         </div>
 
         <div class="alignright">
             <form method="get">
-                <input type="hidden" name="page" value="chatbot-inquiries">
+                <input type="hidden" name="page" value="questi-inquiries">
                 <input type="search" name="s" value="<?php echo esc_attr($questify_search); ?>" placeholder="<?php echo esc_attr__('Suchen...', 'questify'); ?>">
                 <input type="submit" class="button" value="<?php echo esc_attr__('Suchen', 'questify'); ?>">
             </form>
@@ -116,7 +116,7 @@ $questify_total_pages = ceil($questify_total / $per_page);
                         <span class="chatbot-status-badge <?php echo esc_attr($questify_status_class); ?>"><?php echo esc_html($questify_status_label); ?></span>
                     </td>
                     <td class="chatbot-actions">
-                        <a href="<?php echo esc_url(admin_url('admin.php?page=chatbot-inquiries&action=view&inquiry=' . $questify_inquiry->id)); ?>" title="<?php echo esc_attr__('Ansehen', 'questify'); ?>">
+                        <a href="<?php echo esc_url(admin_url('admin.php?page=questi-inquiries&action=view&inquiry=' . $questify_inquiry->id)); ?>" title="<?php echo esc_attr__('Ansehen', 'questify'); ?>">
                             <span class="dashicons dashicons-visibility"></span>
                         </a>
                     </td>
@@ -151,3 +151,5 @@ $questify_total_pages = ceil($questify_total / $per_page);
         </p>
     <?php endif; ?>
 </div>
+
+

@@ -69,8 +69,8 @@ $questify_matched_faq = $questify_inquiry->matched_faq_id ? $questify_db->get_fa
                 <h3><?php echo esc_html($questify_matched_faq->question); ?></h3>
                 <div><?php echo wp_kses_post($questify_matched_faq->answer); ?></div>
                 <p class="chatbot-faq-link">
-                    <a href="<?php echo esc_url(admin_url('admin.php?page=chatbot-faqs&action=edit&faq=' . $questify_matched_faq->id)); ?>">
-                        <?php esc_html_e('FAQ bearbeiten →', 'questify'); ?>
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=questi-faqs&action=edit&faq=' . $questify_matched_faq->id)); ?>">
+                        <?php esc_html_e('FAQ bearbeiten â†’', 'questify'); ?>
                     </a>
                 </p>
             </div>
@@ -78,8 +78,8 @@ $questify_matched_faq = $questify_inquiry->matched_faq_id ? $questify_db->get_fa
             <p><strong><?php esc_html_e('Hilfreich:', 'questify'); ?></strong>
                 <?php
                 echo $questify_inquiry->was_helpful === 'yes'
-                    ? '👍 ' . esc_html__('Ja', 'questify')
-                    : '👎 ' . esc_html__('Nein', 'questify');
+                    ? 'ðŸ‘ ' . esc_html__('Ja', 'questify')
+                    : 'ðŸ‘Ž ' . esc_html__('Nein', 'questify');
                 ?>
             </p>
             <?php endif; ?>
@@ -87,7 +87,7 @@ $questify_matched_faq = $questify_inquiry->matched_faq_id ? $questify_db->get_fa
         <?php endif; ?>
 
         <div class="chatbot-inquiry-status">
-            <h2><?php esc_html_e('Status ändern', 'questify'); ?></h2>
+            <h2><?php esc_html_e('Status ü¤ndern', 'questify'); ?></h2>
             <select id="inquiry-status" data-inquiry-id="<?php echo esc_attr((string) $questify_inquiry->id); ?>">
                 <option value="new" <?php selected($questify_inquiry->status, 'new'); ?>><?php esc_html_e('Neu', 'questify'); ?></option>
                 <option value="in_progress" <?php selected($questify_inquiry->status, 'in_progress'); ?>><?php esc_html_e('In Bearbeitung', 'questify'); ?></option>
@@ -105,12 +105,12 @@ $questify_matched_faq = $questify_inquiry->matched_faq_id ? $questify_db->get_fa
                 <span class="dashicons dashicons-email"></span> <?php esc_html_e('E-Mail senden', 'questify'); ?>
             </a>
             <button type="button" class="button button-secondary chatbot-delete-inquiry" data-inquiry-id="<?php echo esc_attr((string) $questify_inquiry->id); ?>">
-                <span class="dashicons dashicons-trash"></span> <?php esc_html_e('Löschen', 'questify'); ?>
+                <span class="dashicons dashicons-trash"></span> <?php esc_html_e('Lü¶schen', 'questify'); ?>
             </button>
         </div>
     </div>
 
-    <p><a href="<?php echo esc_url(admin_url('admin.php?page=chatbot-inquiries')); ?>">&larr; <?php esc_html_e('Zurück zur Übersicht', 'questify'); ?></a></p>
+    <p><a href="<?php echo esc_url(admin_url('admin.php?page=questi-inquiries')); ?>">&larr; <?php esc_html_e('Zurü¼ck zur üœbersicht', 'questify'); ?></a></p>
 </div>
 
 <style>
@@ -137,8 +137,8 @@ jQuery(document).ready(function($) {
         var status = $(this).val();
 
         $.post(ajaxurl, {
-            action: 'chatbot_update_inquiry_status',
-            nonce: chatbotAdmin.nonce,
+            action: 'questi_update_inquiry_status',
+            nonce: questiAdmin.nonce,
             inquiry_id: inquiryId,
             status: status
         }, function(response) {
@@ -154,14 +154,16 @@ jQuery(document).ready(function($) {
         var inquiryId = $(this).data('inquiry-id');
 
         $.post(ajaxurl, {
-            action: 'chatbot_delete_inquiry',
-            nonce: chatbotAdmin.nonce,
+            action: 'questi_delete_inquiry',
+            nonce: questiAdmin.nonce,
             inquiry_id: inquiryId
         }, function(response) {
             if (response.success) {
-                window.location.href = '<?php echo esc_js(esc_url_raw(admin_url('admin.php?page=chatbot-inquiries'))); ?>';
+                window.location.href = '<?php echo esc_js(esc_url_raw(admin_url('admin.php?page=questi-inquiries'))); ?>';
             }
         });
     });
 });
 </script>
+
+

@@ -1,7 +1,7 @@
 /**
  * Admin JavaScript
  *
- * @package WP_FAQ_Chat
+ * @package Questify
  * @since 1.0.0
  */
 
@@ -29,16 +29,16 @@
         $(document).on('click', '.chatbot-delete-faq', function(e) {
             e.preventDefault();
 
-            if (!confirm(chatbotAdmin.strings.delete_confirm)) {
+            if (!confirm(questiAdmin.strings.delete_confirm)) {
                 return;
             }
 
             const faqId = $(this).data('faq-id');
             const row = $(this).closest('tr');
 
-            $.post(chatbotAdmin.ajaxurl, {
-                action: 'chatbot_delete_faq',
-                nonce: chatbotAdmin.nonce,
+            $.post(questiAdmin.ajaxurl, {
+                action: 'questi_delete_faq',
+                nonce: questiAdmin.nonce,
                 faq_id: faqId
             }, function(response) {
                 if (response.success) {
@@ -46,10 +46,10 @@
                         $(this).remove();
                     });
                 } else {
-                    alert(response.data.message || chatbotAdmin.strings.error);
+                    alert(response.data.message || questiAdmin.strings.error);
                 }
             }).fail(function() {
-                alert(chatbotAdmin.strings.error);
+                alert(questiAdmin.strings.error);
             });
         });
 
@@ -61,9 +61,9 @@
             const active = $(this).data('active');
             const badge = $(this).closest('td').find('.chatbot-status-badge');
 
-            $.post(chatbotAdmin.ajaxurl, {
-                action: 'chatbot_toggle_faq_status',
-                nonce: chatbotAdmin.nonce,
+            $.post(questiAdmin.ajaxurl, {
+                action: 'questi_toggle_faq_status',
+                nonce: questiAdmin.nonce,
                 faq_id: faqId,
                 active: active ? 0 : 1
             }, function(response) {
@@ -76,7 +76,7 @@
                         $(this).data('active', 1);
                     }
                 } else {
-                    alert(response.data.message || chatbotAdmin.strings.error);
+                    alert(response.data.message || questiAdmin.strings.error);
                 }
             }.bind(this));
         });
@@ -85,21 +85,21 @@
         $(document).on('click', '.chatbot-delete-inquiry', function(e) {
             e.preventDefault();
 
-            if (!confirm(chatbotAdmin.strings.delete_confirm)) {
+            if (!confirm(questiAdmin.strings.delete_confirm)) {
                 return;
             }
 
             const inquiryId = $(this).data('inquiry-id');
 
-            $.post(chatbotAdmin.ajaxurl, {
-                action: 'chatbot_delete_inquiry',
-                nonce: chatbotAdmin.nonce,
+            $.post(questiAdmin.ajaxurl, {
+                action: 'questi_delete_inquiry',
+                nonce: questiAdmin.nonce,
                 inquiry_id: inquiryId
             }, function(response) {
                 if (response.success) {
-                    window.location.href = window.location.pathname + '?page=chatbot-inquiries';
+                    window.location.href = window.location.pathname + '?page=questi-inquiries';
                 } else {
-                    alert(response.data.message || chatbotAdmin.strings.error);
+                    alert(response.data.message || questiAdmin.strings.error);
                 }
             });
         });
@@ -109,9 +109,9 @@
             const inquiryId = $(this).data('inquiry-id');
             const status = $(this).val();
 
-            $.post(chatbotAdmin.ajaxurl, {
-                action: 'chatbot_update_inquiry_status',
-                nonce: chatbotAdmin.nonce,
+            $.post(questiAdmin.ajaxurl, {
+                action: 'questi_update_inquiry_status',
+                nonce: questiAdmin.nonce,
                 inquiry_id: inquiryId,
                 status: status
             }, function(response) {
@@ -125,7 +125,7 @@
                         });
                     }, 3000);
                 } else {
-                    alert(response.data.message || chatbotAdmin.strings.error);
+                    alert(response.data.message || questiAdmin.strings.error);
                 }
             });
         });
@@ -139,20 +139,20 @@
 
             button.prop('disabled', true).text('Sende...');
 
-            $.post(chatbotAdmin.ajaxurl, {
-                action: 'chatbot_send_test_email',
-                nonce: chatbotAdmin.nonce
+            $.post(questiAdmin.ajaxurl, {
+                action: 'questi_send_test_email',
+                nonce: questiAdmin.nonce
             }, function(response) {
                 button.prop('disabled', false).text(originalText);
 
                 if (response.success) {
                     alert(response.data.message);
                 } else {
-                    alert(response.data.message || chatbotAdmin.strings.error);
+                    alert(response.data.message || questiAdmin.strings.error);
                 }
             }).fail(function() {
                 button.prop('disabled', false).text(originalText);
-                alert(chatbotAdmin.strings.error);
+                alert(questiAdmin.strings.error);
             });
         });
 

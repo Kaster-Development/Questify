@@ -1,6 +1,6 @@
 <?php
 /**
- * Über den Entwickler View
+ * üœber den Entwickler View
  *
  * @package WP_FAQ_Chat
  * @since 1.0.0
@@ -8,7 +8,7 @@
 
 if (!defined('ABSPATH')) exit;
 
-// Helper-Funktion: Gibt Option-Wert oder Standardwert zurück
+// Helper-Funktion: Gibt Option-Wert oder Standardwert zurü¼ck
 if (!function_exists('questify_get_chatbot_option')) {
     function questify_get_chatbot_option($option_name, $default = '') {
         $value = get_option($option_name, $default);
@@ -22,11 +22,11 @@ if (!function_exists('questify_get_chatbot_option')) {
 }
 
 // Standardwerte
-$questify_company_name = questify_get_chatbot_option('chatbot_company_name', 'Steffen Kaster - Kaster Development');
-$questify_company_address = questify_get_chatbot_option('chatbot_company_address', '');
-$questify_company_phone = questify_get_chatbot_option('chatbot_company_phone', '');
-$questify_company_website = questify_get_chatbot_option('chatbot_company_website', 'https://kaster-development.de');
-$questify_feedback_email = questify_get_chatbot_option('chatbot_feedback_email', 'steffen.kaster@live.de');
+$questify_company_name = questify_get_chatbot_option('questi_company_name', 'Steffen Kaster - Kaster Development');
+$questify_company_address = questify_get_chatbot_option('questi_company_address', '');
+$questify_company_phone = questify_get_chatbot_option('questi_company_phone', '');
+$questify_company_website = questify_get_chatbot_option('questi_company_website', 'https://kaster-development.de');
+$questify_feedback_email = questify_get_chatbot_option('questi_feedback_email', 'steffen.kaster@live.de');
 
 // GitHub (Support/Feedback)
 $questify_github_repo_url = 'https://github.com/Kaster-Development/Questify';
@@ -52,7 +52,7 @@ $questify_github_issues_url = $questify_github_repo_url . '/issues';
             <div style="padding: 30px;">
                 <h3 style="margin-top: 0; color: #23282d; border-bottom: 2px solid #0073aa; padding-bottom: 10px;">
                     <span class="dashicons dashicons-admin-users" style="color: #0073aa;"></span>
-                    <?php esc_html_e('Über den Entwickler', 'questify'); ?>
+                    <?php esc_html_e('üœber den Entwickler', 'questify'); ?>
                 </h3>
 
                 <table class="form-table" style="margin-top: 20px;">
@@ -141,7 +141,7 @@ $questify_github_issues_url = $questify_github_repo_url . '/issues';
                         <?php esc_html_e('FAQ-Verwaltung', 'questify'); ?>
                     </h4>
                     <p style="margin: 0; color: #646970;">
-                        <?php esc_html_e('Einfaches Erstellen, Bearbeiten und Verwalten von FAQ-Einträgen mit Keywords.', 'questify'); ?>
+                        <?php esc_html_e('Einfaches Erstellen, Bearbeiten und Verwalten von FAQ-Eintrü¤gen mit Keywords.', 'questify'); ?>
                     </p>
                 </div>
 
@@ -171,7 +171,7 @@ $questify_github_issues_url = $questify_github_repo_url . '/issues';
                         <?php esc_html_e('Analytics & Statistiken', 'questify'); ?>
                     </h4>
                     <p style="margin: 0; color: #646970;">
-                        <?php esc_html_e('Detaillierte Auswertungen mit grafischen Darstellungen und Zeitverläufen.', 'questify'); ?>
+                        <?php esc_html_e('Detaillierte Auswertungen mit grafischen Darstellungen und Zeitverlü¤ufen.', 'questify'); ?>
                     </p>
                 </div>
 
@@ -181,7 +181,7 @@ $questify_github_issues_url = $questify_github_repo_url . '/issues';
                         <?php esc_html_e('Anpassbares Design', 'questify'); ?>
                     </h4>
                     <p style="margin: 0; color: #646970;">
-                        <?php esc_html_e('Vollständig anpassbare Farben, Schriften und Größen für den Chat-Widget.', 'questify'); ?>
+                        <?php esc_html_e('Vollstü¤ndig anpassbare Farben, Schriften und Grü¶üŸen fü¼r den Chat-Widget.', 'questify'); ?>
                     </p>
                 </div>
 
@@ -191,7 +191,7 @@ $questify_github_issues_url = $questify_github_repo_url . '/issues';
                         <?php esc_html_e('DSGVO-konform', 'questify'); ?>
                     </h4>
                     <p style="margin: 0; color: #646970;">
-                        <?php esc_html_e('IP-Anonymisierung, DSGVO-Checkbox und automatische Datenlöschung.', 'questify'); ?>
+                        <?php esc_html_e('IP-Anonymisierung, DSGVO-Checkbox und automatische Datenlü¶schung.', 'questify'); ?>
                     </p>
                 </div>
             </div>
@@ -205,7 +205,7 @@ $questify_github_issues_url = $questify_github_repo_url . '/issues';
             </h3>
 
             <p style="font-size: 15px; line-height: 1.7;">
-                <?php esc_html_e('Bei Fragen, Problemen oder Feedback zum Plugin können Sie uns jederzeit kontaktieren:', 'questify'); ?>
+                <?php esc_html_e('Bei Fragen, Problemen oder Feedback zum Plugin kü¶nnen Sie uns jederzeit kontaktieren:', 'questify'); ?>
             </p>
 
             <div style="margin: 20px 0;">
@@ -230,7 +230,7 @@ $questify_github_issues_url = $questify_github_repo_url . '/issues';
             <div style="background: #fff9e6; border-left: 4px solid #f0b849; padding: 15px; margin-top: 20px;">
                 <p style="margin: 0;">
                     <span class="dashicons dashicons-heart" style="color: #f0b849;"></span>
-                    <?php esc_html_e('Gefällt Ihnen das Plugin? Wir freuen uns über Ihr Feedback und Ihre Bewertung!', 'questify'); ?>
+                    <?php esc_html_e('Gefü¤llt Ihnen das Plugin? Wir freuen uns ü¼ber Ihr Feedback und Ihre Bewertung!', 'questify'); ?>
                 </p>
             </div>
         </div>
@@ -253,3 +253,5 @@ $questify_github_issues_url = $questify_github_repo_url . '/issues';
         </div>
     </div>
 </div>
+
+

@@ -2,7 +2,7 @@
 /**
  * E-Mail-Versand-Klasse
  *
- * @package WP_FAQ_Chat
+ * @package Questify
  * @since 1.0.0
  */
 
@@ -14,22 +14,22 @@ if (!defined('ABSPATH')) {
 /**
  * Klasse für E-Mail-Versand
  */
-class Chatbot_Email {
+class Questi_Email {
 
     /**
      * Singleton-Instanz
      */
-    private static ?Chatbot_Email $instance = null;
+    private static ?Questi_Email $instance = null;
 
     /**
      * Database-Instanz
      */
-    private Chatbot_Database $db;
+    private Questi_Database $db;
 
     /**
      * Singleton-Methode
      */
-    public static function get_instance(): Chatbot_Email {
+    public static function get_instance(): Questi_Email {
         if (self::$instance === null) {
             self::$instance = new self();
         }
@@ -40,7 +40,7 @@ class Chatbot_Email {
      * Konstruktor
      */
     private function __construct() {
-        $this->db = Chatbot_Database::get_instance();
+        $this->db = Questi_Database::get_instance();
     }
 
     /**
@@ -60,8 +60,8 @@ class Chatbot_Email {
         }
 
         // Einstellungen laden
-        $admin_emails = get_option('chatbot_notification_emails', get_option('admin_email'));
-        $email_prefix = get_option('chatbot_email_prefix', '[Chatbot]');
+        $admin_emails = get_option('questi_notification_emails', get_option('admin_email'));
+        $email_prefix = get_option('Questi_Email_prefix', '[Chatbot]');
 
         // Validierung
         if (empty($admin_emails)) {
@@ -134,12 +134,12 @@ class Chatbot_Email {
         $admin_url = admin_url('admin.php?page=chatbot-inquiries&action=view&inquiry=' . $inquiry->id);
 
         // Einstellungen laden
-        $email_format = get_option('chatbot_email_format', 'html');
-        $include_ip = get_option('chatbot_email_include_ip', true);
-        $include_faq = get_option('chatbot_email_include_faq', true);
-        $include_user_agent = get_option('chatbot_email_include_user_agent', false);
-        $header_color = get_option('chatbot_email_header_color', '#0073aa');
-        $footer_color = get_option('chatbot_email_footer_color', '#f4f4f4');
+        $email_format = get_option('Questi_Email_format', 'html');
+        $include_ip = get_option('Questi_Email_include_ip', true);
+        $include_faq = get_option('Questi_Email_include_faq', true);
+        $include_user_agent = get_option('Questi_Email_include_user_agent', false);
+        $header_color = get_option('Questi_Email_header_color', '#0073aa');
+        $footer_color = get_option('Questi_Email_footer_color', '#f4f4f4');
 
         // Symbole immer anzeigen
         $show_icons = true;
@@ -153,7 +153,7 @@ class Chatbot_Email {
         // Plain Text Format (aber als HTML mit <pre> für bessere Darstellung in E-Mail-Clients)
         if ($email_format === 'plain') {
             $plain_text = $this->get_plain_text_email($inquiry, $faq, $include_ip, $include_user_agent, $admin_url);
-            // Umschließe mit <pre> für korrekte Darstellung in allen E-Mail-Clients
+            // UmschlieÖŸe mit <pre> für korrekte Darstellung in allen E-Mail-Clients
             return '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body><pre style="font-family: monospace; font-size: 13px; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word;">' . esc_html($plain_text) . '</pre></body></html>';
         }
 
@@ -322,7 +322,7 @@ class Chatbot_Email {
                         <span class="label">Status:</span>
                         <?php if ($inquiry->matched_faq_id): ?>
                             <span class="status-badge status-success">
-                                <?php if ($show_icons): ?>[✓]<?php endif; ?> Antwort gefunden (FAQ #<?php echo esc_html((string) $inquiry->matched_faq_id); ?>)
+                                <?php if ($show_icons): ?>[âœ“]<?php endif; ?> Antwort gefunden (FAQ #<?php echo esc_html((string) $inquiry->matched_faq_id); ?>)
                             </span>
                         <?php else: ?>
                             <span class="status-badge status-warning">
@@ -371,7 +371,7 @@ class Chatbot_Email {
 
                     <center>
                         <a href="<?php echo esc_url($admin_url); ?>" class="button">
-                            Im Backend ansehen →
+                            Im Backend ansehen â†’
                         </a>
                     </center>
                 </div>
@@ -484,8 +484,8 @@ class Chatbot_Email {
         ];
 
         // Einstellungen laden
-        $admin_emails = get_option('chatbot_notification_emails', get_option('admin_email'));
-        $email_prefix = get_option('chatbot_email_prefix', '[Chatbot]');
+        $admin_emails = get_option('questi_notification_emails', get_option('admin_email'));
+        $email_prefix = get_option('Questi_Email_prefix', '[Chatbot]');
 
         // E-Mail-Empfänger
         $to = array_map('trim', explode(',', $admin_emails));

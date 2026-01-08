@@ -477,6 +477,17 @@ class Chatbot_Admin {
             return $redirect_to;
         }
 
+        // Nonce prüfen
+        $nonce = isset($_POST['chatbot_bulk_nonce']) ? sanitize_text_field(wp_unslash($_POST['chatbot_bulk_nonce'])) : '';
+        if ($nonce === '' || !wp_verify_nonce($nonce, 'chatbot_bulk_action')) {
+            return $redirect_to;
+        }
+
+        // Berechtigung prüfen
+        if (!current_user_can('manage_options')) {
+            return $redirect_to;
+        }
+
         $count = 0;
 
         foreach ($ids as $id) {

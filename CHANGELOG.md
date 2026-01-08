@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [1.0.7] - 2026-01-09
 
+### Fixed
+- **Security (Bulk Actions)**: Nonce- und Berechtigungsprüfung für Bulk-Actions hinzugefügt (`handle_bulk_actions`), um unautorisierte Massenaktionen zu verhindern.
+
 ### Changed
 - **Readme metadata**: Updated `Contributors` username to `steffenka`.
 - **Contact email**: Updated default support/feedback email to `steffen.kaster@live.de` (About page default and translation metadata/docs).

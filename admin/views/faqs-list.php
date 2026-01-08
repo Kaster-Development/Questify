@@ -128,6 +128,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['faq']
         </div>
     <?php else: ?>
         <form method="post">
+            <?php wp_nonce_field('chatbot_bulk_action', 'chatbot_bulk_nonce'); ?>
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>

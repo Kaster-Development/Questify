@@ -186,38 +186,38 @@ class Questi_Keyword_Generator {
         // Einfache deutsche Plural-Regeln
         // Diese sind nicht perfekt, decken aber viele Fälle ab
 
-        // Endet auf 'e' â†’ 'n' anhängen (Schule â†’ Schulen)
+// Endet auf 'e' → 'n' anhängen (Schule → Schulen)
         if (substr($word, -1) === 'e') {
             $variations[] = $word . 'n';
         }
 
-        // Endet auf Konsonant â†’ 'en' anhängen (Klasse â†’ Klassen)
+        // Endet auf Konsonant → 'en' anhängen (Klasse → Klassen)
         if (!in_array(substr($word, -1), ['a', 'e', 'i', 'o', 'u', 'ä', 'ö', 'ü'])) {
             $variations[] = $word . 'en';
         }
 
-        // Endet auf 'en' â†’ 'e' entfernen (Schulen â†’ Schule)
+// Endet auf 'en' → 'e' entfernen (Schulen → Schule)
         if (substr($word, -2) === 'en' && strlen($word) > 3) {
             $variations[] = substr($word, 0, -2);
             $variations[] = substr($word, 0, -1);
         }
 
-        // Endet auf 'n' â†’ entfernen (Schulen â†’ Schule)
+        // Endet auf 'n' → entfernen (Schulen → Schule)
         if (substr($word, -1) === 'n' && strlen($word) > 3) {
             $variations[] = substr($word, 0, -1);
         }
 
-        // Endet auf 's' â†’ 's' entfernen (Autos â†’ Auto)
+// Endet auf 's' → 's' entfernen (Autos → Auto)
         if (substr($word, -1) === 's' && strlen($word) > 3) {
             $variations[] = substr($word, 0, -1);
         }
 
-        // Endet auf 'er' â†’ 'er' entfernen (Lehrer â†’ Lehr, aber auch Lehrer)
+        // Endet auf 'er' → 'er' entfernen (Lehrer → Lehr, aber auch Lehrer)
         if (substr($word, -2) === 'er' && strlen($word) > 4) {
             $variations[] = substr($word, 0, -2);
         }
 
-        // Umlaute (ä â†’ a, ö â†’ o, ü â†’ u)
+        // Umlaute (ä → a, ö → o, ü → u)
         if (strpos($word, 'ä') !== false || strpos($word, 'ö') !== false || strpos($word, 'ü') !== false) {
             $umlaut_variant = str_replace(
                 ['ä', 'ö', 'ü'],
@@ -227,7 +227,7 @@ class Questi_Keyword_Generator {
             $variations[] = $umlaut_variant;
         }
 
-        // Keine Umlaute (a â†’ ä, o â†’ ö, u â†’ ü) - nur bei kurzen Wörtern
+        // Keine Umlaute (a → ä, o → ö, u → ü) - nur bei kurzen Wörtern
         if (strlen($word) <= 8) {
             if (strpos($word, 'a') !== false) {
                 $variations[] = str_replace('a', 'ä', $word);

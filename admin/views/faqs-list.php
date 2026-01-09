@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$questify_db = Chatbot_Database::get_instance();
+$questify_db = Questi_Database::get_instance();
 
 // Pagination
 $per_page = 20;
@@ -51,13 +51,13 @@ $questify_faqs = $questify_db->get_all_faqs($questify_faq_args);
 $questify_total_faqs = $questify_db->count_faqs($questify_faq_args);
 $questify_total_pages = ceil($questify_total_faqs / $per_page);
 
-// Lü¶schaktion verarbeiten
+// Löschaktion verarbeiten
 if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['faq'])) {
     // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is verified via check_admin_referer().
     $questify_faq_id = absint(wp_unslash($_GET['faq']));
     check_admin_referer('delete-faq-' . $questify_faq_id);
     if ($questify_db->delete_faq($questify_faq_id)) {
-        echo '<div class="notice notice-success"><p>' . esc_html__('FAQ erfolgreich gelü¶scht.', 'questify') . '</p></div>';
+        echo '<div class="notice notice-success"><p>' . esc_html__('FAQ erfolgreich gelöscht.', 'questify') . '</p></div>';
     }
 }
 ?>
@@ -65,7 +65,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['faq']
 <div class="wrap">
     <h1 class="wp-heading-inline"><?php echo esc_html(get_admin_page_title()); ?></h1>
     <a href="<?php echo esc_url(admin_url('admin.php?page=questi-faqs&action=add')); ?>" class="page-title-action">
-        <?php esc_html_e('Neu hinzufü¼gen', 'questify'); ?>
+        <?php esc_html_e('Neu hinzufügen', 'questify'); ?>
     </a>
     <hr class="wp-header-end">
 
@@ -174,7 +174,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['faq']
                             </a>
                             <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin.php?page=questi-faqs&action=delete&faq=' . $questify_faq->id), 'delete-faq-' . $questify_faq->id)); ?>"
                                onclick="return confirm('<?php echo esc_js(__('Sind Sie sicher?', 'questify')); ?>');"
-                               title="<?php echo esc_attr__('Lü¶schen', 'questify'); ?>"
+                               title="<?php echo esc_attr__('Löschen', 'questify'); ?>"
                                class="chatbot-delete-link">
                                 <span class="dashicons dashicons-trash"></span>
                             </a>
@@ -219,19 +219,19 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['faq']
         <span class="chatbot-modal-close">&times;</span>
         <h2><?php esc_html_e('FAQs importieren', 'questify'); ?></h2>
 
-        <!-- Import-Methode wü¤hlen -->
+        <!-- Import-Methode wählen -->
         <div id="import-method-selector" style="margin: 20px 0;">
-            <h3><?php esc_html_e('Import-Methode wü¤hlen:', 'questify'); ?></h3>
+            <h3><?php esc_html_e('Import-Methode wählen:', 'questify'); ?></h3>
             <div style="display: flex; gap: 15px; margin: 15px 0;">
                 <label style="flex: 1; padding: 15px; border: 2px solid #ddd; border-radius: 5px; cursor: pointer; transition: all 0.3s;">
                     <input type="radio" name="import_method" value="file" checked style="margin-right: 8px;">
-                    <strong><?php esc_html_e('ðŸ“ Datei-Upload', 'questify'); ?></strong><br>
+                    <strong><?php esc_html_e('📁 Datei-Upload', 'questify'); ?></strong><br>
                        <small><?php esc_html_e('JSON oder CSV-Datei hochladen', 'questify'); ?></small>
                 </label>
                 <label style="flex: 1; padding: 15px; border: 2px solid #ddd; border-radius: 5px; cursor: pointer; transition: all 0.3s;">
                     <input type="radio" name="import_method" value="paste" style="margin-right: 8px;">
-                    <strong><?php esc_html_e('ðŸ“‹ Copy & Paste', 'questify'); ?></strong><br>
-                       <small><?php esc_html_e('Text direkt einfü¼gen', 'questify'); ?></small>
+                    <strong><?php esc_html_e('📋 Copy & Paste', 'questify'); ?></strong><br>
+                       <small><?php esc_html_e('Text direkt einfügen', 'questify'); ?></small>
                 </label>
             </div>
         </div>
@@ -240,13 +240,13 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['faq']
 
             <!-- Datei-Upload Methode -->
             <div id="import-file-section">
-                <h3><?php esc_html_e('Datei auswü¤hlen', 'questify'); ?></h3>
+                <h3><?php esc_html_e('Datei auswählen', 'questify'); ?></h3>
                 <div style="margin: 15px 0;">
                     <input type="file" id="import-file" name="import_file" accept=".json,.csv,.txt">
                 </div>
 
                 <div class="notice notice-info inline" style="margin: 15px 0;">
-                    <p><strong><?php esc_html_e('Unterstü¼tzte Formate:', 'questify'); ?></strong></p>
+                    <p><strong><?php esc_html_e('Unterstützte Formate:', 'questify'); ?></strong></p>
                     <ul style="margin-left: 20px;">
                         <li><strong>JSON:</strong> <?php esc_html_e('Exportierte Datei von diesem Plugin', 'questify'); ?></li>
                         <li><strong>CSV (Standard):</strong> <?php esc_html_e('Spalten: Frage, Antwort, Keywords (optional)', 'questify'); ?></li>
@@ -257,10 +257,10 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['faq']
 
             <!-- Copy & Paste Methode -->
             <div id="import-paste-section" style="display: none;">
-                <h3><?php esc_html_e('Text einfü¼gen', 'questify'); ?></h3>
+                <h3><?php esc_html_e('Text einfügen', 'questify'); ?></h3>
 
                 <div style="margin: 15px 0;">
-                       <label><strong><?php esc_html_e('Format wü¤hlen:', 'questify'); ?></strong></label>
+                       <label><strong><?php esc_html_e('Format wählen:', 'questify'); ?></strong></label>
                     <select id="paste-format" style="width: 100%; margin: 10px 0; padding: 8px;">
                         <option value="tab"><?php esc_html_e('Tab-getrennt (aus Excel/Google Sheets kopiert)', 'questify'); ?></option>
                         <option value="comma"><?php esc_html_e('Komma-getrennt (CSV)', 'questify'); ?></option>
@@ -272,12 +272,12 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['faq']
                 <div style="margin: 15px 0;">
                     <label>
                         <input type="checkbox" id="has-headers" checked>
-                        <?php esc_html_e('Erste Zeile enthü¤lt üœberschriften', 'questify'); ?>
+                        <?php esc_html_e('Erste Zeile enthält Überschriften', 'questify'); ?>
                     </label>
                 </div>
 
                 <div style="margin: 15px 0;">
-                       <textarea id="paste-content" placeholder="<?php echo esc_attr__('Fü¼gen Sie hier Ihre Daten ein...\n\nBeispiel (Tab-getrennt):\nFrage	Antwort	Keywords\nWas kostet...?	Der Preis betrü¤gt...	preis, kosten\nWie lange...?	Die Dauer ist...	dauer, zeit', 'questify'); ?>"
+                       <textarea id="paste-content" placeholder="<?php echo esc_attr__('Fügen Sie hier Ihre Daten ein...\n\nBeispiel (Tab-getrennt):\nFrage	Antwort	Keywords\nWas kostet...?	Der Preis beträgt...	preis, kosten\nWie lange...?	Die Dauer ist...	dauer, zeit', 'questify'); ?>"
                                  style="width: 100%; height: 250px; font-family: monospace; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
                 </div>
 
@@ -285,9 +285,9 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['faq']
                     <p><strong><?php esc_html_e('Hinweise:', 'questify'); ?></strong></p>
                     <ul style="margin-left: 20px;">
                         <li><?php esc_html_e('Mindestens 2 Spalten: Frage und Antwort', 'questify'); ?></li>
-                        <li><?php esc_html_e('Optional: 3. Spalte fü¼r Keywords (kommasepariert)', 'questify'); ?></li>
+                        <li><?php esc_html_e('Optional: 3. Spalte für Keywords (kommasepariert)', 'questify'); ?></li>
                         <li><?php esc_html_e('Wenn keine Keywords angegeben, werden sie automatisch generiert', 'questify'); ?></li>
-                        <li><?php esc_html_e('Aus Excel/Sheets: Markieren â†’ Kopieren â†’ Hier einfü¼gen', 'questify'); ?></li>
+                        <li><?php esc_html_e('Aus Excel/Sheets: Markieren → Kopieren → Hier einfügen', 'questify'); ?></li>
                     </ul>
                 </div>
 

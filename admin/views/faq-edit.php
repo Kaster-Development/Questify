@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 }
 
 // FAQ holen wenn Edit-Modus
-$questify_db = Chatbot_Database::get_instance();
+$questify_db = Questi_Database::get_instance();
 $questify_faq_id = isset($_GET['faq']) ? absint(wp_unslash($_GET['faq'])) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only item selection.
 $questify_faq = $questify_faq_id > 0 ? $questify_db->get_faq($questify_faq_id) : null;
 
@@ -43,9 +43,9 @@ $questify_page_title = $questify_is_edit ? __('FAQ bearbeiten', 'questify') : __
                                name="question"
                                class="large-text"
                                value="<?php echo $questify_is_edit ? esc_attr($questify_faq->question) : ''; ?>"
-                               placeholder="<?php echo esc_attr__('z.B. Was sind Ihre ü–ffnungszeiten?', 'questify'); ?>"
+                               placeholder="<?php echo esc_attr__('z.B. Was sind Ihre Öffnungszeiten?', 'questify'); ?>"
                                required>
-                           <p class="description"><?php esc_html_e('Die Frage, die Ihre Kunden stellen kü¶nnten (mindestens 10 Zeichen).', 'questify'); ?></p>
+                           <p class="description"><?php esc_html_e('Die Frage, die Ihre Kunden stellen könnten (mindestens 10 Zeichen).', 'questify'); ?></p>
                     </div>
 
                     <!-- Antwort -->
@@ -67,7 +67,7 @@ $questify_page_title = $questify_is_edit ? __('FAQ bearbeiten', 'questify') : __
                     <!-- Keywords -->
                     <div class="chatbot-form-group">
                         <label for="keywords">
-                            <?php esc_html_e('Keywords (Schlü¼sselwü¶rter)', 'questify'); ?>
+                            <?php esc_html_e('Keywords (Schlüsselwörter)', 'questify'); ?>
                             <button type="button" id="generate-keywords-btn" class="button button-secondary" style="margin-left: 10px;">
                                 <span class="dashicons dashicons-update-alt" style="margin-top: 3px;"></span>
                                 <?php esc_html_e('Keywords automatisch generieren', 'questify'); ?>
@@ -77,22 +77,22 @@ $questify_page_title = $questify_is_edit ? __('FAQ bearbeiten', 'questify') : __
                                   name="keywords"
                                   rows="3"
                                   class="large-text"
-                                  placeholder="<?php echo esc_attr__('z.B. ü¶ffnungszeiten, business hours, wann offen', 'questify'); ?>"><?php echo $questify_is_edit ? esc_textarea($questify_faq->keywords) : ''; ?></textarea>
+                                  placeholder="<?php echo esc_attr__('z.B. öffnungszeiten, business hours, wann offen', 'questify'); ?>"><?php echo $questify_is_edit ? esc_textarea($questify_faq->keywords) : ''; ?></textarea>
                         <p class="description">
                             <?php esc_html_e('Alternative Suchbegriffe, durch Komma getrennt. Diese helfen beim Matching der Fragen.', 'questify'); ?>
                             <br>
-                            <strong><?php esc_html_e('ðŸ’¡ Tipp:', 'questify'); ?></strong>
-                            <?php esc_html_e('Lassen Sie das Feld leer - Keywords werden automatisch beim Speichern generiert! Oder klicken Sie auf "Keywords automatisch generieren" fü¼r eine Vorschau.', 'questify'); ?>
+                            <strong><?php esc_html_e('💡 Tipp:', 'questify'); ?></strong>
+                            <?php esc_html_e('Lassen Sie das Feld leer - Keywords werden automatisch beim Speichern generiert! Oder klicken Sie auf "Keywords automatisch generieren" für eine Vorschau.', 'questify'); ?>
                         </p>
                     </div>
                 </div>
 
                 <!-- Sidebar -->
                 <div id="postbox-container-1" class="postbox-container">
-                    <!-- Verü¶ffentlichen-Box -->
+                    <!-- Veröffentlichen-Box -->
                     <div class="postbox">
                         <div class="postbox-header">
-                            <h2><?php esc_html_e('Verü¶ffentlichen', 'questify'); ?></h2>
+                            <h2><?php esc_html_e('Veröffentlichen', 'questify'); ?></h2>
                         </div>
                         <div class="inside">
                             <div class="submitbox">
@@ -129,15 +129,15 @@ $questify_page_title = $questify_is_edit ? __('FAQ bearbeiten', 'questify') : __
                                         <?php if ($questify_is_edit): ?>
                                         <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin.php?page=questi-faqs&action=delete&faq=' . $questify_faq->id), 'delete-faq-' . $questify_faq->id)); ?>"
                                            class="submitdelete deletion"
-                                           onclick="return confirm('<?php echo esc_js(__('Sind Sie sicher, dass Sie diese FAQ lü¶schen mü¶chten?', 'questify')); ?>');">
-                                            <?php esc_html_e('Lü¶schen', 'questify'); ?>
+                                           onclick="return confirm('<?php echo esc_js(__('Sind Sie sicher, dass Sie diese FAQ löschen möchten?', 'questify')); ?>');">
+                                            <?php esc_html_e('Löschen', 'questify'); ?>
                                         </a>
                                         <?php endif; ?>
                                     </div>
                                     <div id="publishing-action">
                                         <button type="submit" class="button button-primary button-large">
                                             <span class="dashicons dashicons-saved"></span>
-                                            <?php echo esc_html($questify_is_edit ? __('Aktualisieren', 'questify') : __('Verü¶ffentlichen', 'questify')); ?>
+                                            <?php echo esc_html($questify_is_edit ? __('Aktualisieren', 'questify') : __('Veröffentlichen', 'questify')); ?>
                                         </button>
                                         <button type="submit" name="save_and_new" class="button button-secondary">
                                             <?php esc_html_e('Speichern & Neu', 'questify'); ?>
@@ -152,12 +152,12 @@ $questify_page_title = $questify_is_edit ? __('FAQ bearbeiten', 'questify') : __
                     <!-- Hilfe-Box -->
                     <div class="postbox">
                         <div class="postbox-header">
-                            <h2><?php esc_html_e('ðŸ’¡ Tipps', 'questify'); ?></h2>
+                            <h2><?php esc_html_e('💡 Tipps', 'questify'); ?></h2>
                         </div>
                         <div class="inside">
                             <ul>
-                                <li><?php esc_html_e('Formulieren Sie Fragen so, wie Ihre Kunden sie stellen wü¼rden.', 'questify'); ?></li>
-                                <li><?php esc_html_e('Verwenden Sie klare, verstü¤ndliche Antworten.', 'questify'); ?></li>
+                                <li><?php esc_html_e('Formulieren Sie Fragen so, wie Ihre Kunden sie stellen würden.', 'questify'); ?></li>
+                                <li><?php esc_html_e('Verwenden Sie klare, verständliche Antworten.', 'questify'); ?></li>
                                 <li><?php esc_html_e('Keywords verbessern die Trefferquote erheblich.', 'questify'); ?></li>
                                 <li><?php esc_html_e('HTML ist in der Antwort erlaubt (Links, Listen, etc.).', 'questify'); ?></li>
                             </ul>
@@ -170,7 +170,7 @@ $questify_page_title = $questify_is_edit ? __('FAQ bearbeiten', 'questify') : __
 
     <p class="chatbot-back-link">
         <a href="<?php echo esc_url(admin_url('admin.php?page=questi-faqs')); ?>">
-            &larr; <?php esc_html_e('Zurü¼ck zur üœbersicht', 'questify'); ?>
+            &larr; <?php esc_html_e('Zurück zur Übersicht', 'questify'); ?>
         </a>
     </p>
 </div>

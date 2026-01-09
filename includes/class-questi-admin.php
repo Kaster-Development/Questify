@@ -154,7 +154,7 @@ class Questi_Admin {
         // Lokalisierung
         wp_localize_script('questi-admin-script', 'questiAdmin', [
             'ajaxurl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('Questi_Admin_ajax'),
+            'nonce' => wp_create_nonce('questi_admin_ajax'),
             'strings' => [
                 'delete_confirm' => __('Sind Sie sicher, dass Sie diesen Eintrag löschen möchten?', 'questify'),
                 'error' => __('Ein Fehler ist aufgetreten.', 'questify'),

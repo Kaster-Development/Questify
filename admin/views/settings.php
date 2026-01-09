@@ -23,7 +23,7 @@ function questify_get_chatbot_option($option_name, $default = '') {
 // Standardwerte definieren
 $questify_defaults = [
     'questi_enabled' => true,
-    'questi_welcome_message' => 'Hallo! ðŸ˜Š Wie kann ich Ihnen helfen?',
+    'questi_welcome_message' => 'Hallo! 😊 Wie kann ich Ihnen helfen?',
     'questi_placeholder_text' => 'Stellen Sie Ihre Frage...',
     'questi_no_answer_message' => 'Ich konnte leider keine passende Antwort finden. Möchten Sie uns Ihre Frage per E-Mail senden?',
     'questi_thank_you_message' => 'Vielen Dank! Wir haben Ihre Anfrage erhalten und melden uns in Kürze bei Ihnen.',

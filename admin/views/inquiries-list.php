@@ -8,7 +8,7 @@
 
 if (!defined('ABSPATH')) exit;
 
-$questify_db = Chatbot_Database::get_instance();
+$questify_db = Questi_Database::get_instance();
 
 // Pagination
 $per_page = 20;

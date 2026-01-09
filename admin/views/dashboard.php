@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$questify_db = Chatbot_Database::get_instance();
+$questify_db = Questi_Database::get_instance();
 $questify_stats = $questify_db->get_dashboard_stats('month');
 $questify_top_faqs = $questify_db->get_top_faqs(5);
 $questify_recent_inquiries = $questify_db->get_all_inquiries(['limit' => 5, 'orderby' => 'timestamp', 'order' => 'DESC']);
@@ -30,8 +30,8 @@ $questify_show_welcome = ($questify_welcome === '1');
 
     <?php if ($questify_show_welcome): ?>
     <div class="notice notice-success is-dismissible">
-        <h2>Ã°Å¸Å½â€° <?php esc_html_e('Willkommen bei Questify!', 'questify'); ?></h2>
-        <p><?php esc_html_e('Das Plugin wurde erfolgreich aktiviert. Hier sind die nÃ¼Â¤chsten Schritte:', 'questify'); ?></p>
+        <h2>🎉 <?php esc_html_e('Willkommen bei Questify!', 'questify'); ?></h2>
+        <p><?php esc_html_e('Das Plugin wurde erfolgreich aktiviert. Hier sind die nächsten Schritte:', 'questify'); ?></p>
         <ol>
             <li><a href="<?php echo esc_url(admin_url('admin.php?page=questi-faqs&action=add')); ?>"><?php esc_html_e('Erste FAQ erstellen', 'questify'); ?></a></li>
             <li><a href="<?php echo esc_url(admin_url('admin.php?page=questi-settings')); ?>"><?php esc_html_e('Einstellungen anpassen', 'questify'); ?></a></li>
@@ -43,7 +43,7 @@ $questify_show_welcome = ($questify_welcome === '1');
     <!-- Statistik-Karten -->
     <div class="chatbot-stats-cards">
         <div class="chatbot-stat-card">
-            <div class="stat-icon">Ã°Å¸â€œÅ </div>
+            <div class="stat-icon">📊</div>
             <div class="stat-content">
                 <h3><?php echo esc_html(number_format_i18n($questify_stats['total_inquiries'] ?? 0)); ?></h3>
                 <p><?php esc_html_e('Gesamt-Anfragen', 'questify'); ?></p>
@@ -52,7 +52,7 @@ $questify_show_welcome = ($questify_welcome === '1');
         </div>
 
         <div class="chatbot-stat-card">
-            <div class="stat-icon stat-success">Ã¢Å“â€œ</div>
+            <div class="stat-icon stat-success">✓</div>
             <div class="stat-content">
                 <h3><?php echo esc_html(number_format_i18n($questify_stats['answered_percent'] ?? 0)); ?>%</h3>
                 <p><?php esc_html_e('Beantwortet', 'questify'); ?></p>
@@ -61,7 +61,7 @@ $questify_show_welcome = ($questify_welcome === '1');
         </div>
 
         <div class="chatbot-stat-card">
-            <div class="stat-icon stat-warning">Ã¢Å¡Â </div>
+            <div class="stat-icon stat-warning">⚠</div>
             <div class="stat-content">
                 <h3><?php echo esc_html(number_format_i18n($questify_stats['not_answered_percent'] ?? 0)); ?>%</h3>
                 <p><?php esc_html_e('Nicht beantwortet', 'questify'); ?></p>
@@ -70,7 +70,7 @@ $questify_show_welcome = ($questify_welcome === '1');
         </div>
 
         <div class="chatbot-stat-card">
-            <div class="stat-icon stat-info">Ã°Å¸â€˜Â</div>
+            <div class="stat-icon stat-info">👍</div>
             <div class="stat-content">
                 <h3><?php echo esc_html(number_format_i18n($questify_stats['helpful_rate'] ?? 0)); ?>%</h3>
                 <p><?php esc_html_e('Hilfreich-Rate', 'questify'); ?></p>
@@ -116,7 +116,7 @@ $questify_show_welcome = ($questify_welcome === '1');
 
             <p class="chatbot-box-footer">
                 <a href="<?php echo esc_url(admin_url('admin.php?page=questi-faqs')); ?>">
-                    <?php esc_html_e('Alle FAQs anzeigen', 'questify'); ?> Ã¢â€ â€™
+                    <?php esc_html_e('Alle FAQs anzeigen', 'questify'); ?> →
                 </a>
             </p>
         </div>
@@ -179,7 +179,7 @@ $questify_show_welcome = ($questify_welcome === '1');
 
             <p class="chatbot-box-footer">
                 <a href="<?php echo esc_url(admin_url('admin.php?page=questi-inquiries')); ?>">
-                    <?php esc_html_e('Alle Anfragen anzeigen', 'questify'); ?> Ã¢â€ â€™
+                    <?php esc_html_e('Alle Anfragen anzeigen', 'questify'); ?> →
                 </a>
             </p>
         </div>
@@ -210,8 +210,8 @@ $questify_show_welcome = ($questify_welcome === '1');
 
     <!-- Hilfe-Box -->
     <div class="chatbot-help-box">
-        <h3><?php esc_html_e('BenÃ¼Â¶tigen Sie Hilfe?', 'questify'); ?></h3>
-        <p><?php esc_html_e('Hier finden Sie nÃ¼Â¼tzliche Ressourcen:', 'questify'); ?></p>
+        <h3><?php esc_html_e('Benötigen Sie Hilfe?', 'questify'); ?></h3>
+        <p><?php esc_html_e('Hier finden Sie nützliche Ressourcen:', 'questify'); ?></p>
         <ul>
             <li>
                 <a href="https://kaster-development.de/wp-faq-chat/docs" target="_blank" rel="noopener noreferrer">

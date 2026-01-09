@@ -8,7 +8,7 @@
 
 if (!defined('ABSPATH')) exit;
 
-$questify_db = Chatbot_Database::get_instance();
+$questify_db = Questi_Database::get_instance();
 // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only item selection.
 $questify_inquiry_id = isset($_GET['inquiry']) ? absint(wp_unslash($_GET['inquiry'])) : 0;
 $questify_inquiry = $questify_db->get_inquiry($questify_inquiry_id);
@@ -70,7 +70,7 @@ $questify_matched_faq = $questify_inquiry->matched_faq_id ? $questify_db->get_fa
                 <div><?php echo wp_kses_post($questify_matched_faq->answer); ?></div>
                 <p class="chatbot-faq-link">
                     <a href="<?php echo esc_url(admin_url('admin.php?page=questi-faqs&action=edit&faq=' . $questify_matched_faq->id)); ?>">
-                        <?php esc_html_e('FAQ bearbeiten â†’', 'questify'); ?>
+                        <?php esc_html_e('FAQ bearbeiten →', 'questify'); ?>
                     </a>
                 </p>
             </div>
@@ -78,8 +78,8 @@ $questify_matched_faq = $questify_inquiry->matched_faq_id ? $questify_db->get_fa
             <p><strong><?php esc_html_e('Hilfreich:', 'questify'); ?></strong>
                 <?php
                 echo $questify_inquiry->was_helpful === 'yes'
-                    ? 'ðŸ‘ ' . esc_html__('Ja', 'questify')
-                    : 'ðŸ‘Ž ' . esc_html__('Nein', 'questify');
+                    ? '👍 ' . esc_html__('Ja', 'questify')
+                    : '👎 ' . esc_html__('Nein', 'questify');
                 ?>
             </p>
             <?php endif; ?>
@@ -87,7 +87,7 @@ $questify_matched_faq = $questify_inquiry->matched_faq_id ? $questify_db->get_fa
         <?php endif; ?>
 
         <div class="chatbot-inquiry-status">
-            <h2><?php esc_html_e('Status ü¤ndern', 'questify'); ?></h2>
+            <h2><?php esc_html_e('Status ändern', 'questify'); ?></h2>
             <select id="inquiry-status" data-inquiry-id="<?php echo esc_attr((string) $questify_inquiry->id); ?>">
                 <option value="new" <?php selected($questify_inquiry->status, 'new'); ?>><?php esc_html_e('Neu', 'questify'); ?></option>
                 <option value="in_progress" <?php selected($questify_inquiry->status, 'in_progress'); ?>><?php esc_html_e('In Bearbeitung', 'questify'); ?></option>
@@ -105,12 +105,12 @@ $questify_matched_faq = $questify_inquiry->matched_faq_id ? $questify_db->get_fa
                 <span class="dashicons dashicons-email"></span> <?php esc_html_e('E-Mail senden', 'questify'); ?>
             </a>
             <button type="button" class="button button-secondary chatbot-delete-inquiry" data-inquiry-id="<?php echo esc_attr((string) $questify_inquiry->id); ?>">
-                <span class="dashicons dashicons-trash"></span> <?php esc_html_e('Lü¶schen', 'questify'); ?>
+                <span class="dashicons dashicons-trash"></span> <?php esc_html_e('Löschen', 'questify'); ?>
             </button>
         </div>
     </div>
 
-    <p><a href="<?php echo esc_url(admin_url('admin.php?page=questi-inquiries')); ?>">&larr; <?php esc_html_e('Zurü¼ck zur üœbersicht', 'questify'); ?></a></p>
+    <p><a href="<?php echo esc_url(admin_url('admin.php?page=questi-inquiries')); ?>">&larr; <?php esc_html_e('Zurück zur Übersicht', 'questify'); ?></a></p>
 </div>
 
 

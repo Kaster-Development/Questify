@@ -322,7 +322,7 @@ class Questi_Email {
                         <span class="label">Status:</span>
                         <?php if ($inquiry->matched_faq_id): ?>
                             <span class="status-badge status-success">
-                                <?php if ($show_icons): ?>[âœ“]<?php endif; ?> Antwort gefunden (FAQ #<?php echo esc_html((string) $inquiry->matched_faq_id); ?>)
+                                <?php if ($show_icons): ?>[✓]<?php endif; ?> Antwort gefunden (FAQ #<?php echo esc_html((string) $inquiry->matched_faq_id); ?>)
                             </span>
                         <?php else: ?>
                             <span class="status-badge status-warning">
@@ -371,7 +371,7 @@ class Questi_Email {
 
                     <center>
                         <a href="<?php echo esc_url($admin_url); ?>" class="button">
-                            Im Backend ansehen â†’
+                            Im Backend ansehen →
                         </a>
                     </center>
                 </div>
@@ -538,3 +538,4 @@ class Questi_Email {
         // Intentionally no-op: avoid error_log() in production plugins.
     }
 }
+

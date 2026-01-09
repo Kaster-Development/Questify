@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - **Namespace-Refaktorisierung**: Alle Bezeichner von `chatbot_` auf `questi_` Präfix umgestellt (Klassen, Optionen, AJAX-Actions, Hooks, Shortcodes)
 
 ### Fixed
+- **Klassenname**: `Chatbot_Database` zu `Questi_Database` in allen Admin-Views korrigiert (`dashboard.php`, `analytics.php`, `faqs-list.php`, `faq-edit.php`, `inquiries-list.php`, `inquiry-detail.php`)
+- **UTF-8 Encoding**: Doppelt-kodierte Zeichen in 9 Dateien repariert – deutsche Umlaute (ä, ö, ü, ß) und Emojis (📊, ✓, ⚠, 👍, 😊, 📁, 📋, 🎉, 💡, →) werden wieder korrekt angezeigt
+- **FAQ-Import**: Nonce-Validierung korrigiert – Groß-/Kleinschreibung (`Questi_Admin_ajax` → `questi_admin_ajax`) führte zu "Sicherheitsprüfung fehlgeschlagen" Fehler
 - **Security**: Nonce- und Berechtigungsprüfung für Bulk-Actions hinzugefügt
 - **Readme/Docs**: Contributors-Username und Support-E-Mail aktualisiert
 - **Dokumentation**: README.md und DEPENDENCIES.md korrigiert – Shortcode `[questi_faq_chat]`, Klassennamen `Questi_*`, Filter-Präfix `questi_*`, Verzeichnisstruktur `questify/` und Hauptdatei `questify.php` aktualisiert

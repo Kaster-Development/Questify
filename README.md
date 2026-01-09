@@ -62,13 +62,13 @@ Under **FAQ Chatbot** > **Settings** you can:
 You can also embed the chat using a shortcode:
 
 ```php
-[wp_faq_chat]
+[questi_faq_chat]
 ```
 
 With parameters:
 
 ```php
-[wp_faq_chat position="left" color="#FF5722" size="large"]
+[questi_faq_chat position="left" color="#FF5722" size="large"]
 ```
 
 ## Matching Algorithm
@@ -105,16 +105,16 @@ do_action('questify_faq_saved', $faq_id, $data);
 
 ```php
 // Adjust matching score
-apply_filters('chatbot_matching_score', $score, $question, $faq);
+apply_filters('questi_matching_score', $score, $question, $faq);
 
 // Change minimum score
-apply_filters('chatbot_min_score', $min_score);
+apply_filters('questi_min_score', $min_score);
 
 // Customize email template
-apply_filters('chatbot_email_template', $template, $inquiry);
+apply_filters('questi_email_template', $template, $inquiry);
 
 // Filter stopwords
-apply_filters('chatbot_stopwords', $stopwords);
+apply_filters('questi_stopwords', $stopwords);
 ```
 
 ## Development
@@ -122,8 +122,8 @@ apply_filters('chatbot_stopwords', $stopwords);
 ### Directory Structure
 
 ```
-wp-faq-chat/
-├── wp-faq-chat.php          # Main plugin file
+questify/
+├── questify.php              # Main plugin file
 ├── includes/                 # Core classes
 ├── admin/                    # Admin area
 │   ├── css/
@@ -138,14 +138,15 @@ wp-faq-chat/
 
 ### Class Overview
 
-- `Chatbot_Activator` - Plugin activation
-- `Chatbot_Deactivator` - Plugin deactivation
-- `Chatbot_Database` - Database operations
-- `Chatbot_Matcher` - FAQ matching algorithm
-- `Chatbot_Email` - Email sending
-- `Chatbot_Ajax` - AJAX handlers
-- `Chatbot_Admin` - Admin area
-- `Chatbot_Frontend` - Frontend display
+- `Questi_Activator` - Plugin activation
+- `Questi_Deactivator` - Plugin deactivation
+- `Questi_Database` - Database operations
+- `Questi_Matcher` - FAQ matching algorithm
+- `Questi_Email` - Email sending
+- `Questi_Ajax` - AJAX handlers
+- `Questi_Admin` - Admin area
+- `Questi_Frontend` - Frontend display
+- `Questi_Keyword_Generator` - Automatic keyword generation
 
 ## Support
 

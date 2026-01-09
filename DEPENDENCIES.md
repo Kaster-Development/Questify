@@ -44,7 +44,7 @@ The plugin uses the following WordPress core features:
 
 - **wp_enqueue_scripts** - Asset loading
 - **wp_localize_script** - JavaScript localization
-- **Shortcode API** - [wp_faq_chat] shortcode
+- **Shortcode API** - [questi_faq_chat] shortcode
 
 ### Email
 

@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Fixed
 - **Security**: Nonce- und Berechtigungsprüfung für Bulk-Actions hinzugefügt
 - **Readme/Docs**: Contributors-Username und Support-E-Mail aktualisiert
+- **Dokumentation**: README.md und DEPENDENCIES.md korrigiert – Shortcode `[questi_faq_chat]`, Klassennamen `Questi_*`, Filter-Präfix `questi_*`, Verzeichnisstruktur `questify/` und Hauptdatei `questify.php` aktualisiert
 
 ### Removed
 - **WordPress.org Assets**: Plugin-Icons (`icon-128x128.png`, `icon-256x256.png`) aus dem Plugin-Code entfernt – diese werden separat via SVN hochgeladen

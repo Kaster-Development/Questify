@@ -37,6 +37,13 @@ class Questi_Keyword_Generator {
         'gibt', 'es', 'ich', 'sie', 'ihr', 'mein', 'dein',
         'dieser', 'diese', 'dieses', 'jener', 'jene', 'jenes',
         'welcher', 'welche', 'welches',
+        'auch', 'noch', 'schon', 'immer', 'gerne', 'gern',
+        'mal', 'nur', 'sehr', 'viel', 'mehr', 'weniger',
+        'ja', 'nein', 'nicht', 'kein', 'keine', 'keiner',
+        'alle', 'alles', 'jeder', 'jede', 'jedes',
+        'man', 'uns', 'euch', 'ihnen', 'ihm', 'ihr',
+        'hallo', 'guten', 'tag', 'morgen', 'abend',
+        'bitte', 'danke', 'vielen', 'dank',
     ];
 
     /**
@@ -45,7 +52,50 @@ class Questi_Keyword_Generator {
     private array $question_words = [
         'wann', 'wie', 'was', 'wo', 'wer', 'warum', 'wieso', 'weshalb',
         'gibt', 'gibts', 'gibt\'s', 'haben', 'hat', 'kann', 'könnte',
-        'möchte', 'möglich', 'bitte', 'bitte', 'sagen', 'erklären',
+        'möchte', 'möglich', 'bitte', 'sagen', 'erklären',
+        'wollte', 'würde', 'fragen', 'wissen', 'frage',
+    ];
+
+    /**
+     * Wichtige Themenwörter die immer als Keyword erkannt werden sollten
+     */
+    private array $important_topics = [
+        // Öffnungszeiten
+        'öffnungszeiten', 'öffnungszeit', 'geöffnet', 'geschlossen', 'offen',
+        'heiligabend', 'silvester', 'feiertag', 'feiertage', 'wochenende',
+        'montag', 'dienstag', 'mittwoch', 'donnerstag', 'freitag', 'samstag', 'sonntag',
+        // Preise & Bezahlung
+        'preis', 'preise', 'kosten', 'kostet', 'euro', 'bezahlen', 'zahlung',
+        'karte', 'kartenzahlung', 'bar', 'barzahlung', 'ec', 'kreditkarte',
+        'gutschein', 'gutscheine', 'rabatt', 'ermäßigung', 'ermäßigt',
+        'fünferkarte', 'zehnerkarte', 'mehrfachkarte', 'jahreskarte', 'saisonkarte',
+        // Ausrüstung
+        'helm', 'helme', 'schutzhelm', 'schlittschuh', 'schlittschuhe',
+        'handschuh', 'handschuhe', 'ausrüstung', 'ausleihen', 'leihen', 'mieten',
+        'größe', 'größen', 'schuhgröße', 'nummer',
+        // Kurse & Training
+        'kurs', 'kurse', 'lernen', 'unterricht', 'anfänger', 'training',
+        'eiskunstlauf', 'eishockey', 'eislaufen',
+        // Veranstaltungen
+        'veranstaltung', 'veranstaltungen', 'party', 'geburtstag', 'gruppe', 'gruppen',
+        'event', 'events', 'feier', 'feiern', 'reservierung', 'reservieren',
+        // Service
+        'schleifen', 'schärfen', 'geschliffen', 'reparatur',
+        'parken', 'parkplatz', 'anfahrt', 'adresse',
+        'kinder', 'kind', 'erwachsene', 'alter', 'mindestalter',
+        // Kontakt
+        'telefon', 'email', 'kontakt', 'erreichbar', 'ansprechpartner',
+    ];
+
+    /**
+     * Zusammengesetzte Keywords (Phrasen)
+     */
+    private array $keyword_phrases = [
+        'öffnungszeiten' => ['wann offen', 'wann geöffnet', 'wann auf', 'wann zu'],
+        'kartenzahlung' => ['mit karte', 'karte zahlen', 'karte bezahlen', 'ec karte', 'kreditkarte'],
+        'gutschein' => ['zum verschenken', 'geschenk', 'verschenken'],
+        'schlittschuhverleih' => ['schlittschuhe ausleihen', 'schlittschuhe leihen', 'schuhe leihen'],
+        'helmverleih' => ['helm ausleihen', 'helm leihen', 'helme leihen'],
     ];
 
     /**
@@ -80,6 +130,25 @@ class Questi_Keyword_Generator {
      */
     public function generate_keywords(string $question, string $answer = ''): string {
         $keywords = [];
+        $combined_text = $question . ' ' . wp_strip_all_tags($answer);
+        $combined_lower = mb_strtolower($combined_text, 'UTF-8');
+
+        // 0. Wichtige Themen-Keywords zuerst prüfen (höchste Priorität)
+        foreach ($this->important_topics as $topic) {
+            if (str_contains($combined_lower, $topic)) {
+                $keywords[] = $topic;
+            }
+        }
+
+        // 0.1 Phrasen-Keywords prüfen
+        foreach ($this->keyword_phrases as $keyword => $phrases) {
+            foreach ($phrases as $phrase) {
+                if (str_contains($combined_lower, $phrase)) {
+                    $keywords[] = $keyword;
+                    break;
+                }
+            }
+        }
 
         // 1. Keywords aus Frage extrahieren
         $question_keywords = $this->extract_keywords_from_text($question);
@@ -89,7 +158,7 @@ class Questi_Keyword_Generator {
         if (!empty($answer)) {
             // HTML entfernen
             $answer_text = wp_strip_all_tags($answer);
-            $answer_keywords = $this->extract_keywords_from_text($answer_text, 5); // Max 5 aus Antwort
+            $answer_keywords = $this->extract_keywords_from_text($answer_text, 8); // Max 8 aus Antwort (erhöht von 5)
             $keywords = array_merge($keywords, $answer_keywords);
         }
 
@@ -104,13 +173,19 @@ class Questi_Keyword_Generator {
         $keywords = array_unique($keywords);
         $keywords = array_filter($keywords); // Leere Einträge entfernen
 
-        // 5. Nach Länge sortieren (längere Wörter zuerst)
+        // 5. Wichtige Themen-Keywords nach vorne sortieren, dann nach Länge
         usort($keywords, function($a, $b) {
+            $a_important = in_array($a, $this->important_topics);
+            $b_important = in_array($b, $this->important_topics);
+            
+            if ($a_important && !$b_important) return -1;
+            if (!$a_important && $b_important) return 1;
+            
             return strlen($b) - strlen($a);
         });
 
-        // 6. Auf maximal 20 Keywords begrenzen
-        $keywords = array_slice($keywords, 0, 20);
+        // 6. Auf maximal 25 Keywords begrenzen (erhöht von 20)
+        $keywords = array_slice($keywords, 0, 25);
 
         return implode(', ', $keywords);
     }
@@ -149,7 +224,7 @@ class Questi_Keyword_Generator {
             }
 
             // Nur Buchstaben und Zahlen
-            if (!preg_match('/^[a-zäöüÖŸ0-9]+$/i', $word)) {
+            if (!preg_match('/^[a-zäöüß0-9]+$/i', $word)) {
                 continue;
             }
 
@@ -254,8 +329,8 @@ class Questi_Keyword_Generator {
         // Zu Kleinbuchstaben
         $text = mb_strtolower($text, 'UTF-8');
 
-        // Sonderzeichen entfernen (auÖŸer Umlaute, ÖŸ und Leerzeichen)
-        $text = preg_replace('/[^a-zäöüÖŸ0-9\s]/', ' ', $text);
+        // Sonderzeichen entfernen (außer Umlaute, ß und Leerzeichen)
+        $text = preg_replace('/[^a-zäöüß0-9\s]/', ' ', $text);
 
         // Mehrfache Leerzeichen entfernen
         $text = preg_replace('/\s+/', ' ', $text);

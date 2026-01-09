@@ -17,6 +17,10 @@
             $('#min-score-value').text($(this).val());
         });
 
+        $('#confident-score-range').on('input', function() {
+            $('#confident-score-value').text($(this).val());
+        });
+
         $('#send-test-email').on('click', function() {
             var button = $(this);
             button.prop('disabled', true).text(questiSettings.strings.sending);

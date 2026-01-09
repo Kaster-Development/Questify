@@ -153,7 +153,7 @@ class Questi_Email {
         // Plain Text Format (aber als HTML mit <pre> für bessere Darstellung in E-Mail-Clients)
         if ($email_format === 'plain') {
             $plain_text = $this->get_plain_text_email($inquiry, $faq, $include_ip, $include_user_agent, $admin_url);
-            // UmschlieÖŸe mit <pre> für korrekte Darstellung in allen E-Mail-Clients
+            // Umschließe mit <pre> für korrekte Darstellung in allen E-Mail-Clients
             return '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body><pre style="font-family: monospace; font-size: 13px; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word;">' . esc_html($plain_text) . '</pre></body></html>';
         }
 

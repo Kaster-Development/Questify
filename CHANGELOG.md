@@ -9,11 +9,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [1.0.7] - 2026-01-09
 
+### Added
+- **Low-Confidence-Erkennung**: Neues System erkennt unsichere Matches und bietet stattdessen Kontaktformular an
+  - Neuer `confident_score` Schwellenwert (Standard: 85) – unter diesem Wert gilt ein Match als unsicher
+  - Themen-Erkennung prüft ob FAQ thematisch zur Frage passt (Öffnungszeiten, Preise, Gutscheine, Ausrüstung, Kurse, etc.)
+  - Neue Einstellung "Nachricht bei unsicherer Antwort" in den Chatbot-Einstellungen
+  - Neue Einstellung "Sicherer Match-Score" im Matching-Tab
+- **Erweiterte Keyword-Generierung**: Verbesserte automatische Keyword-Erkennung
+  - 70+ vordefinierte Themen-Keywords (Öffnungszeiten, Preise, Ausrüstung, Kurse, Veranstaltungen, Service)
+  - Phrasen-Erkennung: "wann offen" → öffnungszeiten, "mit karte bezahlen" → kartenzahlung
+  - Erweiterte Stoppwörter-Liste (Höflichkeitsfloskeln)
+  - Wichtige Keywords werden priorisiert und stehen am Anfang
+  - Erhöhte Limits: Max. 8 Keywords aus Antwort (vorher 5), Max. 25 Keywords insgesamt (vorher 20)
+
 ### Changed
+- **Matching-Algorithmus optimiert**: Weniger falsche Antworten durch verbesserte Score-Berechnung
+  - Themen-Bonus (+40 Punkte) wenn FAQ thematisch zur Frage passt
+  - Reduzierte Gewichtung für allgemeine Wort-Übereinstimmungen (5 → 3 Punkte)
+  - Nur Wörter mit min. 4 Buchstaben werden für Wort-Matching gezählt
+  - Keyword-Match und Themen-Match werden separat getrackt für Confidence-Berechnung
 - **Asset-Enqueuing refaktorisiert**: Inline-Styles und -Scripts durch WordPress-konforme `wp_enqueue_*` Funktionen ersetzt
 - **Namespace-Refaktorisierung**: Alle Bezeichner von `chatbot_` auf `questi_` Präfix umgestellt (Klassen, Optionen, AJAX-Actions, Hooks, Shortcodes)
 
 ### Fixed
+- **UTF-8 Encoding**: Weitere Umlaut-Fehler in Admin-Views und PHP-Klassen korrigiert
+  - "Änderungen speichern", "Begrüßungstext", "Chat-Größe", "Schriftgröße" in settings.php
+  - Umlaut-Ersetzungs-Array und Regex-Pattern in class-questi-matcher.php
+  - Regex-Pattern für ß in class-questi-keyword-generator.php
+  - Kommentare in class-questi-email.php
 - **Klassenname**: `Chatbot_Database` zu `Questi_Database` in allen Admin-Views korrigiert (`dashboard.php`, `analytics.php`, `faqs-list.php`, `faq-edit.php`, `inquiries-list.php`, `inquiry-detail.php`)
 - **UTF-8 Encoding**: Doppelt-kodierte Zeichen in 9 Dateien repariert – deutsche Umlaute (ä, ö, ü, ß) und Emojis (📊, ✓, ⚠, 👍, 😊, 📁, 📋, 🎉, 💡, →) werden wieder korrekt angezeigt
 - **FAQ-Import**: Nonce-Validierung korrigiert – Groß-/Kleinschreibung (`Questi_Admin_ajax` → `questi_admin_ajax`) führte zu "Sicherheitsprüfung fehlgeschlagen" Fehler

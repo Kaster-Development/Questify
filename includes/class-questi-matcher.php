@@ -35,6 +35,7 @@ class Questi_Matcher {
      * Einstellungen
      */
     private int $min_score;
+    private int $confident_score; // Neuer Schwellenwert für sichere Matches
     private bool $fuzzy_matching;
     private int $levenshtein_threshold;
 
@@ -64,6 +65,7 @@ class Questi_Matcher {
      */
     private function load_settings(): void {
         $this->min_score = (int) get_option('questi_min_score', 60);
+        $this->confident_score = (int) get_option('questi_confident_score', 85); // Neuer Schwellenwert
         $this->fuzzy_matching = (bool) get_option('questi_fuzzy_matching', true);
         $this->levenshtein_threshold = (int) get_option('questi_levenshtein_threshold', 3);
 
@@ -75,7 +77,7 @@ class Questi_Matcher {
      * Findet beste Antwort für Frage
      *
      * @param string $question Benutzerfrage
-     * @return array|null [faq => object, score => int, alternatives => array, needs_disambiguation => bool] oder null
+     * @return array|null [faq => object, score => int, alternatives => array, needs_disambiguation => bool, low_confidence => bool] oder null
      * @since 1.0.0
      */
     public function find_best_match(string $question): ?array {
@@ -86,6 +88,9 @@ class Questi_Matcher {
         // Frage normalisieren
         $normalized_question = $this->normalize_text($question);
         $normalized_question = $this->remove_stop_words($normalized_question);
+        
+        // Wichtige Themenwörter aus der Originalfrage extrahieren
+        $topic_words = $this->extract_topic_words($question);
 
         // Alle aktiven FAQs holen
         $faqs = $this->db->get_active_faqs();
@@ -97,11 +102,13 @@ class Questi_Matcher {
         // Score für jede FAQ berechnen
         $scored_faqs = [];
         foreach ($faqs as $faq) {
-            $score = $this->calculate_score($normalized_question, $faq);
-            if ($score >= $this->min_score) {
+            $score_data = $this->calculate_score_advanced($normalized_question, $topic_words, $faq);
+            if ($score_data['score'] >= $this->min_score) {
                 $scored_faqs[] = [
                     'faq' => $faq,
-                    'score' => $score,
+                    'score' => $score_data['score'],
+                    'keyword_match' => $score_data['keyword_match'],
+                    'topic_match' => $score_data['topic_match'],
                 ];
             }
         }
@@ -117,9 +124,22 @@ class Questi_Matcher {
 
         // Beste Antwort
         $best = $scored_faqs[0];
+        
+        // LOW CONFIDENCE CHECK:
+        // Wenn der Score unter dem confident_score liegt UND
+        // kein direkter Keyword-Match vorliegt, ist das unsicher
+        $low_confidence = false;
+        if ($best['score'] < $this->confident_score && !$best['keyword_match']) {
+            $low_confidence = true;
+        }
+        
+        // Wenn kein Themen-Match vorliegt, ist das ebenfalls unsicher
+        if (!$best['topic_match'] && $best['score'] < 100) {
+            $low_confidence = true;
+        }
 
         // Alternative Vorschläge sammeln (wenn Score-Differenz < 20)
-        // WICHTIG: GröÖŸeres Fenster für bessere Disambiguierung bei ähnlichen FAQs
+        // WICHTIG: Größeres Fenster für bessere Disambiguierung bei ähnlichen FAQs
         $alternatives = [];
         for ($i = 1; $i < count($scored_faqs); $i++) {
             $score_diff = $best['score'] - $scored_faqs[$i]['score'];
@@ -155,47 +175,121 @@ class Questi_Matcher {
             'score' => $best['score'],
             'alternatives' => $alternatives,
             'needs_disambiguation' => $needs_disambiguation,
+            'low_confidence' => $low_confidence,
+            'keyword_match' => $best['keyword_match'],
+            'topic_match' => $best['topic_match'],
         ];
     }
 
     /**
-     * Berechnet Matching-Score
+     * Extrahiert wichtige Themenwörter aus der Frage
      *
-     * @param string $user_question Normalisierte Benutzerfrage
-     * @param object $faq FAQ-Objekt
-     * @return int Score (0-100+)
+     * @param string $question Originalfrage
+     * @return array Themenwörter
      * @since 1.0.0
      */
-    private function calculate_score(string $user_question, object $faq): int {
+    private function extract_topic_words(string $question): array {
+        $question_lower = mb_strtolower($question, 'UTF-8');
+        
+        // Wichtige Themen-Kategorien
+        $topic_patterns = [
+            'oeffnungszeiten' => ['öffnungszeiten', 'geöffnet', 'offen', 'geschlossen', 'wann', 'uhrzeit', 'heiligabend', 'silvester', 'feiertag', 'wochenende'],
+            'preise' => ['preis', 'kosten', 'euro', 'bezahlen', 'zahlen', 'karte', 'bar', 'gutschein', 'rabatt', 'ermäßigung'],
+            'gutscheine' => ['gutschein', 'geschenk', 'verschenken', 'fünferkarte', 'zehnerkarte', 'mehrfachkarte'],
+            'ausruestung' => ['helm', 'schutzhelm', 'schlittschuh', 'handschuh', 'ausrüstung', 'ausleihen', 'leihen', 'mieten'],
+            'kurse' => ['kurs', 'lernen', 'unterricht', 'anfänger', 'training', 'eiskunstlauf', 'eishockey'],
+            'veranstaltungen' => ['veranstaltung', 'party', 'geburtstag', 'gruppe', 'event', 'feier'],
+            'schleifen' => ['schleifen', 'schärfen', 'geschliffen'],
+            'groessen' => ['größe', 'schuhgröße', 'nummer'],
+        ];
+        
+        $found_topics = [];
+        foreach ($topic_patterns as $topic => $patterns) {
+            foreach ($patterns as $pattern) {
+                if (str_contains($question_lower, $pattern)) {
+                    $found_topics[$topic] = true;
+                    break;
+                }
+            }
+        }
+        
+        return array_keys($found_topics);
+    }
+
+    /**
+     * Berechnet erweiterten Matching-Score mit Themen-Check
+     *
+     * @param string $user_question Normalisierte Benutzerfrage
+     * @param array $topic_words Themenwörter aus der Frage
+     * @param object $faq FAQ-Objekt
+     * @return array ['score' => int, 'keyword_match' => bool, 'topic_match' => bool]
+     * @since 1.0.0
+     */
+    private function calculate_score_advanced(string $user_question, array $topic_words, object $faq): array {
         $score = 0;
+        $keyword_match = false;
+        $topic_match = false;
 
         // FAQ-Frage und Keywords normalisieren
         $faq_question = $this->normalize_text($faq->question);
         $faq_question = $this->remove_stop_words($faq_question);
+        
+        // Volltext der FAQ (Frage + Antwort + Keywords) für Themen-Check
+        $faq_fulltext = mb_strtolower($faq->question . ' ' . $faq->answer . ' ' . ($faq->keywords ?? ''), 'UTF-8');
+
+        // THEMEN-CHECK: Prüfen ob FAQ zum Thema der Frage passt
+        if (!empty($topic_words)) {
+            $topic_patterns = [
+                'oeffnungszeiten' => ['öffnungszeiten', 'geöffnet', 'offen', 'geschlossen', 'uhrzeit', 'heiligabend', 'silvester', 'feiertag'],
+                'preise' => ['preis', 'kosten', 'euro', 'bezahlen', 'zahlen', 'karte', 'bar'],
+                'gutscheine' => ['gutschein', 'geschenk', 'fünferkarte', 'zehnerkarte', 'mehrfachkarte'],
+                'ausruestung' => ['helm', 'schutzhelm', 'handschuh', 'ausrüstung', 'ausleihen', 'leihen', 'mieten'],
+                'kurse' => ['kurs', 'lernen', 'unterricht', 'anfänger', 'training'],
+                'veranstaltungen' => ['veranstaltung', 'party', 'geburtstag', 'gruppe', 'event', 'feier'],
+                'schleifen' => ['schleifen', 'schärfen', 'geschliffen'],
+                'groessen' => ['größe', 'schuhgröße', 'nummer'],
+            ];
+            
+            foreach ($topic_words as $topic) {
+                if (isset($topic_patterns[$topic])) {
+                    foreach ($topic_patterns[$topic] as $pattern) {
+                        if (str_contains($faq_fulltext, $pattern)) {
+                            $topic_match = true;
+                            $score += 40; // Bonus für Themen-Match
+                            break 2;
+                        }
+                    }
+                }
+            }
+        } else {
+            // Wenn keine spezifischen Themenwörter gefunden wurden, ist topic_match neutral
+            $topic_match = true;
+        }
 
         // 1. Exaktes Keyword-Matching (+30 Punkte pro Match)
         if (!empty($faq->keywords)) {
             $keywords = array_map('trim', explode(',', $faq->keywords));
             foreach ($keywords as $keyword) {
-                $keyword = $this->normalize_text($keyword);
-                if (str_contains($user_question, $keyword)) {
+                $keyword_normalized = $this->normalize_text($keyword);
+                if (!empty($keyword_normalized) && str_contains($user_question, $keyword_normalized)) {
                     $score += 30;
+                    $keyword_match = true;
                 }
             }
         }
 
-        // 2. Fuzzy Keyword-Matching (+20 Punkte bei Levenshtein <= Threshold)
+        // 2. Fuzzy Keyword-Matching (+15 Punkte bei Levenshtein <= Threshold) - reduziert von 20
         if ($this->fuzzy_matching && !empty($faq->keywords)) {
             $user_words = explode(' ', $user_question);
             $keywords = array_map('trim', explode(',', $faq->keywords));
 
             foreach ($keywords as $keyword) {
-                $keyword = $this->normalize_text($keyword);
+                $keyword_normalized = $this->normalize_text($keyword);
                 foreach ($user_words as $user_word) {
-                    if (strlen($user_word) >= 4 && strlen($keyword) >= 4) {
-                        $distance = levenshtein($user_word, $keyword);
-                        if ($distance <= $this->levenshtein_threshold) {
-                            $score += 20;
+                    if (strlen($user_word) >= 4 && strlen($keyword_normalized) >= 4) {
+                        $distance = levenshtein($user_word, $keyword_normalized);
+                        if ($distance > 0 && $distance <= $this->levenshtein_threshold) {
+                            $score += 15;
                             break;
                         }
                     }
@@ -203,23 +297,41 @@ class Questi_Matcher {
             }
         }
 
-        // 3. Bigram-Matching (+10 Punkte pro Match)
+        // 3. Bigram-Matching (+8 Punkte pro Match) - reduziert von 10
         $user_bigrams = $this->get_bigrams($user_question);
         $faq_bigrams = $this->get_bigrams($faq_question);
         $common_bigrams = array_intersect($user_bigrams, $faq_bigrams);
-        $score += count($common_bigrams) * 10;
+        $score += count($common_bigrams) * 8;
 
-        // 4. Gesamtähnlichkeit (+25 Punkte max)
+        // 4. Gesamtähnlichkeit (+20 Punkte max) - reduziert von 25
         similar_text($user_question, $faq_question, $percent);
-        $score += (int) (($percent / 100) * 25);
+        $score += (int) (($percent / 100) * 20);
 
-        // 5. Wort-Übereinstimmungen (+5 Punkte pro Wort)
-        $user_words = explode(' ', $user_question);
-        $faq_words = explode(' ', $faq_question);
+        // 5. Wort-Übereinstimmungen (+3 Punkte pro Wort) - reduziert von 5
+        // Nur für Wörter mit mindestens 4 Buchstaben (um kurze Füllwörter zu ignorieren)
+        $user_words = array_filter(explode(' ', $user_question), fn($w) => strlen($w) >= 4);
+        $faq_words = array_filter(explode(' ', $faq_question), fn($w) => strlen($w) >= 4);
         $common_words = array_intersect($user_words, $faq_words);
-        $score += count($common_words) * 5;
+        $score += count($common_words) * 3;
 
-        return $score;
+        return [
+            'score' => $score,
+            'keyword_match' => $keyword_match,
+            'topic_match' => $topic_match,
+        ];
+    }
+
+    /**
+     * Berechnet Matching-Score (Legacy-Methode für Kompatibilität)
+     *
+     * @param string $user_question Normalisierte Benutzerfrage
+     * @param object $faq FAQ-Objekt
+     * @return int Score (0-100+)
+     * @since 1.0.0
+     */
+    private function calculate_score(string $user_question, object $faq): int {
+        $result = $this->calculate_score_advanced($user_question, [], $faq);
+        return $result['score'];
     }
 
     /**
@@ -235,12 +347,12 @@ class Questi_Matcher {
 
         // 2. Umlaute normalisieren (für besseres Matching)
         $text = str_replace(
-            ['ä', 'ö', 'ü', 'ÖŸ', 'Ö„', 'Ö–', 'Ü'],
+            ['ä', 'ö', 'ü', 'ß', 'Ä', 'Ö', 'Ü'],
             ['ae', 'oe', 'ue', 'ss', 'ae', 'oe', 'ue'],
             $text
         );
 
-        // 3. Sonderzeichen entfernen (auÖŸer Leerzeichen)
+        // 3. Sonderzeichen entfernen (außer Leerzeichen)
         $text = preg_replace('/[^a-z0-9\s]/', '', $text);
 
         // 4. Mehrfache Leerzeichen entfernen

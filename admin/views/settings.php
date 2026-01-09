@@ -26,6 +26,7 @@ $questify_defaults = [
     'questi_welcome_message' => 'Hallo! 😊 Wie kann ich Ihnen helfen?',
     'questi_placeholder_text' => 'Stellen Sie Ihre Frage...',
     'questi_no_answer_message' => 'Ich konnte leider keine passende Antwort finden. Möchten Sie uns Ihre Frage per E-Mail senden?',
+    'questi_low_confidence_message' => 'Ich bin mir nicht sicher, ob ich Ihre Frage richtig verstanden habe. Möchten Sie uns direkt kontaktieren, damit wir Ihnen besser helfen können?',
     'questi_thank_you_message' => 'Vielen Dank! Wir haben Ihre Anfrage erhalten und melden uns in Kürze bei Ihnen.',
     'questi_history_mode' => 'manual',
     'questi_position' => 'right',
@@ -48,6 +49,7 @@ $questify_defaults = [
     'questi_exclude_pages' => [],
     'questi_debug_mode' => false,
     'questi_min_score' => 60,
+    'questi_confident_score' => 85,
     'questi_fuzzy_matching' => true,
     'questi_levenshtein_threshold' => 3,
     'questi_stopwords' => 'der, die, das, und, oder, aber, ist, sind, haben, sein, ein, eine, mit, von, zu, für, auf, an, in, aus',
@@ -76,6 +78,9 @@ if (isset($_POST['questi_save_settings'])) {
             }
             if (isset($_POST['questi_no_answer_message'])) {
                 update_option('questi_no_answer_message', sanitize_textarea_field(wp_unslash($_POST['questi_no_answer_message'])));
+            }
+            if (isset($_POST['questi_low_confidence_message'])) {
+                update_option('questi_low_confidence_message', sanitize_textarea_field(wp_unslash($_POST['questi_low_confidence_message'])));
             }
             if (isset($_POST['questi_thank_you_message'])) {
                 update_option('questi_thank_you_message', sanitize_textarea_field(wp_unslash($_POST['questi_thank_you_message'])));
@@ -178,6 +183,9 @@ if (isset($_POST['questi_save_settings'])) {
             if (isset($_POST['questi_min_score'])) {
                 update_option('questi_min_score', absint(wp_unslash($_POST['questi_min_score'])));
             }
+            if (isset($_POST['questi_confident_score'])) {
+                update_option('questi_confident_score', absint(wp_unslash($_POST['questi_confident_score'])));
+            }
             update_option('questi_fuzzy_matching', isset($_POST['questi_fuzzy_matching']));
             if (isset($_POST['questi_levenshtein_threshold'])) {
                 update_option('questi_levenshtein_threshold', absint(wp_unslash($_POST['questi_levenshtein_threshold'])));
@@ -214,7 +222,7 @@ if (isset($_POST['questi_save_settings'])) {
                     <td><label><input type="checkbox" name="questi_enabled" value="1" <?php checked(questify_get_chatbot_option('questi_enabled', $questify_defaults['questi_enabled'])); ?>> <?php esc_html_e('Chatbot auf der Website anzeigen', 'questify'); ?></label></td>
                 </tr>
                 <tr>
-                    <th><?php esc_html_e('BegrüÖŸungstext', 'questify'); ?></th>
+                    <th><?php esc_html_e('Begrüßungstext', 'questify'); ?></th>
                     <td><textarea name="questi_welcome_message" rows="3" class="large-text"><?php echo esc_textarea(questify_get_chatbot_option('questi_welcome_message', $questify_defaults['questi_welcome_message'])); ?></textarea></td>
                 </tr>
                 <tr>
@@ -224,6 +232,13 @@ if (isset($_POST['questi_save_settings'])) {
                 <tr>
                     <th><?php esc_html_e('Nachricht bei fehlender Antwort', 'questify'); ?></th>
                     <td><textarea name="questi_no_answer_message" rows="3" class="large-text"><?php echo esc_textarea(questify_get_chatbot_option('questi_no_answer_message', $questify_defaults['questi_no_answer_message'])); ?></textarea></td>
+                </tr>
+                <tr>
+                    <th><?php esc_html_e('Nachricht bei unsicherer Antwort', 'questify'); ?></th>
+                    <td>
+                        <textarea name="questi_low_confidence_message" rows="3" class="large-text"><?php echo esc_textarea(questify_get_chatbot_option('questi_low_confidence_message', $questify_defaults['questi_low_confidence_message'])); ?></textarea>
+                        <p class="description"><?php esc_html_e('Diese Nachricht wird angezeigt, wenn der Chatbot sich nicht sicher ist, ob die gefundene Antwort zur Frage passt.', 'questify'); ?></p>
+                    </td>
                 </tr>
                 <tr>
                     <th><?php esc_html_e('Dankes-Nachricht', 'questify'); ?></th>
@@ -289,7 +304,7 @@ if (isset($_POST['questi_save_settings'])) {
                     <td><input type="text" name="questi_button_text" value="<?php echo esc_attr(questify_get_chatbot_option('questi_button_text', $questify_defaults['questi_button_text'])); ?>" class="regular-text"></td>
                 </tr>
                 <tr>
-                    <th><?php esc_html_e('Chat-GröÖŸe', 'questify'); ?></th>
+                    <th><?php esc_html_e('Chat-Größe', 'questify'); ?></th>
                     <td>
                         <select name="questi_size">
                             <option value="small" <?php selected(questify_get_chatbot_option('questi_size', $questify_defaults['questi_size']), 'small'); ?>><?php esc_html_e('Klein (300x400px)', 'questify'); ?></option>
@@ -329,7 +344,7 @@ if (isset($_POST['questi_save_settings'])) {
                     </td>
                 </tr>
                 <tr>
-                    <th><?php esc_html_e('SchriftgröÖŸe', 'questify'); ?></th>
+                    <th><?php esc_html_e('Schriftgröße', 'questify'); ?></th>
                     <td>
                         <select name="questi_font_size">
                             <option value="12px" <?php selected(questify_get_chatbot_option('questi_font_size', $questify_defaults['questi_font_size']), '12px'); ?>>12px (Klein)</option>
@@ -337,7 +352,7 @@ if (isset($_POST['questi_save_settings'])) {
                             <option value="16px" <?php selected(questify_get_chatbot_option('questi_font_size', $questify_defaults['questi_font_size']), '16px'); ?>>16px (Groß)</option>
                             <option value="18px" <?php selected(questify_get_chatbot_option('questi_font_size', $questify_defaults['questi_font_size']), '18px'); ?>>18px (Sehr Groß)</option>
                         </select>
-                        <p class="description"><?php esc_html_e('GröÖŸe der Schrift im Chat', 'questify'); ?></p>
+                        <p class="description"><?php esc_html_e('Größe der Schrift im Chat', 'questify'); ?></p>
                     </td>
                 </tr>
             </table>
@@ -437,7 +452,15 @@ if (isset($_POST['questi_save_settings'])) {
                     <td>
                         <input type="range" name="questi_min_score" min="0" max="100" value="<?php echo esc_attr(questify_get_chatbot_option('questi_min_score', $questify_defaults['questi_min_score'])); ?>" id="min-score-range">
                         <span id="min-score-value"><?php echo esc_html(questify_get_chatbot_option('questi_min_score', $questify_defaults['questi_min_score'])); ?></span>
-                        <p class="description"><?php esc_html_e('Minimale Übereinstimmung für eine Antwort (0-100)', 'questify'); ?></p>
+                        <p class="description"><?php esc_html_e('Minimale Übereinstimmung für eine Antwort (0-100). Unter diesem Wert wird keine Antwort gegeben.', 'questify'); ?></p>
+                    </td>
+                </tr>
+                <tr>
+                    <th><?php esc_html_e('Sicherer Match-Score', 'questify'); ?></th>
+                    <td>
+                        <input type="range" name="questi_confident_score" min="0" max="100" value="<?php echo esc_attr(questify_get_chatbot_option('questi_confident_score', $questify_defaults['questi_confident_score'])); ?>" id="confident-score-range">
+                        <span id="confident-score-value"><?php echo esc_html(questify_get_chatbot_option('questi_confident_score', $questify_defaults['questi_confident_score'])); ?></span>
+                        <p class="description"><?php esc_html_e('Ab diesem Score wird die Antwort als sicher angesehen. Unter diesem Wert (aber über Mindest-Score) wird zur Sicherheit das Kontaktformular angeboten.', 'questify'); ?></p>
                     </td>
                 </tr>
                 <tr>
@@ -457,7 +480,7 @@ if (isset($_POST['questi_save_settings'])) {
         <?php endif; ?>
 
         <p class="submit">
-            <button type="submit" name="questi_save_settings" class="button button-primary"><?php esc_html_e('Ö„nderungen speichern', 'questify'); ?></button>
+            <button type="submit" name="questi_save_settings" class="button button-primary"><?php esc_html_e('Änderungen speichern', 'questify'); ?></button>
             <button type="button" id="restore-defaults" class="button" style="margin-left: 10px;"><?php esc_html_e('Standardwerte wiederherstellen', 'questify'); ?></button>
         </p>
     </form>

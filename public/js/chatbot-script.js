@@ -237,9 +237,12 @@
                             this.currentFaqId = data.faq_id;
                         }
                     } else {
-                        // No answer found
+                        // No answer found or low confidence
                         this.addBotMessage(data.message);
-                        this.showContactFormButton();
+                        // Show contact form button (für low_confidence oder keine Antwort)
+                        if (data.show_contact || data.low_confidence || !data.found) {
+                            this.showContactFormButton();
+                        }
                     }
                 } else {
                     this.addBotMessage('Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.');

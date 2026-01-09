@@ -113,6 +113,29 @@ class Questi_Ajax {
             $score = $match['score'];
             $quality = $this->matcher->get_match_quality($score);
             $needs_disambiguation = $match['needs_disambiguation'] ?? false;
+            $low_confidence = $match['low_confidence'] ?? false;
+
+            // LOW CONFIDENCE: Antwort unsicher - Kontaktformular anbieten
+            if ($low_confidence && !$needs_disambiguation) {
+                $low_confidence_message = get_option(
+                    'questi_low_confidence_message',
+                    __('Ich bin mir nicht sicher, ob ich Ihre Frage richtig verstanden habe. Möchten Sie uns direkt kontaktieren, damit wir Ihnen besser helfen können?', 'questify')
+                );
+
+                // Bot-Antwort speichern
+                $this->db->insert_conversation([
+                    'session_id' => $session_id,
+                    'message_type' => 'bot',
+                    'message_text' => $low_confidence_message,
+                ]);
+
+                wp_send_json_success([
+                    'found' => false,
+                    'low_confidence' => true,
+                    'message' => $low_confidence_message,
+                    'show_contact' => true,
+                ]);
+            }
 
             // Wenn Disambiguierung nötig: Auswahlmöglichkeiten zurückgeben
             if ($needs_disambiguation && !empty($match['alternatives'])) {

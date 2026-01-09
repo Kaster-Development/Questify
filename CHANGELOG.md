@@ -10,29 +10,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [1.0.7] - 2026-01-09
 
 ### Changed
-- **Asset-Enqueuing refaktorisiert**: Alle Inline-`<style>` und `<script>` Tags durch WordPress-konforme `wp_enqueue_*` Funktionen ersetzt für bessere Performance und Kompatibilität:
-  - Neue seitenspezifische CSS-Dateien: `faq-edit.css`, `analytics.css`, `faqs-list.css`, `inquiry-detail.css`
-  - Neue seitenspezifische JS-Dateien: `faq-edit.js`, `analytics.js`, `faqs-list.js`, `settings.js`, `inquiry-detail.js`
-  - Neue Methode `enqueue_page_specific_assets()` in Admin-Klasse für bedingte Asset-Ladung
-  - Dynamische Daten via `wp_localize_script()` und `wp_add_inline_script()` statt Inline-PHP in Script-Tags
-- **Namespace-Refaktorisierung**: Alle Plugin-spezifischen Bezeichner von `chatbot_` auf `questi_` Präfix umgestellt, um WordPress-Namenskollisionen zu vermeiden:
-  - **Klassen**: `Chatbot_*` → `Questi_*` (Admin, Ajax, Database, Email, Matcher, Keyword_Generator, Activator, Deactivator, Frontend)
-  - **Klassendateien**: `class-chatbot-*.php` → `class-questi-*.php`
-  - **WordPress-Optionen**: Alle `chatbot_*` Optionen zu `questi_*` umbenannt
-  - **Transients**: `chatbot_activation_redirect`, `chatbot_active_faqs` → `questi_*`
-  - **AJAX-Actions**: Alle Actions von `chatbot_*` zu `questi_*` (z.B. `questi_get_answer`, `questi_send_inquiry`)
-  - **Admin-Menü-Slugs**: `chatbot-dashboard`, `chatbot-settings` etc. → `questi-*`
-  - **Script/Style-Handles**: `chatbot-script`, `chatbot-admin-*` → `questi-*`
-  - **Localize-Objekte**: `chatbotData` → `questiData`, `chatbotAdmin` → `questiAdmin`
-  - **Nonces**: `chatbot_ajax`, `chatbot_admin_ajax` → `questi_ajax`, `questi_admin_ajax`
-  - **Cron-Hooks**: `chatbot_cleanup_old_data` → `questi_cleanup_old_data`
-  - **Shortcode**: `wp_faq_chat` → `questi_faq_chat`
-- **Datenbanktabellen**: Namen beibehalten (`chatbot_faqs`, `chatbot_inquiries`, `chatbot_conversations`) um Migration für bestehende Installationen zu vermeiden
+- **Asset-Enqueuing refaktorisiert**: Inline-Styles und -Scripts durch WordPress-konforme `wp_enqueue_*` Funktionen ersetzt
+- **Namespace-Refaktorisierung**: Alle Bezeichner von `chatbot_` auf `questi_` Präfix umgestellt (Klassen, Optionen, AJAX-Actions, Hooks, Shortcodes)
 
 ### Fixed
-- **Security (Bulk Actions)**: Nonce- und Berechtigungsprüfung für Bulk-Actions hinzugefügt (`handle_bulk_actions`), um unautorisierte Massenaktionen zu verhindern.
-- **Readme metadata**: Updated `Contributors` username to `steffenka`.
-- **Contact email**: Updated default support/feedback email to `steffen.kaster@live.de` (About page default and translation metadata/docs).
+- **Security**: Nonce- und Berechtigungsprüfung für Bulk-Actions hinzugefügt
+- **Readme/Docs**: Contributors-Username und Support-E-Mail aktualisiert
+
+### Removed
+- **WordPress.org Assets**: Plugin-Icons (`icon-128x128.png`, `icon-256x256.png`) aus dem Plugin-Code entfernt – diese werden separat via SVN hochgeladen
 
 ## [1.0.6] - 2025-12-26
 
